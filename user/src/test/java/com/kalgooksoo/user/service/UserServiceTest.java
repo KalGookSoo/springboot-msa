@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -23,7 +24,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@SpringBootTest
+@SpringBootTest(properties = {
+        "eureka.client.enabled=false",
+        "spring.cloud.config.enabled=false"
+})
+@ActiveProfiles("test")
 class UserServiceTest {
 
     private UserService userService;
@@ -37,7 +42,7 @@ class UserServiceTest {
     private User testUser;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         userService = new DefaultUserService(userRepository, passwordEncoder);
         User account = User.create("tester", "1234", "테스터", null, null);
         testUser = userService.create(account);
@@ -45,7 +50,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정을 생성합니다.")
-    public void createUserTest() {
+    void createUserTest() {
         // Given
         User account = User.create("tester2", "1234", "테스터2", null, null);
 
@@ -62,7 +67,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정 생성 시 이미 존재하는 아이디를 입력하면 UsernameAlreadyExistsException 예외를 발생시킵니다.")
-    public void createUserWithExistingUsernameTest() {
+    void createUserWithExistingUsernameTest() {
         // Given
         User account = User.create("tester2", "1234", "테스터2", null, null);
         userService.create(account);
@@ -75,7 +80,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정 생성 시 계정 정책 날짜를 확인합니다.")
-    public void createUserWithPolicyTest() {
+    void createUserWithPolicyTest() {
         // Given
         User account = User.create("tester2", "1234", "테스터2", null, null);
 
@@ -95,7 +100,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정 정보를 업데이트합니다.")
-    public void updateUserTest() {
+    void updateUserTest() {
         // Given
         UpdateUserCommand command = new UpdateUserCommand(
                 "테스터 업데이트",
@@ -117,7 +122,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정을 ID로 찾습니다.")
-    public void findByIdTest() {
+    void findByIdTest() {
         // Given
         String id = testUser.getId();
 
@@ -131,7 +136,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("페이지네이션 정보에 기반한 계정 목록을 조회합니다.")
-    public void findAllTest() {
+    void findAllTest() {
         // Given
         PageRequest pageRequest = PageRequest.of(0, 10);
 
@@ -145,10 +150,11 @@ class UserServiceTest {
 
     @Test
     @DisplayName("페이지네이션 정보와 검색 조건에 기반한 계정 목록을 조회합니다.")
-    public void findAllWithCriteriaTest() {
+    void findAllWithCriteriaTest() {
         // Given
         PageRequest pageRequest = PageRequest.of(0, 10);
-        UserSearch search = new UserSearch("tester", null, null, null);
+        UserSearch search = new UserSearch();
+        search.setUsername("tester");
 
         // When
         Page<User> accounts = userService.findAll(search, pageRequest);
@@ -161,7 +167,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정을 ID로 삭제합니다.")
-    public void deleteByIdTest() {
+    void deleteByIdTest() {
         // Given
         String id = testUser.getId();
 
@@ -175,7 +181,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정의 패스워드를 업데이트합니다.")
-    public void updatePasswordTest() {
+    void updatePasswordTest() {
         // Given
         String id = testUser.getId();
         String newPassword = "newPassword";

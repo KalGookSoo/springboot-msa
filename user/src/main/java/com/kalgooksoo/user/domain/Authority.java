@@ -24,6 +24,10 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicInsert
 public class Authority {
 
+    /**
+     * 엔티티 식별자입니다.
+     * UUID를 사용하여 고유한 값을 가집니다.
+     */
     @Id
     private String id;
 

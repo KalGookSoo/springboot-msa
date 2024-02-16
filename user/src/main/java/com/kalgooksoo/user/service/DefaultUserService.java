@@ -31,7 +31,7 @@ public class DefaultUserService implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User create(User user) {
+    public User create(User user) throws UsernameAlreadyExistsException {
         if (userRepository.exists(usernameEquals(user.getUsername()))) {
             throw new UsernameAlreadyExistsException("Username already exists");
         }
@@ -73,17 +73,17 @@ public class DefaultUserService implements UserService {
     @Override
     public Page<User> findAll(UserSearch search, Pageable pageable) {
         Specification<User> specification = Specification.where(null);
-        if (search.username() != null) {
-            specification = specification.and(usernameContains(search.username()));
+        if (search.getUsername() != null) {
+            specification = specification.and(usernameContains(search.getUsername()));
         }
-        if (search.name() != null) {
-            specification = specification.and(nameContains(search.name()));
+        if (search.getName() != null) {
+            specification = specification.and(nameContains(search.getName()));
         }
-        if (search.emailId() != null) {
-            specification = specification.and(emailIdContains(search.emailId()));
+        if (search.getEmailId() != null) {
+            specification = specification.and(emailIdContains(search.getEmailId()));
         }
-        if (search.contactNumber() != null) {
-            specification = specification.and(contactNumberContains(search.contactNumber()));
+        if (search.getContactNumber() != null) {
+            specification = specification.and(contactNumberContains(search.getContactNumber()));
         }
         return userRepository.findAll(specification, pageable);
     }

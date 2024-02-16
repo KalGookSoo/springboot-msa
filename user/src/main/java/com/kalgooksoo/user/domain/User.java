@@ -1,5 +1,6 @@
 package com.kalgooksoo.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kalgooksoo.user.value.ContactNumber;
 import com.kalgooksoo.user.value.Email;
 import jakarta.persistence.*;
@@ -44,6 +45,7 @@ public class User {
     /**
      * 패스워드
      */
+    @JsonIgnore
     private String password;
 
     /**
