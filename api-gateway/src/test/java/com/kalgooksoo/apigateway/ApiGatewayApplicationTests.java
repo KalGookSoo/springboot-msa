@@ -1,4 +1,4 @@
-package com.kalgooksoo.kafka;
+package com.kalgooksoo.apigateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
