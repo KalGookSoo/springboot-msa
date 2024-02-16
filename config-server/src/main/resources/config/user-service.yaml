@@ -1,15 +1,9 @@
-server:
-  port: 8080
+server.port: 8080
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+eureka.client.service-url.default-zone: http://localhost:8761/eureka/
 
-management:
-  tracing:
-    sampling:
-      probability: 1.0
+spring.zipkin.base-url: http://localhost:9411
+management.tracing.sampling.probability: 1.0
 
 spring:
   h2:

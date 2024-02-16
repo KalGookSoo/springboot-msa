@@ -14,11 +14,17 @@ management:
 spring:
   application:
     name: api-gateway
+  main:
+    web-application-type: reactive
   config:
     import: 'optional:configserver:http://localhost:10000'
   cloud:
     gateway:
       routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
 #        - id: employee-service
 #          uri: lb://employee-service
 #          predicates:
