@@ -1,16 +1,27 @@
 package com.kalgooksoo.user.service;
 
-import com.kalgooksoo.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
+import com.kalgooksoo.user.command.UpdateUserCommand;
+import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.search.UserSearch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-@Service
-@Transactional
-public class UserService {
+import java.util.Optional;
 
-    private final UserRepository userRepository;
+public interface UserService {
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    User create(User user);
+
+    User update(String id, UpdateUserCommand command);
+
+    Optional<User> findById(String id);
+
+    Page<User> findAll(Pageable pageable);
+
+    Page<User> findAll(UserSearch search, Pageable pageable);
+
+    void deleteById(String id);
+
+    void updatePassword(String id, String password);
+
 }

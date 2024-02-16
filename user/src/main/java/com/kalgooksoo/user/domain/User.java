@@ -3,11 +3,10 @@ package com.kalgooksoo.user.domain;
 import com.kalgooksoo.user.value.ContactNumber;
 import com.kalgooksoo.user.value.Email;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -25,6 +25,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "tb_account")
 @DynamicInsert
+@SuppressWarnings("JpaDataSourceORMInspection")
 public class User {
 
     /**
@@ -56,7 +57,7 @@ public class User {
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "id", column = @Column(name = "email_id")),
-            @AttributeOverride(name = "com/kalgooksoo/user/domain", column = @Column(name = "email_domain"))
+            @AttributeOverride(name = "domain", column = @Column(name = "email_domain"))
     })
     private Email email;
 
@@ -107,6 +108,7 @@ public class User {
 
     public static User create(String username, String password, String name, Email email, ContactNumber contactNumber) {
         User user = new User();
+        user.id = UUID.randomUUID().toString();
         user.username = username;
         user.password = password;
         user.name = name;
@@ -117,12 +119,11 @@ public class User {
         return user;
     }
 
-    public User update(String name, Email email, ContactNumber contactNumber) {
+    public void update(String name, Email email, ContactNumber contactNumber) {
         this.name = name;
         this.email = email;
         this.contactNumber = contactNumber;
         this.modifiedAt = LocalDateTime.now();
-        return this;
     }
 
     public void changePassword(String password) {
