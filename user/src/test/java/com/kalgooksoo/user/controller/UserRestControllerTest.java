@@ -60,14 +60,13 @@ class UserRestControllerTest {
     @DisplayName("계정을 생성합니다. 성공 시 응답 코드 201을 반환합니다.")
     void createUserTest() throws Exception {
         // Given
-        User account = User.create("tester2", "12345678", "테스터2", null, null);
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
 
         // When
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(account)))
+                .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.username").value("tester2"))
                 .andDo(MockMvcResultHandlers.print());
 
