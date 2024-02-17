@@ -21,3 +21,8 @@
 - 서킷 브레이커
 - 분산 추적(Zipkin 쓸 예정)
 - 이벤트 소싱(트랜잭션 제어)
+
+### install zipkin
+```shell
+docker run -d -p 9411:9411 --name zipkin openzipkin/zipkin
+```
