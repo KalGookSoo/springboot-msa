@@ -132,6 +132,7 @@ public class User {
         Assert.notNull(password, "Password must not be null");
         this.password = password;
         this.credentialsExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
+        this.modifiedAt = LocalDateTime.now();
     }
 
     /**
@@ -141,5 +142,40 @@ public class User {
     private void initializeAccountPolicy() {
         expiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusYears(2L);
         credentialsExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
+    }
+
+    /**
+     * 계정이 만료되지 않았는지 여부를 반환합니다.
+     * @return 계정이 만료되지 않았는지 여부
+     */
+    public boolean isAccountNonExpired() {
+        return getExpiredAt() == null || getExpiredAt().isAfter(LocalDateTime.now());
+    }
+
+    /**
+     * 계정이 잠겨있지 않은지 여부를 반환합니다.
+     * @return 계정이 잠겨있지 않은지 여부
+     */
+    public boolean isAccountNonLocked() {
+        return getLockedAt() == null || getLockedAt().isBefore(LocalDateTime.now());
+    }
+
+    /**
+     * 계정의 패스워드가 만료되지 않았는지 여부를 반환합니다.
+     * @return 계정의 패스워드가 만료되지 않았는지 여부
+     */
+    public boolean isCredentialsNonExpired() {
+        return getCredentialsExpiredAt() == null || getCredentialsExpiredAt().isAfter(LocalDateTime.now());
+    }
+
+    /**
+     * 계정이 사용 가능한지 여부를 반환합니다.
+     * @return 계정이 사용 가능한지 여부
+     */
+    public boolean isEnabled() {
+        boolean accountNonLocked = isAccountNonLocked();
+        boolean accountNonExpired = isAccountNonExpired();
+        boolean credentialsNonExpired = isCredentialsNonExpired();
+        return accountNonLocked && accountNonExpired && credentialsNonExpired;
     }
 }

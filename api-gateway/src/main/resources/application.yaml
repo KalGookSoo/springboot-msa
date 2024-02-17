@@ -17,7 +17,7 @@ spring:
   main:
     web-application-type: reactive
   config:
-    import: 'optional:configserver:http://localhost:10000'
+    import: 'optional:configserver:http://localhost:8888'
   cloud:
     gateway:
       routes:

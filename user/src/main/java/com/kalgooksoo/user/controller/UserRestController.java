@@ -7,10 +7,14 @@ import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
 import com.kalgooksoo.user.value.ContactNumber;
 import com.kalgooksoo.user.value.Email;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -27,15 +31,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 /**
  * 계정 REST 컨트롤러
  */
+@Tag(name = "UserRestController", description = "계정 API")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserRestController {
 
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<User>>> findAll(UserSearch search) {
+    public ResponseEntity<PagedModel<EntityModel<User>>> search(@RequestParam UserSearch search, @Parameter(hidden = true) Pageable pageable) {
         PageRequest pageRequest = PageRequest.of(search.getOffset(), search.getLimit());
         Page<User> page = userService.findAll(search, pageRequest);
 
@@ -47,7 +52,7 @@ public class UserController {
         PagedModel.PageMetadata metadata = new PagedModel.PageMetadata(page.getSize(), page.getNumber(), page.getTotalElements(), page.getTotalPages());
         PagedModel<EntityModel<User>> pagedModel = PagedModel.of(users, metadata);
 
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findAll(search));
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).search(search, pageable));
         pagedModel.add(linkTo.withRel("self"));
 
         return ResponseEntity.ok(pagedModel);
@@ -70,7 +75,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<User>> findById(@PathVariable String id) {
+    public ResponseEntity<EntityModel<User>> findById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
         Optional<User> foundEntity = userService.findById(id);
         if (foundEntity.isEmpty()) {
             return ResponseEntity.notFound().build();

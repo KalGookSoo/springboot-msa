@@ -25,14 +25,8 @@ public class ExceptionHandlingController {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult()
-                .getAllErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining("\n"));
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(message);
+                .body(ex.getBindingResult().getAllErrors());
     }
 
     /**

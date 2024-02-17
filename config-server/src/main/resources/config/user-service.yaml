@@ -1,31 +1,6 @@
 server.port: 8080
 
-eureka.client.service-url.default-zone: http://localhost:8761/eureka/
+eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka/
 
 spring.zipkin.base-url: http://localhost:9411
 management.tracing.sampling.probability: 1.0
-
-spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
-    #url: jdbc:h2:file:./testdb;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-
-spring.h2.console.enabled: true
-spring.h2.console.settings.web-allow-others: true
-
-spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-spring.jpa.hibernate.ddl-auto: update
-spring.jpa.show-sql: true
-
-logging:
-  level:
-    root: DEBUG
-
-logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
