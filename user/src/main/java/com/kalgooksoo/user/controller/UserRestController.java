@@ -13,8 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -40,9 +38,8 @@ public class UserRestController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<User>>> search(@RequestParam UserSearch search, @Parameter(hidden = true) Pageable pageable) {
-        PageRequest pageRequest = PageRequest.of(search.getOffset(), search.getLimit());
-        Page<User> page = userService.findAll(search, pageRequest);
+    public ResponseEntity<PagedModel<EntityModel<User>>> findAll(UserSearch search) {
+        Page<User> page = userService.findAll(search, search.pageable());
 
         List<EntityModel<User>> users = page.getContent().stream()
                 .map(user -> EntityModel.of(user,
@@ -52,7 +49,7 @@ public class UserRestController {
         PagedModel.PageMetadata metadata = new PagedModel.PageMetadata(page.getSize(), page.getNumber(), page.getTotalElements(), page.getTotalPages());
         PagedModel<EntityModel<User>> pagedModel = PagedModel.of(users, metadata);
 
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).search(search, pageable));
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findAll(search));
         pagedModel.add(linkTo.withRel("self"));
 
         return ResponseEntity.ok(pagedModel);

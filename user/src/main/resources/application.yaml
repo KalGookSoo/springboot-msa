@@ -11,15 +11,10 @@ spring:
     password:
     driver-class-name: org.h2.Driver
   jpa.show-sql: true
+
 logging:
   level:
-    #    root: DEBUG
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
+    org.hibernate.type.descriptor.jdbc.BasicBinder: TRACE
 
 spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 spring.jpa.hibernate.ddl-auto: update
