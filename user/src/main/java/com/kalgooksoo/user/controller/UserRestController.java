@@ -1,6 +1,7 @@
 package com.kalgooksoo.user.controller;
 
 import com.kalgooksoo.user.command.CreateUserCommand;
+import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.search.UserSearch;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -83,5 +85,23 @@ public class UserRestController {
         return ResponseEntity.ok(resource);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<EntityModel<User>> updateById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserCommand command) {
+        try {
+            User updatedEntity = userService.update(id, command);
+            EntityModel<User> resource = EntityModel.of(updatedEntity);
+            WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(id));
+            resource.add(linkTo.withRel("self"));
+            return ResponseEntity.ok(resource);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
+        userService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
