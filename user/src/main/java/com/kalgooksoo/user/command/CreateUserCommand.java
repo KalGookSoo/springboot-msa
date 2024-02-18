@@ -5,11 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "사용자를 생성하는 데 사용되는 명령")
+@Schema(description = "계정을 생성하는 데 사용되는 명령")
 public record CreateUserCommand(
-        @Parameter(description = "사용자 이름. 이 필드는 필수입니다.", schema = @Schema(description = "사용자 이름. 이 필드는 필수입니다."))
-        @NotBlank(message = "사용자 이름은 필수입니다")
-        @Size(min = 3, max = 20, message = "사용자 이름은 3자 이상 20자 이하이어야 합니다")
+        @Parameter(description = "계정명. 이 필드는 필수입니다.", schema = @Schema(description = "계정명. 이 필드는 필수입니다."))
+        @NotBlank(message = "계정명은 필수입니다")
+        @Size(min = 3, max = 20, message = "계정명은 3자 이상 20자 이하이어야 합니다")
         String username,
 
         @Parameter(description = "패스워드. 이 필드는 필수입니다.", schema = @Schema(description = "패스워드. 이 필드는 필수입니다."))

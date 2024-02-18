@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 계정 검색 조건
+ */
 @Getter
 @Setter
 public class UserSearch extends PageVO {

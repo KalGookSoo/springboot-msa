@@ -39,6 +39,12 @@ public class UserRestController {
 
     private final UserService userService;
 
+    /**
+     * 계정 목록 조회
+     *
+     * @param search 검색 조건
+     * @return 계정 목록
+     */
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<User>>> findAll(UserSearch search) {
         Page<User> page = userService.findAll(search, search.pageable());
@@ -57,13 +63,19 @@ public class UserRestController {
         return ResponseEntity.ok(pagedModel);
     }
 
+    /**
+     * 계정 생성
+     *
+     * @param command 계정 생성 명령
+     * @return 생성된 계정
+     */
     @PostMapping
     public ResponseEntity<EntityModel<User>> create(@Valid @RequestBody CreateUserCommand command) {
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
-        User user = User.createUser(command.username(), command.password(), command.name(), email, contactNumber);
+        User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         try {
-            User createdEntity = userService.create(user);
+            User createdEntity = userService.createUser(user);
             EntityModel<User> resource = EntityModel.of(createdEntity);
             WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(createdEntity.getId()));
             resource.add(linkTo.withRel("self"));
@@ -73,6 +85,12 @@ public class UserRestController {
         }
     }
 
+    /**
+     * 계정 조회
+     *
+     * @param id 계정 식별자
+     * @return 계정
+     */
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<User>> findById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
         Optional<User> foundEntity = userService.findById(id);
@@ -85,6 +103,13 @@ public class UserRestController {
         return ResponseEntity.ok(resource);
     }
 
+    /**
+     * 계정 수정
+     *
+     * @param id      계정 식별자
+     * @param command 계정 수정 명령
+     * @return 수정된 계정
+     */
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<User>> updateById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserCommand command) {
         try {
@@ -98,10 +123,19 @@ public class UserRestController {
         }
     }
 
+    /**
+     * 계정 삭제
+     *
+     * @param id 계정 식별자
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
-        userService.deleteById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
+        try {
+            userService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

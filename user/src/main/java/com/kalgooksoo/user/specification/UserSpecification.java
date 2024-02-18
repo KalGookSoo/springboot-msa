@@ -5,7 +5,14 @@ import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
 
+/**
+ * 계정 검색 조건
+ */
 public class UserSpecification {
+
+    public static <T> Specification<T> idEquals(String id) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), id);
+    }
 
     public static <T> Specification<T> usernameEquals(String username) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("username"), username);

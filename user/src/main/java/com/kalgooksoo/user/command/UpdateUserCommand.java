@@ -3,7 +3,7 @@ package com.kalgooksoo.user.command;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "사용자 정보를 업데이트하는 데 사용되는 명령")
+@Schema(description = "계정 정보를 업데이트하는 데 사용되는 명령")
 public record UpdateUserCommand(
         @Parameter(description = "이름. 이 필드는 필수입니다.", schema = @Schema(description = "이름. 이 필드는 필수입니다."))
         String name,

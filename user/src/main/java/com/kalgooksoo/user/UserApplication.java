@@ -10,6 +10,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
+/**
+ * 계정 서비스 애플리케이션
+ */
 @EnableDiscoveryClient
 @SpringBootApplication
 public class UserApplication implements CommandLineRunner {
@@ -28,9 +31,9 @@ public class UserApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        User user = User.createAdmin("admin", "1234", "관리자", null, null);
+        User user = User.create("admin", "1234", "관리자", null, null);
         try {
-            this.defaultUserService.create(user);
+            this.defaultUserService.createAdmin(user);
         } catch (UsernameAlreadyExistsException e) {
             logger.info("계정이 이미 존재합니다");
         }

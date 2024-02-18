@@ -3,6 +3,7 @@ package com.kalgooksoo.user.service;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * 계정 서비스 테스트
+ */
 @Transactional
 @SpringBootTest(properties = {
         "eureka.client.enabled=false",
@@ -37,26 +41,29 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Autowired
+    private AuthorityRepository authorityRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private User testUser;
 
     @BeforeEach
     void setup() {
-        userService = new DefaultUserService(userRepository, passwordEncoder);
-        User account = User.createUser("tester", "1234", "테스터", null, null);
-        testUser = userService.create(account);
+        userService = new DefaultUserService(userRepository, authorityRepository, passwordEncoder);
+        User account = User.create("tester", "1234", "테스터", null, null);
+        testUser = userService.createUser(account);
     }
 
     @Test
     @DisplayName("계정을 생성합니다.")
     void createUserTest() {
         // Given
-        User account = User.createUser("tester2", "1234", "테스터2", null, null);
+        User account = User.create("tester2", "1234", "테스터2", null, null);
 
         try {
             // When
-            User createdUser = userService.create(account);
+            User createdUser = userService.createUser(account);
 
             // Then
             assertNotNull(createdUser);
@@ -69,24 +76,24 @@ class UserServiceTest {
     @DisplayName("계정 생성 시 이미 존재하는 아이디를 입력하면 UsernameAlreadyExistsException 예외를 발생시킵니다.")
     void createUserWithExistingUsernameTest() {
         // Given
-        User account = User.createUser("tester2", "1234", "테스터2", null, null);
-        userService.create(account);
+        User account = User.create("tester2", "1234", "테스터2", null, null);
+        userService.createUser(account);
 
-        User invalidUser = User.createUser("tester2", "1234", "테스터2", null, null);
+        User invalidUser = User.create("tester2", "1234", "테스터2", null, null);
 
         // Then
-        assertThrows(UsernameAlreadyExistsException.class, () -> userService.create(invalidUser));
+        assertThrows(UsernameAlreadyExistsException.class, () -> userService.createUser(invalidUser));
     }
 
     @Test
     @DisplayName("계정 생성 시 계정 정책 날짜를 확인합니다.")
     void createUserWithPolicyTest() {
         // Given
-        User account = User.createUser("tester2", "1234", "테스터2", null, null);
+        User account = User.create("tester2", "1234", "테스터2", null, null);
 
         try {
             // When
-            User createdUser = userService.create(account);
+            User createdUser = userService.createUser(account);
 
             // Then
             LocalDateTime expectedExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusYears(2L);

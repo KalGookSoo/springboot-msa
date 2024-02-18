@@ -13,25 +13,25 @@ import org.springframework.util.Assert;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
+/**
+ * 계정
+ */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode(of = {"id"})
+@SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
-@Table(name = "tb_account")
+@Table(name = "tb_user")
 @DynamicInsert
-@SuppressWarnings("JpaDataSourceORMInspection")
 public class User {
 
     /**
-     * 엔티티 식별자입니다.
-     * UUID를 사용하여 고유한 값을 가집니다.
+     * 계정 식별자
      */
     @Id
     private String id;
@@ -75,15 +75,6 @@ public class User {
     private ContactNumber contactNumber;
 
     /**
-     * 권한 목록
-     */
-    @ElementCollection(targetClass = Authority.class)
-    @CollectionTable(name = "tb_authority", joinColumns = @JoinColumn(name = "account_id"))
-    @Column(name = "name")
-    @Enumerated(EnumType.STRING)
-    private Set<Authority> authorities = new HashSet<>();
-
-    /**
      * 엔티티가 생성된 시간입니다.
      * 엔티티가 데이터베이스에 처음 저장될 때의 시간을 자동으로 저장합니다.
      */
@@ -110,19 +101,7 @@ public class User {
      */
     private LocalDateTime credentialsExpiredAt;
 
-    public static User createAdmin(String username, String password, String name, Email email, ContactNumber contactNumber) {
-        User user = create(username, password, name, email, contactNumber);
-        user.authorities.add(Authority.ROLE_ADMIN);
-        return user;
-    }
-
-    public static User createUser(String username, String password, String name, Email email, ContactNumber contactNumber) {
-        User user = create(username, password, name, email, contactNumber);
-        user.authorities.add(Authority.ROLE_USER);
-        return user;
-    }
-
-    private static User create(String username, String password, String name, Email email, ContactNumber contactNumber) {
+    public static User create(String username, String password, String name, Email email, ContactNumber contactNumber) {
         User user = new User();
         user.id = UUID.randomUUID().toString();
         user.username = username;
@@ -143,7 +122,7 @@ public class User {
     }
 
     public void changePassword(String password) {
-        Assert.notNull(password, "Password must not be null");
+        Assert.notNull(password, "패스워드는 null이 될 수 없습니다.");
         this.password = password;
         this.credentialsExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
         this.modifiedAt = LocalDateTime.now();

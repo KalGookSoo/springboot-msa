@@ -9,9 +9,14 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
+/**
+ * 계정 서비스
+ */
 public interface UserService {
 
-    User create(User user) throws UsernameAlreadyExistsException;
+    User createUser(User user) throws UsernameAlreadyExistsException;
+
+    User createAdmin(User user) throws UsernameAlreadyExistsException;
 
     User update(String id, UpdateUserCommand command);
 

@@ -35,7 +35,7 @@ DBMS 벤더는 PostgreSQL을 사용합니다.<br>
 -- 데이터베이스 생성
 CREATE DATABASE august;
 
--- 사용자 생성
+-- 계정 생성
 CREATE USER kalgooksoo WITH PASSWORD '1234';
 
 -- 데이터베이스에 대한 모든 권한 부여

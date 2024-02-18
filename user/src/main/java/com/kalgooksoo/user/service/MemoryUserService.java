@@ -1,6 +1,7 @@
 package com.kalgooksoo.user.service;
 
 import com.kalgooksoo.user.command.UpdateUserCommand;
+import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.search.UserSearch;
@@ -21,12 +22,25 @@ public class MemoryUserService implements UserService {
 
     private final List<User> users = new ArrayList<>();
 
+    private final List<Authority> authorities = new ArrayList<>();
+
     @Override
-    public User create(User user) throws UsernameAlreadyExistsException {
+    public User createUser(User user) throws UsernameAlreadyExistsException {
         if (users.stream().anyMatch(u -> u.getUsername().equals(user.getUsername()))) {
             throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
         }
         users.add(user);
+        authorities.add(Authority.create(user.getId(), "ROLE_USER"));
+        return user;
+    }
+
+    @Override
+    public User createAdmin(User user) throws UsernameAlreadyExistsException {
+        if (users.stream().anyMatch(u -> u.getUsername().equals(user.getUsername()))) {
+            throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
+        }
+        users.add(user);
+        authorities.add(Authority.create(user.getId(), "ROLE_ADMIN"));
         return user;
     }
 
