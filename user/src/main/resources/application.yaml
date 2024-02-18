@@ -1,22 +1,20 @@
+spring.application.name: user-service
+spring.config.import: 'optional:configserver:http://localhost:8888'
+
 server.port: 8080
-spring.profiles.active: default
-spring:
-  application:
-    name: user-service
-  config:
-    import: 'optional:configserver:http://localhost:8888'
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  jpa.show-sql: true
 
-logging:
-  level:
-    org.hibernate.type.descriptor.jdbc.BasicBinder: TRACE
+# Datasource
+spring.datasource.driver-class-name: org.postgresql.Driver
+spring.datasource.url: jdbc:postgresql://localhost:5432/august?currentSchema=springboot_msa
+spring.datasource.username: kalgooksoo
+spring.datasource.password: 1234
 
-spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+spring.jpa.open-in-view: true
+spring.jpa.show-sql: true
+spring.jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.hibernate.ddl-auto: update
+
+logging.level:
+  org.hibernate.type.descriptor.jdbc.BasicBinder: trace
 
 management.endpoints.web.exposure.include: "*"
