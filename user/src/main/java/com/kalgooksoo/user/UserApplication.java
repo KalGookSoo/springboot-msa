@@ -29,8 +29,7 @@ public class UserApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        User user = User.create("admin", "1234", "관리자", null, null);
-        user.getAuthorities().add(Authority.create("ROLE_ADMIN"));
+        User user = User.createAdmin("admin", "1234", "관리자", null, null);
         try {
             this.defaultUserService.create(user);
         } catch (UsernameAlreadyExistsException e) {

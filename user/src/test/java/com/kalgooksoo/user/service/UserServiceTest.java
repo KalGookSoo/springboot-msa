@@ -44,7 +44,7 @@ class UserServiceTest {
     @BeforeEach
     void setup() {
         userService = new DefaultUserService(userRepository, passwordEncoder);
-        User account = User.create("tester", "1234", "테스터", null, null);
+        User account = User.createUser("tester", "1234", "테스터", null, null);
         testUser = userService.create(account);
     }
 
@@ -52,7 +52,7 @@ class UserServiceTest {
     @DisplayName("계정을 생성합니다.")
     void createUserTest() {
         // Given
-        User account = User.create("tester2", "1234", "테스터2", null, null);
+        User account = User.createUser("tester2", "1234", "테스터2", null, null);
 
         try {
             // When
@@ -69,10 +69,10 @@ class UserServiceTest {
     @DisplayName("계정 생성 시 이미 존재하는 아이디를 입력하면 UsernameAlreadyExistsException 예외를 발생시킵니다.")
     void createUserWithExistingUsernameTest() {
         // Given
-        User account = User.create("tester2", "1234", "테스터2", null, null);
+        User account = User.createUser("tester2", "1234", "테스터2", null, null);
         userService.create(account);
 
-        User invalidUser = User.create("tester2", "1234", "테스터2", null, null);
+        User invalidUser = User.createUser("tester2", "1234", "테스터2", null, null);
 
         // Then
         assertThrows(UsernameAlreadyExistsException.class, () -> userService.create(invalidUser));
@@ -82,7 +82,7 @@ class UserServiceTest {
     @DisplayName("계정 생성 시 계정 정책 날짜를 확인합니다.")
     void createUserWithPolicyTest() {
         // Given
-        User account = User.create("tester2", "1234", "테스터2", null, null);
+        User account = User.createUser("tester2", "1234", "테스터2", null, null);
 
         try {
             // When

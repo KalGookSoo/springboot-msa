@@ -61,7 +61,7 @@ public class UserRestController {
     public ResponseEntity<EntityModel<User>> create(@Valid @RequestBody CreateUserCommand command) {
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
-        User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
+        User user = User.createUser(command.username(), command.password(), command.name(), email, contactNumber);
         try {
             User createdEntity = userService.create(user);
             EntityModel<User> resource = EntityModel.of(createdEntity);

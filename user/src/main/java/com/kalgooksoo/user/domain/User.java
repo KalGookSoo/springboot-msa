@@ -13,8 +13,8 @@ import org.springframework.util.Assert;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -77,9 +77,10 @@ public class User {
     /**
      * 권한 목록
      */
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "account_id")
-    private final List<Authority> authorities = new ArrayList<>();
+    @ElementCollection(targetClass = Authority.class)
+    @CollectionTable(name = "tb_account_authority", joinColumns = @JoinColumn(name = "account_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Authority> authorities = new HashSet<>();
 
     /**
      * 엔티티가 생성된 시간입니다.
@@ -108,7 +109,19 @@ public class User {
      */
     private LocalDateTime credentialsExpiredAt;
 
-    public static User create(String username, String password, String name, Email email, ContactNumber contactNumber) {
+    public static User createAdmin(String username, String password, String name, Email email, ContactNumber contactNumber) {
+        User user = create(username, password, name, email, contactNumber);
+        user.authorities.add(Authority.ROLE_ADMIN);
+        return user;
+    }
+
+    public static User createUser(String username, String password, String name, Email email, ContactNumber contactNumber) {
+        User user = create(username, password, name, email, contactNumber);
+        user.authorities.add(Authority.ROLE_USER);
+        return user;
+    }
+
+    private static User create(String username, String password, String name, Email email, ContactNumber contactNumber) {
         User user = new User();
         user.id = UUID.randomUUID().toString();
         user.username = username;

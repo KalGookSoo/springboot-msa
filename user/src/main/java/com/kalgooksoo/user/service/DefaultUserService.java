@@ -35,11 +35,7 @@ public class DefaultUserService implements UserService {
         if (userRepository.exists(usernameEquals(user.getUsername()))) {
             throw new UsernameAlreadyExistsException("Username already exists");
         }
-
         user.changePassword(passwordEncoder.encode(user.getPassword()));
-        if (user.getAuthorities().isEmpty()) {
-            user.getAuthorities().add(Authority.create("ROLE_USER"));
-        }
         return userRepository.save(user);
     }
 
