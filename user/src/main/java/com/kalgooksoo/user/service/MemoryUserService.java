@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class MemoryUserService implements UserService {
 
     private final List<User> users = new ArrayList<>();
@@ -23,7 +24,7 @@ public class MemoryUserService implements UserService {
     @Override
     public User create(User user) throws UsernameAlreadyExistsException {
         if (users.stream().anyMatch(u -> u.getUsername().equals(user.getUsername()))) {
-            throw new UsernameAlreadyExistsException("Username already exists");
+            throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
         }
         users.add(user);
         return user;

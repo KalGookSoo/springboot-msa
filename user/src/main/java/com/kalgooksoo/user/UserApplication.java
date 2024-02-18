@@ -1,6 +1,5 @@
 package com.kalgooksoo.user;
 
-import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.service.DefaultUserService;
@@ -33,7 +32,7 @@ public class UserApplication implements CommandLineRunner {
         try {
             this.defaultUserService.create(user);
         } catch (UsernameAlreadyExistsException e) {
-            logger.info("Username already exists");
+            logger.info("계정이 이미 존재합니다");
         }
     }
 }

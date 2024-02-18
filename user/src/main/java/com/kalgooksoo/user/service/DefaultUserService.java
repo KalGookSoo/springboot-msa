@@ -1,7 +1,6 @@
 package com.kalgooksoo.user.service;
 
 import com.kalgooksoo.user.command.UpdateUserCommand;
-import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.repository.UserRepository;
@@ -33,7 +32,7 @@ public class DefaultUserService implements UserService {
     @Override
     public User create(User user) throws UsernameAlreadyExistsException {
         if (userRepository.exists(usernameEquals(user.getUsername()))) {
-            throw new UsernameAlreadyExistsException("Username already exists");
+            throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
         }
         user.changePassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);

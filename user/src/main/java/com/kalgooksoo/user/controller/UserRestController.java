@@ -69,7 +69,7 @@ public class UserRestController {
             resource.add(linkTo.withRel("self"));
             return ResponseEntity.status(HttpStatus.CREATED).body(resource);
         } catch (UsernameAlreadyExistsException e) {
-            throw new UsernameAlreadyExistsException("계정이 이미 존재합니다");
+            throw new UsernameAlreadyExistsException(command.username(), "계정이 이미 존재합니다");
         }
     }
 
