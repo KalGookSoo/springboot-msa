@@ -78,7 +78,8 @@ public class User {
      * 권한 목록
      */
     @ElementCollection(targetClass = Authority.class)
-    @CollectionTable(name = "tb_account_authority", joinColumns = @JoinColumn(name = "account_id"))
+    @CollectionTable(name = "tb_authority", joinColumns = @JoinColumn(name = "account_id"))
+    @Column(name = "name")
     @Enumerated(EnumType.STRING)
     private Set<Authority> authorities = new HashSet<>();
 
