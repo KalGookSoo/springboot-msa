@@ -26,3 +26,33 @@
 ```shell
 docker run -d -p 9411:9411 --name zipkin openzipkin/zipkin
 ```
+
+### 데이터베이스 세팅
+DBMS 벤더는 PostgreSQL을 사용합니다.<br>
+테스트 환경은 H2DB를 사용합니다.<br>
+테스트환경은 spring.profiles.active를 test로 할당합니다.
+```sql
+-- 데이터베이스 생성
+CREATE DATABASE august;
+
+-- 사용자 생성
+CREATE USER kalgooksoo WITH PASSWORD '1234';
+
+-- 데이터베이스에 대한 모든 권한 부여
+GRANT ALL PRIVILEGES ON DATABASE august TO kalgooksoo;
+
+-- august 데이터베이스 접속
+
+-- 스키마 생성
+CREATE SCHEMA springboot_msa;
+
+-- 스키마에 대한 모든 권한 부여
+GRANT ALL PRIVILEGES ON SCHEMA springboot_msa TO kalgooksoo;
+```
+
+### OpenAPI Specification
+
+이 프로젝트는 OpenAPI Specification을 사용하여 API 문서를 자동으로 생성합니다.
+
+- Swagger UI를 통해 API 문서를 실시간으로 확인하려면 웹 브라우저에서 `/swagger-ui/index.html` 경로로 접속합니다.
+- OAS 3.0 형식의 API 문서는 `/v3/api-docs.yaml` 경로에서 파일을 다운로드할 수 있습니다.
