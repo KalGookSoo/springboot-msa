@@ -65,20 +65,19 @@ Persistence framework는 Hibernate를 사용합니다.<br>
 ```java
 /**
  * 패스워드 변경
- * 
- * @param id       계정 식별자
- * @param password 패스워드
+ *
+ * @param id             계정 식별자
+ * @param originPassword 기존 패스워드
+ * @param newPassword    새로운 패스워드
  */
 @Override
-public void updatePassword(String id, String password) {
-    Optional<User> foundUser = userRepository.findById(id);
-    if (foundUser.isPresent()) {
-        User user = foundUser.get();
-        user.changePassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-    } else {
-        throw new NoSuchElementException("계정을 찾을 수 없습니다.");
+public void updatePassword(String id, String originPassword, String newPassword) {
+    User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
+    if (!passwordEncoder.matches(originPassword, user.getPassword())) {
+        throw new IllegalArgumentException("기존 패스워드가 일치하지 않습니다.");
     }
+    user.changePassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
 }
 ```
 DBMS 벤더에 의존적인 쿼리를 지양하기 위해 JPQL을 사용하였습니다.
