@@ -6,6 +6,7 @@ import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +50,7 @@ class UserRestControllerTest {
 
     @BeforeEach
     @DisplayName("테스트 계정을 생성합니다.")
-    void setup() {
+    void setup() throws UsernameAlreadyExistsException {
         UserRestController userRestController = new UserRestController(userService);
         CreateUserCommand command = new CreateUserCommand("tester", "12345678", "테스터", null, null, null, null, null);
         ResponseEntity<EntityModel<User>> responseEntity = userRestController.create(command);

@@ -3,6 +3,7 @@ package com.kalgooksoo.user.service;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.exception.PasswordNotMatchException;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
@@ -113,10 +114,10 @@ public class DefaultUserService implements UserService {
      * @param newPassword    새로운 패스워드
      */
     @Override
-    public void updatePassword(String id, String originPassword, String newPassword) {
+    public void updatePassword(String id, String originPassword, String newPassword) throws PasswordNotMatchException {
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
         if (!passwordEncoder.matches(originPassword, user.getPassword())) {
-            throw new IllegalArgumentException("기존 패스워드가 일치하지 않습니다.");
+            throw new PasswordNotMatchException(originPassword, "기존 패스워드가 일치하지 않습니다.");
         }
         user.changePassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);

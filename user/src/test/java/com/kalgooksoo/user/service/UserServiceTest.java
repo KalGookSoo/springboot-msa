@@ -2,6 +2,7 @@ package com.kalgooksoo.user.service;
 
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.exception.PasswordNotMatchException;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
@@ -49,7 +50,7 @@ class UserServiceTest {
     private User testUser;
 
     @BeforeEach
-    void setup() {
+    void setup() throws UsernameAlreadyExistsException {
         userService = new DefaultUserService(userRepository, authorityRepository, passwordEncoder);
         User account = User.create("tester", "12345678", "테스터", null, null);
         testUser = userService.createUser(account);
@@ -74,7 +75,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정 생성 시 이미 존재하는 아이디를 입력하면 UsernameAlreadyExistsException 예외를 발생시킵니다.")
-    void createUserWithExistingUsernameTest() {
+    void createUserWithExistingUsernameTest() throws UsernameAlreadyExistsException {
         // Given
         User account = User.create("tester2", "12345678", "테스터2", null, null);
         userService.createUser(account);
@@ -181,7 +182,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정의 패스워드를 업데이트합니다.")
-    void updatePasswordTest() {
+    void updatePasswordTest() throws PasswordNotMatchException {
         // Given
         String id = testUser.getId();
         String newPassword = "newPassword";

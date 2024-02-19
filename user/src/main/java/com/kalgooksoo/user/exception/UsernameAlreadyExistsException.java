@@ -3,7 +3,7 @@ package com.kalgooksoo.user.exception;
 import lombok.Getter;
 
 @Getter
-public class UsernameAlreadyExistsException extends RuntimeException {
+public class UsernameAlreadyExistsException extends Exception {
 
     private final String field = "username";
 

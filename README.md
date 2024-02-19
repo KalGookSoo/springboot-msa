@@ -71,10 +71,10 @@ Persistence framework는 Hibernate를 사용합니다.<br>
  * @param newPassword    새로운 패스워드
  */
 @Override
-public void updatePassword(String id, String originPassword, String newPassword) {
+public void updatePassword(String id, String originPassword, String newPassword) throws PasswordNotMatchException {
     User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
     if (!passwordEncoder.matches(originPassword, user.getPassword())) {
-        throw new IllegalArgumentException("기존 패스워드가 일치하지 않습니다.");
+        throw new PasswordNotMatchException(originPassword, "기존 패스워드가 일치하지 않습니다.");
     }
     user.changePassword(passwordEncoder.encode(newPassword));
     userRepository.save(user);

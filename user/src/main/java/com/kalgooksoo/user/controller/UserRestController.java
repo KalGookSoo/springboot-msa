@@ -48,7 +48,7 @@ public class UserRestController {
      * @return 생성된 계정
      */
     @PostMapping
-    public ResponseEntity<EntityModel<User>> create(@Valid @RequestBody CreateUserCommand command) {
+    public ResponseEntity<EntityModel<User>> create(@Valid @RequestBody CreateUserCommand command) throws UsernameAlreadyExistsException {
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
@@ -141,14 +141,12 @@ public class UserRestController {
     }
 
     @PutMapping("/{id}/password")
-    public ResponseEntity<EntityModel<User>> updatePassword(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserPasswordCommand command) {
+    public ResponseEntity<EntityModel<User>> updatePassword(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserPasswordCommand command) throws PasswordNotMatchException {
         try {
             userService.updatePassword(id, command.originPassword(), command.newPassword());
             return findById(id);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
-        } catch (IllegalArgumentException e) {
-            throw new PasswordNotMatchException(command.originPassword(), e.getMessage());
         }
     }
 

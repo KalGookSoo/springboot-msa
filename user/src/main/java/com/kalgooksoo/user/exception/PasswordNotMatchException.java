@@ -3,7 +3,7 @@ package com.kalgooksoo.user.exception;
 import lombok.Getter;
 
 @Getter
-public class PasswordNotMatchException extends RuntimeException {
+public class PasswordNotMatchException extends Exception {
 
     private final String field = "originPassword";
 
