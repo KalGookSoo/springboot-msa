@@ -2,7 +2,7 @@ package com.kalgooksoo.user;
 
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
-import com.kalgooksoo.user.service.DefaultUserService;
+import com.kalgooksoo.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -19,10 +19,10 @@ public class UserApplication implements CommandLineRunner {
 
     private final Logger logger = LoggerFactory.getLogger(UserApplication.class);
 
-    private final DefaultUserService defaultUserService;
+    private final UserService userService;
 
-    public UserApplication(DefaultUserService defaultUserService) {
-        this.defaultUserService = defaultUserService;
+    public UserApplication(UserService userService) {
+        this.userService = userService;
     }
 
     public static void main(String[] args) {
@@ -33,7 +33,7 @@ public class UserApplication implements CommandLineRunner {
     public void run(String... args) {
         User user = User.create("admin", "1234", "관리자", null, null);
         try {
-            this.defaultUserService.createAdmin(user);
+            this.userService.createAdmin(user);
         } catch (UsernameAlreadyExistsException e) {
             logger.info("계정이 이미 존재합니다");
         }

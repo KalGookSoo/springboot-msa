@@ -28,4 +28,20 @@ public class UserSearch extends PageVO {
     @Schema(description = "연락처")
     private String contactNumber;
 
+    public boolean isEmptyUsername() {
+        return username == null || username.isEmpty();
+    }
+
+    public boolean isEmptyName() {
+        return name == null || name.isEmpty();
+    }
+
+    public boolean isEmptyEmailId() {
+        return emailId == null || emailId.isEmpty();
+    }
+
+    public boolean isEmptyContactNumber() {
+        return contactNumber == null || contactNumber.isEmpty();
+    }
+
 }

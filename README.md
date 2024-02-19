@@ -56,3 +56,92 @@ GRANT ALL PRIVILEGES ON SCHEMA springboot_msa TO kalgooksoo;
 
 - Swagger UI를 통해 API 문서를 실시간으로 확인하려면 웹 브라우저에서 `/swagger-ui/index.html` 경로로 접속합니다.
 - OAS 3.0 형식의 API 문서는 `/v3/api-docs.yaml` 경로에서 파일을 다운로드할 수 있습니다.
+
+### Persistance
+Persistence framework는 Hibernate를 사용합니다.<br>
+하지만 JPA의 의존적인 기능은 지양하기 위해서 Data Access Layer에는 벤더 의존적인 코드를 최소화하였습니다.<br>
+
+또한 서비스 레이어에서 Dirty check를 지양하였습니다. 따라서 영속화 코드를 명시적으로 작성하였습니다.
+```java
+/**
+ * 패스워드 변경
+ * 
+ * @param id       계정 식별자
+ * @param password 패스워드
+ */
+@Override
+public void updatePassword(String id, String password) {
+    Optional<User> foundUser = userRepository.findById(id);
+    if (foundUser.isPresent()) {
+        User user = foundUser.get();
+        user.changePassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    } else {
+        throw new NoSuchElementException("계정을 찾을 수 없습니다.");
+    }
+}
+```
+DBMS 벤더에 의존적인 쿼리를 지양하기 위해 JPQL을 사용하였습니다.
+```java
+/**
+ * 검색 조건에 기반한 계정 목록 조회
+ *
+ * @param search   검색 조건
+ * @param pageable 페이지네이션 정보
+ * @return 계정 목록
+ */
+@Override
+public Page<User> search(UserSearch search, Pageable pageable) {
+    String jpql = "select user from User user where 1=1";
+    jpql += generateJpql(search);
+
+    TypedQuery<User> query = em.createQuery(jpql, User.class);
+    setParameters(query, search);
+    query.setFirstResult((int) pageable.getOffset());
+    query.setMaxResults(pageable.getPageSize());
+
+    List<User> users = query.getResultList();
+
+    String countJpql = "select count(user) from User user where 1=1";
+    countJpql += generateJpql(search);
+
+    TypedQuery<Long> countQuery = em.createQuery(countJpql, Long.class);
+    setParameters(countQuery, search);
+
+    Long count = countQuery.getSingleResult();
+
+    return new PageImpl<>(users, pageable, count);
+}
+
+private String generateJpql(UserSearch search) {
+    StringBuilder jpql = new StringBuilder();
+    if (!search.isEmptyUsername()) {
+        jpql.append(" and user.username like :username");
+    }
+    if (!search.isEmptyName()) {
+        jpql.append(" and user.name like :name");
+    }
+    if (!search.isEmptyEmailId()) {
+        jpql.append(" and user.emailId like :emailId");
+    }
+    if (!search.isEmptyContactNumber()) {
+        jpql.append(" and user.contactNumber like :contactNumber");
+    }
+    return jpql.toString();
+}
+
+private void setParameters(TypedQuery<?> query, UserSearch search) {
+    if (!search.isEmptyUsername()) {
+        query.setParameter("username", "%" + search.getUsername() + "%");
+    }
+    if (!search.isEmptyName()) {
+        query.setParameter("name", "%" + search.getName() + "%");
+    }
+    if (!search.isEmptyEmailId()) {
+        query.setParameter("emailId", "%" + search.getEmailId() + "%");
+    }
+    if (!search.isEmptyContactNumber()) {
+        query.setParameter("contactNumber", "%" + search.getContactNumber() + "%");
+    }
+}
+```

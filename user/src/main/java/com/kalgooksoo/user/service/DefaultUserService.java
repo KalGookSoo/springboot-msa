@@ -9,19 +9,15 @@ import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.value.ContactNumber;
 import com.kalgooksoo.user.value.Email;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import static com.kalgooksoo.user.specification.UserSpecification.*;
 
 @Service
 @Transactional
@@ -36,7 +32,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User createUser(User user) throws UsernameAlreadyExistsException {
-        if (userRepository.exists(usernameEquals(user.getUsername()))) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
         }
         user.changePassword(passwordEncoder.encode(user.getPassword()));
@@ -47,13 +43,13 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User createAdmin(User user) throws UsernameAlreadyExistsException {
-        if (userRepository.exists(usernameEquals(user.getUsername()))) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
         }
         user.changePassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         authorityRepository.save(Authority.create(savedUser.getId(), "ROLE_ADMIN"));
-        return savedUser;
+        return userRepository.save(user);
     }
 
     /**
@@ -75,6 +71,7 @@ public class DefaultUserService implements UserService {
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         user.update(name, email, contactNumber);
+        userRepository.save(user);
         return user;
     }
 
@@ -93,20 +90,7 @@ public class DefaultUserService implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Page<User> findAll(UserSearch search, Pageable pageable) {
-        Specification<User> specification = Specification.where(null);
-        if (search.getUsername() != null) {
-            specification = specification.and(usernameContains(search.getUsername()));
-        }
-        if (search.getName() != null) {
-            specification = specification.and(nameContains(search.getName()));
-        }
-        if (search.getEmailId() != null) {
-            specification = specification.and(emailIdContains(search.getEmailId()));
-        }
-        if (search.getContactNumber() != null) {
-            specification = specification.and(contactNumberContains(search.getContactNumber()));
-        }
-        return userRepository.findAll(specification, pageable);
+        return userRepository.search(search, pageable);
     }
 
     /**
@@ -117,17 +101,27 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public void deleteById(String id) {
-        if (!userRepository.exists(idEquals(id)))
+        try {
+            userRepository.deleteById(id);
+            authorityRepository.deleteByUserId(id);
+        } catch (NoSuchElementException e) {
             throw new NoSuchElementException("계정을 찾을 수 없습니다.");
-        userRepository.deleteById(id);
+        }
     }
 
+    /**
+     * 패스워드 변경
+     *
+     * @param id       계정 식별자
+     * @param password 패스워드
+     */
     @Override
     public void updatePassword(String id, String password) {
         Optional<User> foundUser = userRepository.findById(id);
         if (foundUser.isPresent()) {
             User user = foundUser.get();
             user.changePassword(passwordEncoder.encode(password));
+            userRepository.save(user);
         } else {
             throw new NoSuchElementException("계정을 찾을 수 없습니다.");
         }
