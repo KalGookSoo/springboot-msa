@@ -28,6 +28,6 @@ public interface UserService {
 
     void deleteById(String id);
 
-    void updatePassword(String id, String password);
+    void updatePassword(String id, String originPassword, String newPassword);
 
 }

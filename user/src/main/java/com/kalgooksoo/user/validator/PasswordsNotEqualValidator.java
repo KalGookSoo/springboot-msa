@@ -1,7 +1,7 @@
 package com.kalgooksoo.user.validator;
 
 import com.kalgooksoo.user.annotation.PasswordsNotEqual;
-import com.kalgooksoo.user.command.ChangeAccountPasswordCommand;
+import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -9,7 +9,7 @@ import jakarta.validation.ConstraintValidatorContext;
  * 패스워드가 같지 않아야 하는 제약 조건을 검증하는 클래스입니다.
  * 이 클래스는 ConstraintValidator 인터페이스를 구현하며, PasswordsNotEqual 애노테이션과 AccountPasswordCommand 클래스를 사용합니다.
  */
-public class PasswordsNotEqualValidator implements ConstraintValidator<PasswordsNotEqual, ChangeAccountPasswordCommand> {
+public class PasswordsNotEqualValidator implements ConstraintValidator<PasswordsNotEqual, UpdateUserPasswordCommand> {
 
     /**
      * 제약 조건 초기화 메서드입니다.
@@ -28,7 +28,7 @@ public class PasswordsNotEqualValidator implements ConstraintValidator<Passwords
      * @return 제약 조건이 유효한 경우 true, 그렇지 않은 경우 false
      */
     @Override
-    public boolean isValid(ChangeAccountPasswordCommand value, ConstraintValidatorContext context) {
+    public boolean isValid(UpdateUserPasswordCommand value, ConstraintValidatorContext context) {
         return !value.originPassword().equals(value.newPassword());
     }
 

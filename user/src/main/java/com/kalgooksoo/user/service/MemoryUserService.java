@@ -85,8 +85,11 @@ public class MemoryUserService implements UserService {
     }
 
     @Override
-    public void updatePassword(String id, String password) {
+    public void updatePassword(String id, String originPassword, String newPassword) {
         User user = findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
-        user.changePassword(password);
+        if (!originPassword.equals(user.getPassword())) {
+            throw new IllegalArgumentException("기존 패스워드가 일치하지 않습니다.");
+        }
+        user.changePassword(newPassword);
     }
 }

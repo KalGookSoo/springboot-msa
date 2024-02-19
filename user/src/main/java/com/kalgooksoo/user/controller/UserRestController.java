@@ -2,7 +2,9 @@ package com.kalgooksoo.user.controller;
 
 import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
+import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.exception.PasswordNotMatchException;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
@@ -40,6 +42,28 @@ public class UserRestController {
     private final UserService userService;
 
     /**
+     * 계정 생성
+     *
+     * @param command 계정 생성 명령
+     * @return 생성된 계정
+     */
+    @PostMapping
+    public ResponseEntity<EntityModel<User>> create(@Valid @RequestBody CreateUserCommand command) {
+        Email email = new Email(command.emailId(), command.emailDomain());
+        ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
+        User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
+        try {
+            User createdEntity = userService.createUser(user);
+            EntityModel<User> resource = EntityModel.of(createdEntity);
+            WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(createdEntity.getId()));
+            resource.add(linkTo.withRel("self"));
+            return ResponseEntity.status(HttpStatus.CREATED).body(resource);
+        } catch (UsernameAlreadyExistsException e) {
+            throw new UsernameAlreadyExistsException(command.username(), "계정이 이미 존재합니다");
+        }
+    }
+
+    /**
      * 계정 목록 조회
      *
      * @param search 검색 조건
@@ -64,35 +88,13 @@ public class UserRestController {
     }
 
     /**
-     * 계정 생성
-     *
-     * @param command 계정 생성 명령
-     * @return 생성된 계정
-     */
-    @PostMapping
-    public ResponseEntity<EntityModel<User>> create(@Valid @RequestBody CreateUserCommand command) {
-        Email email = new Email(command.emailId(), command.emailDomain());
-        ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
-        User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
-        try {
-            User createdEntity = userService.createUser(user);
-            EntityModel<User> resource = EntityModel.of(createdEntity);
-            WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(createdEntity.getId()));
-            resource.add(linkTo.withRel("self"));
-            return ResponseEntity.status(HttpStatus.CREATED).body(resource);
-        } catch (UsernameAlreadyExistsException e) {
-            throw new UsernameAlreadyExistsException(command.username(), "계정이 이미 존재합니다");
-        }
-    }
-
-    /**
      * 계정 조회
      *
      * @param id 계정 식별자
      * @return 계정
      */
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<User>> findById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
+    public ResponseEntity<EntityModel<User>> findById(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
         Optional<User> foundEntity = userService.findById(id);
         if (foundEntity.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -111,7 +113,7 @@ public class UserRestController {
      * @return 수정된 계정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<User>> updateById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserCommand command) {
+    public ResponseEntity<EntityModel<User>> updateById(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserCommand command) {
         try {
             User updatedEntity = userService.update(id, command);
             EntityModel<User> resource = EntityModel.of(updatedEntity);
@@ -129,12 +131,24 @@ public class UserRestController {
      * @param id 계정 식별자
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@Parameter(description = "계정 ID", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
+    public ResponseEntity<?> deleteById(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
         try {
             userService.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<EntityModel<User>> updatePassword(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserPasswordCommand command) {
+        try {
+            userService.updatePassword(id, command.originPassword(), command.newPassword());
+            return findById(id);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            throw new PasswordNotMatchException(command.originPassword(), e.getMessage());
         }
     }
 
