@@ -61,15 +61,6 @@ public class UserJpaRepository implements UserRepository {
     }
 
     @Override
-    public boolean existsById(String id) {
-        Assert.notNull(id, "id must not be null");
-        Long count = em.createQuery("select count(user) from User user where user.id = :id", Long.class)
-                .setParameter("id", id)
-                .getSingleResult();
-        return count > 0;
-    }
-
-    @Override
     public boolean existsByUsername(String username) {
         Assert.notNull(username, "username must not be null");
         Long count = em.createQuery("select count(user) from User user where user.username = :username", Long.class)
