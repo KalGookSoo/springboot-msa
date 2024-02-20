@@ -1,12 +1,20 @@
-package com.kalgooksoo.authorization.controller;
+package com.kalgooksoo.auth.controller;
 
+import com.kalgooksoo.auth.component.JwtProvider;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/authorization")
-public class AuthorizationRestController {
+@RequestMapping("/auth")
+public class AuthRestController {
+
+
+    private final JwtProvider jwtProvider;
+
+    public AuthRestController(JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
+    }
 
     @PostMapping("/access-token")
     public String authorize() {

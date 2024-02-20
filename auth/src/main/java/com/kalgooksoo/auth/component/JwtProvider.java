@@ -1,20 +1,20 @@
-package com.kalgooksoo.authorization.component;
+package com.kalgooksoo.auth.component;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwtTokenProvider {
+public class JwtProvider {
 
     private final Key key;
 
-    public JwtTokenProvider() {
+    public JwtProvider() {
+        // FIXME 키 값을 외부 설정으로 옮길 것
         String secret = "secret";
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
