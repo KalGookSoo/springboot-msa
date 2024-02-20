@@ -63,18 +63,18 @@ spring:
 
 
 ## 액세스 토큰 발급
-1. 클라이언트는 인증 서비스에게 username, password로 인증 메시지를 전송한다.
-2. 인증 서비스는 계정 서비스에게 username, password로 검증 메시지를 전송한다.
-3. 검증 결과에 따라 인증 서비스는 access token을 발급하여 클라이언트에게 응답한다.
+1. 클라이언트는 인증 서비스에게 username, password로 인증 메시지를 전송합니다.
+2. 인증 서비스는 계정 서비스에게 username, password로 검증 메시지를 전송합니다.
+3. 검증 결과에 따라 인증 서비스는 access token을 발급하여 클라이언트에게 응답합니다.
 
 ```mermaid
 sequenceDiagram
     participant Client
-    participant Authentication Service
-    participant Account Service
+    participant Auth Service
+    participant User Service
 
-    Client->>Authentication Service: Send authentication message (username, password)
-    Authentication Service->>Account Service: Send verification message (username, password)
-    Account Service-->>Authentication Service: Verification result
-    Authentication Service-->>Client: Respond with access token (if verification is successful)
+    Client->>Auth Service: Send authentication message (username, password)
+    Auth Service->>User Service: Send verification message (username, password)
+    User Service-->>Auth Service: Verification result
+    Auth Service-->>Client: Respond with access token (if verification is successful)
 ```
