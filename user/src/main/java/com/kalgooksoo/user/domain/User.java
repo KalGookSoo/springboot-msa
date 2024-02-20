@@ -142,7 +142,7 @@ public class User {
      * @return 계정이 만료되지 않았는지 여부
      */
     public boolean isAccountNonExpired() {
-        return getExpiredAt() == null || getExpiredAt().isAfter(LocalDateTime.now());
+        return expiredAt == null || expiredAt.isAfter(LocalDateTime.now());
     }
 
     /**
@@ -150,7 +150,7 @@ public class User {
      * @return 계정이 잠겨있지 않은지 여부
      */
     public boolean isAccountNonLocked() {
-        return getLockedAt() == null || getLockedAt().isBefore(LocalDateTime.now());
+        return lockedAt == null || lockedAt.isBefore(LocalDateTime.now());
     }
 
     /**
@@ -158,7 +158,7 @@ public class User {
      * @return 계정의 패스워드가 만료되지 않았는지 여부
      */
     public boolean isCredentialsNonExpired() {
-        return getCredentialsExpiredAt() == null || getCredentialsExpiredAt().isAfter(LocalDateTime.now());
+        return credentialsExpiredAt == null || credentialsExpiredAt.isAfter(LocalDateTime.now());
     }
 
     /**
@@ -171,4 +171,5 @@ public class User {
         boolean credentialsNonExpired = isCredentialsNonExpired();
         return accountNonLocked && accountNonExpired && credentialsNonExpired;
     }
+
 }
