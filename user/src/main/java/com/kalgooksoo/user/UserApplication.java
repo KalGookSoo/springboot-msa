@@ -31,7 +31,7 @@ public class UserApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        User user = User.create("admin", "1234", "관리자", null, null);
+        User user = User.create("admin", "12341234", "관리자", null, null);
         try {
             this.userService.createAdmin(user);
         } catch (UsernameAlreadyExistsException e) {
