@@ -1,8 +1,8 @@
 package com.kalgooksoo.user.service;
 
 import com.kalgooksoo.user.command.UpdateUserCommand;
+import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
-import com.kalgooksoo.user.exception.PasswordNotMatchException;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -182,7 +184,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정의 패스워드를 업데이트합니다.")
-    void updatePasswordTest() throws PasswordNotMatchException {
+    void updatePasswordTest() {
         // Given
         String id = testUser.getId();
         String newPassword = "newPassword";
@@ -195,4 +197,66 @@ class UserServiceTest {
         assertTrue(updatedUser.isPresent());
         assertTrue(passwordEncoder.matches(newPassword, updatedUser.get().getPassword()));
     }
+
+    @Test
+    @DisplayName("계정의 패스워드를 업데이트할 때 기존 패스워드가 일치하지 않으면 IllegalArgumentException 예외를 발생시킵니다.")
+    void updatePasswordWithInvalidPasswordTest() {
+        // Given
+        String id = testUser.getId();
+        String newPassword = "newPassword";
+
+        // Then
+        assertThrows(IllegalArgumentException.class, () -> userService.updatePassword(id, "invalidPassword", newPassword));
+    }
+
+    @Test
+    @DisplayName("계정명과 패스워드로 계정을 확인합니다.")
+    void verifyTest() {
+        // Given
+        String username = "tester";
+        String password = "12345678";
+
+        // When
+        User verifiedUser = userService.verify(username, password);
+
+        // Then
+        assertNotNull(verifiedUser);
+    }
+
+    @Test
+    @DisplayName("계정명과 패스워드로 계정을 확인할 때 계정명이 존재하지 않으면 NoSuchElementException 예외를 발생시킵니다.")
+    void verifyWithInvalidUsernameTest() {
+        // Given
+        String username = "invalidUsername";
+        String password = "12345678";
+
+        // Then
+        assertThrows(NoSuchElementException.class, () -> userService.verify(username, password));
+    }
+
+    @Test
+    @DisplayName("계정명과 패스워드로 계정을 확인할 때 패스워드가 일치하지 않으면 IllegalArgumentException 예외를 발생시킵니다.")
+    void verifyWithInvalidPasswordTest() {
+        // Given
+        String username = "tester";
+        String password = "12345678";
+
+        // Then
+        assertThrows(IllegalArgumentException.class, () -> userService.verify(username, password + "invalid"));
+    }
+
+    @Test
+    @DisplayName("계정에 종속된 권한을 조회합니다.")
+    void findAuthoritiesByUserIdTest() {
+        // Given
+        String id = testUser.getId();
+
+        // When
+        Collection<Authority> authorities = userService.findAuthoritiesByUserId(id);
+
+        // Then
+        assertNotNull(authorities);
+        assertFalse(authorities.isEmpty());
+    }
+
 }

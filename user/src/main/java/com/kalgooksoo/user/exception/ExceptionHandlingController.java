@@ -35,8 +35,7 @@ public class ExceptionHandlingController {
                 .map(fieldError -> new ValidationError(fieldError.getCode(), fieldError.getDefaultMessage(), fieldError.getField(), fieldError.getRejectedValue()))
                 .toList();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of(ERROR_KEY, errors));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(ERROR_KEY, errors));
     }
 
     /**
@@ -47,31 +46,30 @@ public class ExceptionHandlingController {
      * @return 에러 정보를 담은 ResponseEntity 객체를 반환합니다. 상태 코드는 CONFLICT(409)입니다.
      */
     @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<Map<String, List<ValidationError>>> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
-        List<ValidationError> errors = Collections.singletonList(new ValidationError(e.getClass().getSimpleName(), e.getMessage(), e.getField(), e.getRejectedValue()));
-
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Map.of(ERROR_KEY, errors));
+    public ResponseEntity<Map<String, String>> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(ERROR_KEY, e.getMessage()));
     }
 
     /**
-     * PasswordNotMatchException 예외를 처리하는 메서드입니다.
-     * 이 예외는 패스워드가 일치하지 않을 때 발생합니다.
+     * NoSuchElementException 예외를 처리하는 메서드입니다.
      *
-     * @param e 발생한 PasswordNotMatchException 예외
-     * @return 에러 정보를 담은 ResponseEntity 객체를 반환합니다. 상태 코드는 BAD_REQUEST(400)입니다.
+     * @param e 발생한 NoSuchElementException 예외
+     * @return 에러 정보를 담은 ResponseEntity 객체를 반환합니다. 상태 코드는 NOT_FOUND(404)입니다.
      */
-    @ExceptionHandler(PasswordNotMatchException.class)
-    public ResponseEntity<Map<String, List<ValidationError>>> handlePasswordNotMatchException(PasswordNotMatchException e) {
-        List<ValidationError> errors = Collections.singletonList(new ValidationError(e.getClass().getSimpleName(), e.getMessage(), e.getField(), e.getRejectedValue()));
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of(ERROR_KEY, errors));
-    }
-
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Map<String, String>> handleNoSuchElementException(NoSuchElementException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of(ERROR_KEY, e.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(ERROR_KEY, e.getMessage()));
     }
+
+    /**
+     * IllegalArgumentException 예외를 처리하는 메서드입니다.
+     *
+     * @param e 발생한 IllegalArgumentException 예외
+     * @return 에러 정보를 담은 ResponseEntity 객체를 반환합니다. 상태 코드는 BAD_REQUEST(400)입니다.
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(ERROR_KEY, e.getMessage()));
+    }
+
 }

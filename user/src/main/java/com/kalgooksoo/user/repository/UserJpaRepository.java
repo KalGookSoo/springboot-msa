@@ -40,6 +40,16 @@ public class UserJpaRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByUsername(String username) {
+        Assert.notNull(username, "username must not be null");
+        return em.createQuery("select user from User user where user.username = :username", User.class)
+                .setParameter("username", username)
+                .getResultList()
+                .stream()
+                .findFirst();
+    }
+
+    @Override
     public void deleteById(String id) {
         Assert.notNull(id, "id must not be null");
         User user = em.find(User.class, id);

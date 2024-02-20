@@ -11,10 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -46,7 +43,7 @@ public class MemoryUserService implements UserService {
 
     @Override
     public User update(String id, UpdateUserCommand command) {
-        User user = findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         user.update(command.name(), email, contactNumber);
@@ -86,10 +83,32 @@ public class MemoryUserService implements UserService {
 
     @Override
     public void updatePassword(String id, String originPassword, String newPassword) {
-        User user = findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
         if (!originPassword.equals(user.getPassword())) {
-            throw new IllegalArgumentException("기존 패스워드가 일치하지 않습니다.");
+            throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
         }
         user.changePassword(newPassword);
     }
+
+    @Override
+    public User verify(String username, String password) {
+        User user = users.stream()
+                .filter(u -> u.getUsername().equals(username))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
+
+        if (user.getPassword().equals(password)) {
+            return user;
+        }
+
+        throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
+    }
+
+    @Override
+    public Collection<Authority> findAuthoritiesByUserId(String userId) {
+        return authorities.stream()
+                .filter(authority -> authority.getUserId().equals(userId))
+                .collect(Collectors.toList());
+    }
+
 }
