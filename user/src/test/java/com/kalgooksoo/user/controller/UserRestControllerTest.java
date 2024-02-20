@@ -29,6 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * 계정 REST 컨트롤러 테스트
+ */
 @Transactional
 @SpringBootTest(properties = {
         "eureka.client.enabled=false",
