@@ -2,7 +2,7 @@ package com.kalgooksoo.user.repository;
 
 import com.kalgooksoo.user.domain.Authority;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 권한 저장소
@@ -11,7 +11,7 @@ public interface AuthorityRepository  {
 
     Authority save(Authority authority);
 
-    Collection<Authority> findByUserId(String userId);
+    List<Authority> findByUserId(String userId);
 
     void deleteByUserId(String userId);
 

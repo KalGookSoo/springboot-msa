@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -155,7 +155,7 @@ public class DefaultUserService implements UserService {
      * @see UserService#findAuthoritiesByUserId(String)
      */
     @Override
-    public Collection<Authority> findAuthoritiesByUserId(String userId) {
+    public List<Authority> findAuthoritiesByUserId(String userId) {
         return authorityRepository.findByUserId(userId);
     }
 

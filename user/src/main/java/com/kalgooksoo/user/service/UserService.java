@@ -8,7 +8,7 @@ import com.kalgooksoo.user.search.UserSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -99,6 +99,6 @@ public interface UserService {
      * @param userId 계정 식별자
      * @return 권한 목록
      */
-    Collection<Authority> findAuthoritiesByUserId(String userId);
+    List<Authority> findAuthoritiesByUserId(String userId);
 
 }

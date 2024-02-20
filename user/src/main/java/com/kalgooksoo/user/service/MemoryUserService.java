@@ -11,7 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -105,7 +108,7 @@ public class MemoryUserService implements UserService {
     }
 
     @Override
-    public Collection<Authority> findAuthoritiesByUserId(String userId) {
+    public List<Authority> findAuthoritiesByUserId(String userId) {
         return authorities.stream()
                 .filter(authority -> authority.getUserId().equals(userId))
                 .collect(Collectors.toList());

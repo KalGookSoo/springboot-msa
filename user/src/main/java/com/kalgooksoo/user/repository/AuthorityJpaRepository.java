@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class AuthorityJpaRepository implements AuthorityRepository {
     }
 
     @Override
-    public Collection<Authority> findByUserId(String userId) {
+    public List<Authority> findByUserId(String userId) {
         Assert.notNull(userId, "userId must not be null");
         return em.createQuery("select authority from Authority authority where authority.userId = :userId", Authority.class)
                 .setParameter("userId", userId)
