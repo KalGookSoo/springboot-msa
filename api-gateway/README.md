@@ -1,4 +1,4 @@
-# API Gateway 서비스
+# API-GATEWAY(API 게이트웨이)
 1. [소개](#소개)
 2. [의존성](#의존성)
 3. [설정](#설정)
@@ -9,7 +9,7 @@
 8. [TODO](#todo)
 
 ## 소개
-API Gateway 서비스는 Spring Boot, Netflix Eureka Client, 그리고 Spring Cloud Gateway를 사용합니다.
+`API-GATEWAY`는 Netflix Eureka Client이며, 그리고 Spring Cloud Gateway를 사용하여 클라이언트 요청을 라우팅합니다.
 
 ## 의존성
 이 서비스는 다음의 의존성을 기본으로 가집니다:
@@ -31,6 +31,18 @@ eureka:
   client:
     service-url:
       default-zone: http://localhost:8761/eureka/
+```
+```java
+/**
+ * API 게이트웨이 애플리케이션
+ */
+@EnableDiscoveryClient
+@SpringBootApplication
+public class ApiGatewayApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(ApiGatewayApplication.class, args);
+	}
+}
 ```
 
 ## 외부 환경설정 바인딩
@@ -65,10 +77,10 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/users/**
-        - id: authorization-service
-          uri: lb://authorization-service
+        - id: auth-service
+          uri: lb://auth-service
           predicates:
-            - Path=/authorization/**
+            - Path=/auth/**
 ```
 
 ## 기타
