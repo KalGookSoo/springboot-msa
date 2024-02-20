@@ -224,14 +224,14 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("계정명과 패스워드로 계정을 확인할 때 계정명이 존재하지 않으면 NoSuchElementException 예외를 발생시킵니다.")
+    @DisplayName("계정명과 패스워드로 계정을 확인할 때 계정명이 존재하지 않으면 IllegalArgumentException 예외를 발생시킵니다.")
     void verifyWithInvalidUsernameTest() {
         // Given
         String username = "invalidUsername";
         String password = "12345678";
 
         // Then
-        assertThrows(NoSuchElementException.class, () -> userService.verify(username, password));
+        assertThrows(IllegalArgumentException.class, () -> userService.verify(username, password));
     }
 
     @Test

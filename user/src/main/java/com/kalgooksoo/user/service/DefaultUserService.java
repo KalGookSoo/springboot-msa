@@ -134,12 +134,17 @@ public class DefaultUserService implements UserService {
 
     /**
      * @see UserService#verify(String, String)
+     *
+     * @param username 계정명
+     * @param password 패스워드
+     * @return 계정 정보가 일치하면 계정 정보를 반환합니다.
+     * @throws IllegalArgumentException 보안상 이유로 계정 정보가 일치하지 않는 경우, 계정을 찾지 못한 경우 모두 같은 예외를 발생시킵니다.
      */
     @Override
     public User verify(String username, String password) {
         Assert.notNull(username, "계정명이 필요합니다.");
         Assert.notNull(password, "패스워드가 필요합니다.");
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("계정 정보가 일치하지 않습니다."));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("계정 정보가 일치하지 않습니다."));
         if (passwordEncoder.matches(password, user.getPassword())) {
             return user;
         }
