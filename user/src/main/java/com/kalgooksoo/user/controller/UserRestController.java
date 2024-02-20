@@ -4,7 +4,6 @@ import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
-import com.kalgooksoo.user.exception.PasswordNotMatchException;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
@@ -24,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -94,7 +92,9 @@ public class UserRestController {
      * @return 계정
      */
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<User>> findById(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
+    public ResponseEntity<EntityModel<User>> findById(
+            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
+    ) {
         Optional<User> foundEntity = userService.findById(id);
         if (foundEntity.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -113,41 +113,45 @@ public class UserRestController {
      * @return 수정된 계정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<User>> updateById(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserCommand command) {
-        try {
-            User updatedEntity = userService.update(id, command);
-            EntityModel<User> resource = EntityModel.of(updatedEntity);
-            WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(id));
-            resource.add(linkTo.withRel("self"));
-            return ResponseEntity.ok(resource);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<EntityModel<User>> updateById(
+            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
+            @Valid @RequestBody UpdateUserCommand command
+    ) {
+        User updatedEntity = userService.update(id, command);
+        EntityModel<User> resource = EntityModel.of(updatedEntity);
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(id));
+        resource.add(linkTo.withRel("self"));
+        return ResponseEntity.ok(resource);
     }
 
     /**
      * 계정 삭제
+     * TODO 삭제 시 응답 본문 포맷을 공통으로 만들어 볼 것
      *
      * @param id 계정 식별자
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id) {
-        try {
-            userService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteById(
+            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
+    ) {
+        userService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 계정 패스워드 수정
+     *
+     * @param id      계정 식별자
+     * @param command 패스워드 수정 명령
+     * @return 수정된 계정
+     */
     @PutMapping("/{id}/password")
-    public ResponseEntity<EntityModel<User>> updatePassword(@Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id, @Valid @RequestBody UpdateUserPasswordCommand command) throws PasswordNotMatchException {
-        try {
-            userService.updatePassword(id, command.originPassword(), command.newPassword());
-            return findById(id);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<EntityModel<User>> updatePassword(
+            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
+            @Valid @RequestBody UpdateUserPasswordCommand command
+    ) {
+        userService.updatePassword(id, command.originPassword(), command.newPassword());
+        return findById(id);
     }
 
 }
