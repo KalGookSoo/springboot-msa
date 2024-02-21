@@ -1,0 +1,7 @@
+server.port: 8081
+spring.application.name: security-service
+spring.config.import: 'optional:configserver:http://localhost:8888'
+
+jwt:
+  secret: security
+  expiration-milli-seconds: 1800000

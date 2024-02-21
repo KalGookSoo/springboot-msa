@@ -1,7 +1,6 @@
 rootProject.name = 'springboot-msa'
 //include 'acl'
 include 'api-gateway'
-include 'auth'
 //include 'article'
 //include 'attachment'
 //include 'authority'
