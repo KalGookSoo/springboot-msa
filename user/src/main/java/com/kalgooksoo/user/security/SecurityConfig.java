@@ -1,13 +1,13 @@
-package com.kalgooksoo.security.config;
+package com.kalgooksoo.user.security;
 
-import com.kalgooksoo.security.client.UserClient;
-import com.kalgooksoo.security.jwt.JwtProvider;
+import com.kalgooksoo.user.security.jwt.JwtAccessDeniedHandler;
+import com.kalgooksoo.user.security.jwt.JwtAuthenticationEntryPoint;
+import com.kalgooksoo.user.security.jwt.JwtFilter;
+import com.kalgooksoo.user.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,43 +18,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.net.ssl.ManagerFactoryParameters;
-
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
-    private final UserClient userClient;
-
     private final JwtProvider jwtProvider;
 
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    /**
-     * Spring Security Filter Chain
-     *
-     * @param http {@link HttpSecurity}
-     * @return {@link SecurityFilterChain}
-     * @throws Exception 예외
-     */
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer.requestMatchers("/access-token").permitAll().anyRequest().authenticated())
                 .sessionManagement(ManagerFactoryParameters -> ManagerFactoryParameters.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler))
+                .authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
+                        .requestMatchers("/sign-in", "/sign-up").permitAll()
+                        .requestMatchers("/users/**").hasAnyRole( "ADMIN")
+                        .anyRequest().authenticated())
+                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
     }
 
 }

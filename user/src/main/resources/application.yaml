@@ -17,3 +17,7 @@ logging.level:
   org.hibernate.type.descriptor.jdbc.BasicBinder: trace
 
 management.endpoints.web.exposure.include: "*"
+
+jwt:
+  secret: security
+  expiration-milli-seconds: 1800000
