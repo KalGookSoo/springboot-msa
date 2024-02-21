@@ -22,6 +22,9 @@
 - `spring-boot-starter-actuator`
 - `spring-cloud-starter-netflix-eureka-client`
 - `spring-boot-starter-webflux`
+- `io.jsonwebtoken:jjwt-api:0.11.2`
+- `io.jsonwebtoken:jjwt-impl:0.11.2`
+- `io.jsonwebtoken:jjwt-jackson:0.11.2`
 
 ## 설정
 `application.yaml` 파일에서 서비스의 포트를 `8081`으로 설정합니다.
@@ -65,7 +68,9 @@ spring:
 ## 액세스 토큰 발급
 1. 클라이언트는 인증 서비스에게 username, password로 인증 메시지를 전송합니다.
 2. 인증 서비스는 계정 서비스에게 username, password로 검증 메시지를 전송합니다.
-3. 검증 결과에 따라 인증 서비스는 access token을 발급하여 클라이언트에게 응답합니다.
+3. 검증 결과에 따라 인증 서비스는 다음과 같이 응답합니다.
+    - 인증에 성공하면, access token과 함께 HTTP 상태 코드 200을 반환합니다.
+    - 인증에 실패하면, "errors" 키를 가지는 JSON 형태의 에러 객체와 함께 적절한 실패 응답 코드를 반환합니다.
 
 ```mermaid
 sequenceDiagram
@@ -76,5 +81,30 @@ sequenceDiagram
     Client->>Auth Service: Send authentication message (username, password)
     Auth Service->>User Service: Send verification message (username, password)
     User Service-->>Auth Service: Verification result
-    Auth Service-->>Client: Respond with access token (if verification is successful)
+    Auth Service-->>Client: Respond with access token and HTTP status code 200 (if verification is successful)
+    Auth Service-->>Client: Respond with error object and HTTP status code 401 (if verification fails)
+```
+
+### 검증 성공 예시
+```json
+{
+    "status": "success",
+    "code": 200,
+    "message": "Authentication successful",
+    "data": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    }
+}
+```
+
+### 검증 실패 예시
+```json
+{
+    "status": "error",
+    "code": 401,
+    "message": "Authentication failed",
+    "errors": {
+        "detail": "Invalid username or password"
+    }
+}
 ```

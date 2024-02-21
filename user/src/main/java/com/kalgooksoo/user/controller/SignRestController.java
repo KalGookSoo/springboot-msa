@@ -30,7 +30,6 @@ public class SignRestController {
 
     /**
      * 사용자 로그인을 처리합니다.
-     * TODO 계정 정보 인증에 성공했지만 사용자 정보가 불용 상태인 경우는 API Server에서 관여해야하는지 Client에게 책임을 위임해야 하는지 고민해봅시다 ^^😁
      *
      * @param command 로그인 명령
      * @return 사용자 정보

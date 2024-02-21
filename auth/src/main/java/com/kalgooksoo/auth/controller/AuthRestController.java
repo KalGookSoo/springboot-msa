@@ -1,6 +1,6 @@
 package com.kalgooksoo.auth.controller;
 
-import com.kalgooksoo.auth.component.JwtProvider;
+import com.kalgooksoo.auth.jwt.JwtProvider;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
