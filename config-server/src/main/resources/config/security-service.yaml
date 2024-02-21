@@ -1,6 +1,0 @@
-# 서비스 레지스트리 등록
-eureka.client.service-url.default-zone: http://localhost:8761/eureka/
-
-# 분산 추적
-spring.zipkin.base-url: http://localhost:9411
-management.tracing.sampling.probability: 1.0
