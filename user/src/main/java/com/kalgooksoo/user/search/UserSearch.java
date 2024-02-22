@@ -1,5 +1,6 @@
 package com.kalgooksoo.user.search;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -28,20 +29,24 @@ public class UserSearch extends PageVO {
     @Schema(description = "연락처")
     private String contactNumber;
 
+    @JsonIgnore
     public boolean isEmptyUsername() {
-        return username == null || username.isEmpty();
+        return username != null && !username.isEmpty();
     }
 
+    @JsonIgnore
     public boolean isEmptyName() {
-        return name == null || name.isEmpty();
+        return name != null && !name.isEmpty();
     }
 
+    @JsonIgnore
     public boolean isEmptyEmailId() {
-        return emailId == null || emailId.isEmpty();
+        return emailId != null && !emailId.isEmpty();
     }
 
+    @JsonIgnore
     public boolean isEmptyContactNumber() {
-        return contactNumber == null || contactNumber.isEmpty();
+        return contactNumber != null && !contactNumber.isEmpty();
     }
 
 }

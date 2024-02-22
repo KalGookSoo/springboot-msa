@@ -9,7 +9,9 @@ import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
 import com.kalgooksoo.user.value.ContactNumber;
 import com.kalgooksoo.user.value.Email;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -67,6 +69,15 @@ public class UserRestController {
      * @param search 검색 조건
      * @return 계정 목록
      */
+    @Operation(parameters = {
+            @Parameter(
+                    in = ParameterIn.HEADER,
+                    name = "Authorization",
+                    required = true,
+                    description = "Bearer 액세스 토큰",
+                    schema = @Schema(type = "string")
+            )
+    })
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<User>>> findAll(UserSearch search) {
         Page<User> page = userService.findAll(search, search.pageable());

@@ -111,32 +111,32 @@ public class UserJpaRepository implements UserRepository {
 
     private String generateJpql(UserSearch search) {
         StringBuilder jpql = new StringBuilder();
-        if (!search.isEmptyUsername()) {
+        if (search.isEmptyUsername()) {
             jpql.append(" and user.username like :username");
         }
-        if (!search.isEmptyName()) {
+        if (search.isEmptyName()) {
             jpql.append(" and user.name like :name");
         }
-        if (!search.isEmptyEmailId()) {
+        if (search.isEmptyEmailId()) {
             jpql.append(" and user.emailId like :emailId");
         }
-        if (!search.isEmptyContactNumber()) {
+        if (search.isEmptyContactNumber()) {
             jpql.append(" and user.contactNumber like :contactNumber");
         }
         return jpql.toString();
     }
 
     private void setParameters(TypedQuery<?> query, UserSearch search) {
-        if (!search.isEmptyUsername()) {
+        if (search.isEmptyUsername()) {
             query.setParameter("username", "%" + search.getUsername() + "%");
         }
-        if (!search.isEmptyName()) {
+        if (search.isEmptyName()) {
             query.setParameter("name", "%" + search.getName() + "%");
         }
-        if (!search.isEmptyEmailId()) {
+        if (search.isEmptyEmailId()) {
             query.setParameter("emailId", "%" + search.getEmailId() + "%");
         }
-        if (!search.isEmptyContactNumber()) {
+        if (search.isEmptyContactNumber()) {
             query.setParameter("contactNumber", "%" + search.getContactNumber() + "%");
         }
     }
