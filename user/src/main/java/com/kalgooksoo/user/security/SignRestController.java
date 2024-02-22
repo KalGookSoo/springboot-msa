@@ -61,4 +61,10 @@ public class SignRestController {
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(TokenModel.success(jwt));
     }
 
+    // TODO 토큰 갱신
+
+    // TODO 토큰 기반 사용자 정보 조회
+
+    // TODO sign-up
+
 }

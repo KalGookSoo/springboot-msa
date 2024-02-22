@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -53,6 +54,7 @@ class UserRestControllerTest {
 
     @BeforeEach
     @DisplayName("테스트 계정을 생성합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void setup() throws UsernameAlreadyExistsException {
         UserRestController userRestController = new UserRestController(userService);
         CreateUserCommand command = new CreateUserCommand("tester", "12345678", "테스터", null, null, null, null, null);
@@ -62,6 +64,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 생성합니다. 성공 시 응답 코드 201을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void createUserTest() throws Exception {
         // Given
         CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
@@ -77,6 +80,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 생성합니다. 실패 시 응답 코드 409을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void createUserConflictTest() throws Exception {
         // Given
         CreateUserCommand command = new CreateUserCommand("tester", "12345678", "테스터2", null, null, null, null, null);
@@ -91,6 +95,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 생성합니다. 실패 시 응답 코드 400을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void createUserBadRequestTest() throws Exception {
         // Given
         CreateUserCommand command = new CreateUserCommand("tester2", null, null, null, null, null, null, null);
@@ -105,6 +110,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정 목록을 조회합니다. 성공 시 응답 코드 200을 반환합니다. ")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void findAllTest() throws Exception {
         // Given
         // When
@@ -115,6 +121,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 조회합니다. 조회된 건 수가 0 건인 경우 응답 본문 객체에 _embedded 프로퍼티가 없습니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void findAllEmptyTest() throws Exception {
         // Given
         // When
@@ -128,6 +135,7 @@ class UserRestControllerTest {
     // 계정 조회 시 200
     @Test
     @DisplayName("계정을 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void findByIdTest() throws Exception {
         // Given
         // When
@@ -139,6 +147,7 @@ class UserRestControllerTest {
     // 존재하지 않는 계정 조회 시 404
     @Test
     @DisplayName("계정을 조회합니다. 존재하지 않는 계정 조회 시 응답 코드 404을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void findByIdNotFoundTest() throws Exception {
         // Given
         // When
@@ -149,6 +158,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 수정합니다. 성공 시 응답 코드 200을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void updateByIdTest() throws Exception {
         // Given
         UpdateUserCommand command = new UpdateUserCommand("테스터 업데이트", "updated", "email.com", "010", "1234", "5678");
@@ -163,6 +173,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 수정합니다. 실패 시 응답 코드 400을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void updateByIdBadRequestTest() throws Exception {
         // Given
         UpdateUserCommand command = new UpdateUserCommand(null, "updated", "email.com", "010", "1234", "5678");
@@ -177,6 +188,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 수정합니다. 존재하지 않는 계정 수정 시 응답 코드 404을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void updateByIdNotFoundTest() throws Exception {
         // Given
         UpdateUserCommand command = new UpdateUserCommand("테스터 업데이트", "updated", "email.com", "010", "1234", "5678");
@@ -191,6 +203,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 삭제합니다. 성공 시 응답 코드 204을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void deleteByIdTest() throws Exception {
         // Given
         // When
@@ -201,6 +214,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정을 삭제합니다. 존재하지 않는 계정 삭제 시 응답 코드 404을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void deleteByIdNotFoundTest() throws Exception {
         // Given
         // When
@@ -211,6 +225,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정 패스워드를 수정합니다. 성공 시 응답 코드 200을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void updatePasswordTest() throws Exception {
         // Given
         UpdateUserPasswordCommand command = new UpdateUserPasswordCommand("12345678", "1234567890");
@@ -225,6 +240,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정 패스워드를 수정합니다. 실패 시 응답 코드 400을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void updatePasswordBadRequestTest() throws Exception {
         // Given
         UpdateUserPasswordCommand command = new UpdateUserPasswordCommand("incorrectPassword", "1234567890");
@@ -240,6 +256,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("계정 패스워드를 수정합니다. 존재하지 않는 계정 패스워드 수정 시 응답 코드 404을 반환합니다.")
+    @WithMockUser(username = "tester", roles = "ADMIN")
     void updatePasswordNotFoundTest() throws Exception {
         // Given
         UpdateUserPasswordCommand command = new UpdateUserPasswordCommand("12345678", "1234567890");
