@@ -1,9 +1,10 @@
-package com.kalgooksoo.user.controller;
+package com.kalgooksoo.user.security.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.SignInCommand;
+import com.kalgooksoo.user.controller.UserRestController;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.service.UserService;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class SignRestControllerTest {
+class AuthenticationRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -65,23 +66,23 @@ class SignRestControllerTest {
 
         // when
         mockMvc.perform(post("/sign-in")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(command)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    @DisplayName("사용자 로그인을 처리합니다. 실패 시 응답 코드 400을 반환합니다.")
+    @DisplayName("사용자 로그인을 처리합니다. 실패 시 응답 코드 401을 반환합니다.")
     void signInFail() throws Exception {
         // given
         SignInCommand command = new SignInCommand("tester", "invalidPassword");
 
         // when
         mockMvc.perform(post("/sign-in")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isUnauthorized())
                 .andDo(MockMvcResultHandlers.print());
 
     }

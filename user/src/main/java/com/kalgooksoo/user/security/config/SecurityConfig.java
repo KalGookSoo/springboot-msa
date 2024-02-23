@@ -1,4 +1,4 @@
-package com.kalgooksoo.user.security;
+package com.kalgooksoo.user.security.config;
 
 import com.kalgooksoo.user.security.jwt.JwtAccessDeniedHandler;
 import com.kalgooksoo.user.security.jwt.JwtAuthenticationEntryPoint;
@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
                         .requestMatchers("/v3/api-docs.yaml", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/sign-in", "/sign-up").permitAll()
-                        .requestMatchers("/users/**").hasAnyRole( "ADMIN")
+                        .requestMatchers("/users/**").hasAnyRole( "ADMIN")// 또는 본인일 경우 추가할 것
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();

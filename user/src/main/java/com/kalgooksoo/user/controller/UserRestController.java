@@ -74,7 +74,7 @@ public class UserRestController {
                     in = ParameterIn.HEADER,
                     name = "Authorization",
                     required = true,
-                    description = "Bearer 액세스 토큰",
+                    description = "Bearer ${token}",
                     schema = @Schema(type = "string")
             )
     })

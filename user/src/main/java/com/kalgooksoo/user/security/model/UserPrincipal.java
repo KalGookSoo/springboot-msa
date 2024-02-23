@@ -1,4 +1,4 @@
-package com.kalgooksoo.user.security;
+package com.kalgooksoo.user.security.model;
 
 import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
@@ -28,6 +28,7 @@ public class UserPrincipal implements UserDetails {
         return new UserPrincipal(user, authorities);
     }
 
+    @SuppressWarnings("unused")
     protected UserPrincipal() {
     }
 
