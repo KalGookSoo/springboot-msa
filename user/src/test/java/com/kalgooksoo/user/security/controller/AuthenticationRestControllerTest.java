@@ -8,6 +8,7 @@ import com.kalgooksoo.user.controller.UserRestController;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.service.UserService;
+import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,32 +61,72 @@ class AuthenticationRestControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 로그인을 처리합니다. 성공 시 응답 코드 200을 반환합니다.")
-    void signIn() throws Exception {
-        // given
+    @DisplayName("토큰을 생성합니다. 성공 시 응답 코드 200을 반환합니다.")
+    void createToken() throws Exception {
+        // Given
         SignInCommand command = new SignInCommand("tester", "12345678");
 
-        // when
-        mockMvc.perform(post("/sign-in")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+        // When
+        mockMvc.perform(post("/auth/token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(command)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("사용자 로그인을 처리합니다. 실패 시 응답 코드 401을 반환합니다.")
-    void signInFail() throws Exception {
-        // given
-        SignInCommand command = new SignInCommand("tester", "invalidPassword");
+    @DisplayName("토큰을 생성합니다. 실패 시 응답 코드 401을 반환합니다.")
+    void createTokenFail() throws Exception {
+        // Given
+        SignInCommand command = new SignInCommand("tester", "12345679");
 
-        // when
-        mockMvc.perform(post("/sign-in")
+        // When
+        String bearerToken = mockMvc.perform(post("/auth/token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(command)))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getHeader(HttpHeaders.AUTHORIZATION);
+
+        System.out.println("Bearer " + bearerToken);
+    }
+
+    @Test
+    @DisplayName("사용자 인증 주체를 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
+    void getAuthentication() throws Exception {
+        // Given
+        SignInCommand command = new SignInCommand("tester", "12345678");
+
+        String bearerToken = mockMvc.perform(post("/auth/token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andReturn().getResponse().getHeader(HttpHeaders.AUTHORIZATION);
+
+        System.out.println("Bearer " + bearerToken);
+
+        // When
+        mockMvc.perform(get("/auth/token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken))
+                .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
 
     }
+
+    @Test
+    @DisplayName("사용자 인증 주체를 조회합니다. 실패 시 응답 코드 401을 반환합니다.")
+    void getAuthenticationFail() throws Exception {
+        // Given
+        String invalidBearerToken = "invalidBearerToken";
+
+        // When
+        mockMvc.perform(get("/auth/token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + invalidBearerToken))
+                .andExpect(status().isUnauthorized())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
 
 }

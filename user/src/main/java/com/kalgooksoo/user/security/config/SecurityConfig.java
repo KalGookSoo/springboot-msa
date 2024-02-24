@@ -30,6 +30,18 @@ public class SecurityConfig {
 
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+    private final String[] openApiEndpoints = {
+            "/swagger-ui/index.html",
+            "/swagger-ui/index.css",
+            "/swagger-ui/swagger-ui.css",
+            "/swagger-ui/swagger-ui-standalone-preset.js",
+            "/swagger-ui/swagger-initializer.js",
+            "/swagger-ui/swagger-ui-bundle.js",
+            "/v3/api-docs/swagger-config",
+            "/swagger-ui/favicon-32x32.png",
+            "/v3/api-docs"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -37,9 +49,10 @@ public class SecurityConfig {
                 .sessionManagement(ManagerFactoryParameters -> ManagerFactoryParameters.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler))
                 .authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-                        .requestMatchers("/v3/api-docs.yaml", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/sign-in", "/sign-up").permitAll()
-                        .requestMatchers("/users/**").hasAnyRole( "ADMIN")// 또는 본인일 경우 추가할 것
+                        .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
+                        .requestMatchers(openApiEndpoints).permitAll()
+                        .requestMatchers("/users/**").hasAnyRole("ADMIN")// 또는 본인일 경우 추가할 것
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
