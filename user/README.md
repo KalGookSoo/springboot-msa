@@ -1,9 +1,47 @@
-# USER-SERVICE
+# USER-SERVICE API
 
-2. GET /users/{id} 회원 정보 조회
-3. GET /users/{id}/authorities 회원 권한 조회
+## 계정 생성
 
-사용자 시나리오
-1. POST /users CreateUserCommand 회원 가입
-2. POST /auth/token SignInCommand 토큰 생성
-3. GET /auth/token -H Authorization=Bearer {token} 사용자 인증 주체 조회
+**POST** `/users`
+
+이 API는 새로운 사용자 계정을 생성합니다.
+
+---
+
+## 계정 목록 조회
+
+**GET** `/users`
+
+이 API는 모든 사용자 계정의 목록을 반환합니다. 이 요청은 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
+
+---
+
+## 계정 조회
+
+**GET** `/users/{id}`
+
+이 API는 주어진 ID에 해당하는 사용자 계정의 정보를 반환합니다. 이 요청은 해당 계정의 소유자 또는 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
+
+---
+
+## 계정 수정
+
+**PUT** `/users/{id}`
+
+이 API는 주어진 ID에 해당하는 사용자 계정의 정보를 수정합니다. 이 요청은 해당 계정의 소유자 또는 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
+
+---
+
+## 계정 삭제
+
+**DELETE** `/users/{id}`
+
+이 API는 주어진 ID에 해당하는 사용자 계정을 삭제합니다. 이 요청은 해당 계정의 소유자 또는 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
+
+---
+
+## 계정 패스워드 수정
+
+**PUT** `/users/{id}/password`
+
+이 API는 주어진 ID에 해당하는 사용자 계정의 패스워드를 수정합니다. 이 요청은 해당 계정의 소유자 또는 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.

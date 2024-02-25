@@ -1,10 +1,12 @@
 package com.kalgooksoo.user.controller;
 
 import com.kalgooksoo.user.command.CreateUserCommand;
+import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.model.UserPrincipal;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
 import com.kalgooksoo.user.value.ContactNumber;
@@ -163,6 +165,21 @@ public class UserRestController {
     ) {
         userService.updatePassword(id, command.originPassword(), command.newPassword());
         return findById(id);
+    }
+
+    /**
+     * 계정 검증
+     *
+     * @param command 계정 검증 명령
+     * @return 계정
+     */
+    @PostMapping("/sign-in")
+    public ResponseEntity<EntityModel<UserPrincipal>> signIn(@Valid @RequestBody SignInCommand command) {
+        UserPrincipal verifiedUser = userService.verify(command.username(), command.password());
+        EntityModel<UserPrincipal> resource = EntityModel.of(verifiedUser);
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).signIn(command));
+        resource.add(linkTo.withRel("self"));
+        return ResponseEntity.ok(resource);
     }
 
 }

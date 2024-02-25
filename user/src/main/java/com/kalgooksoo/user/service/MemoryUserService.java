@@ -4,6 +4,7 @@ import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.model.UserPrincipal;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.value.ContactNumber;
 import com.kalgooksoo.user.value.Email;
@@ -94,14 +95,15 @@ public class MemoryUserService implements UserService {
     }
 
     @Override
-    public User verify(String username, String password) {
+    public UserPrincipal verify(String username, String password) {
         User user = users.stream()
                 .filter(u -> u.getUsername().equals(username))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
 
         if (user.getPassword().equals(password)) {
-            return user;
+            List<String> authorities = findAuthoritiesByUserId(user.getId()).stream().map(Authority::getName).toList();
+            return new UserPrincipal(user, authorities);
         }
 
         throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");

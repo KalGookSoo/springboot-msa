@@ -49,12 +49,8 @@ public class AuthenticationRestController {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(command.username(), command.password());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuthenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String jwt = jwtProvider.generateToken(authentication);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.AUTHORIZATION, jwt);
-
-        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(TokenModel.success(jwt));
+        return ResponseEntity.status(HttpStatus.OK).body(TokenModel.success(jwt));
     }
 
 

@@ -4,6 +4,7 @@ import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.model.UserPrincipal;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
@@ -216,7 +217,7 @@ class UserServiceTest {
         String password = "12345678";
 
         // When
-        User verifiedUser = userService.verify(username, password);
+        UserPrincipal verifiedUser = userService.verify(username, password);
 
         // Then
         assertNotNull(verifiedUser);

@@ -4,6 +4,7 @@ import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.model.UserPrincipal;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
@@ -133,20 +134,20 @@ public class DefaultUserService implements UserService {
     }
 
     /**
-     * @see UserService#verify(String, String)
-     *
      * @param username 계정명
      * @param password 패스워드
      * @return 계정 정보가 일치하면 계정 정보를 반환합니다.
      * @throws IllegalArgumentException 보안상 이유로 계정 정보가 일치하지 않는 경우, 계정을 찾지 못한 경우 모두 같은 예외를 발생시킵니다.
+     * @see UserService#verify(String, String)
      */
     @Override
-    public User verify(String username, String password) {
+    public UserPrincipal verify(String username, String password) {
         Assert.notNull(username, "계정명이 필요합니다.");
         Assert.notNull(password, "패스워드가 필요합니다.");
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("계정 정보가 일치하지 않습니다."));
         if (passwordEncoder.matches(password, user.getPassword())) {
-            return user;
+            List<String> authorities = authorityRepository.findByUserId(user.getId()).stream().map(Authority::getName).toList();
+            return new UserPrincipal(user, authorities);
         }
         throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
     }
