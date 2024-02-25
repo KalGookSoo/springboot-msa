@@ -3,6 +3,7 @@ package com.kalgooksoo.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.kalgooksoo.user.command.CreateUserCommand;
+import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
@@ -267,6 +268,34 @@ class UserRestControllerTest {
                 .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("계정명과 패스워드로 계정을 확인합니다. 성공 시 응답 코드 200을 반환합니다.")
+    void verifyTest() throws Exception {
+        // Given
+        SignInCommand command = new SignInCommand("tester", "12345678");
+
+        // When
+        mockMvc.perform(post("/users/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("계정명과 패스워드로 계정을 확인합니다. 실패 시 응답 코드 400을 반환합니다.")
+    void verifyBadRequestTest() throws Exception {
+        // Given
+        SignInCommand command = new SignInCommand("tester", "invalidPassword");
+
+        // When
+        mockMvc.perform(post("/users/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
     }
 
 }
