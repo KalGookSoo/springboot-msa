@@ -31,16 +31,19 @@
 3. `USER-SERVICE`의 응답 코드가 200인 경우 `USER-SERVICE`에서 응답 코드 200, 토큰을 반환
 3. `USER-SERVICE`의 응답 코드가 400인 경우 `SECURITY-SERVICE`에서 응답 코드 400을 반환
 
+```mermaid
 sequenceDiagram
-participant Client as Client
-participant SecurityService as SECURITY-SERVICE
-participant UserService as USER-SERVICE
+    participant Client as Client
+    participant SecurityService as SECURITY-SERVICE
+    participant UserService as USER-SERVICE
 
-    Client->>SecurityService: POST /auth/token
-    SecurityService->>Client: Return Token
-    Client->>UserService: POST /users/sign-in (username, password)
+    Client->>SecurityService: POST /auth/token (username, password)
+    SecurityService->>UserService: POST /users/sign-in (username, password)
     alt Successful Verification
-        UserService->>Client: 200 OK, Return Token
+        UserService->>SecurityService: 200 OK
+        SecurityService->>Client: 200 OK, Return Token
     else Failed Verification
-        UserService->>Client: 400 Bad Request
+        UserService->>SecurityService: 400 Bad Request
+        SecurityService->>Client: 400 Bad Request
     end
+```
