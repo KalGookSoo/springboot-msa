@@ -1,12 +1,12 @@
 package com.kalgooksoo.user.controller;
 
+import com.kalgooksoo.security.command.SignInCommand;
+import com.kalgooksoo.security.model.UserPrincipal;
 import com.kalgooksoo.user.command.CreateUserCommand;
-import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
-import com.kalgooksoo.user.model.UserPrincipal;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
 import com.kalgooksoo.user.value.ContactNumber;

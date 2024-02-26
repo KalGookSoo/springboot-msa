@@ -1,10 +1,10 @@
 package com.kalgooksoo.user.service;
 
+import com.kalgooksoo.security.model.UserPrincipal;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
-import com.kalgooksoo.user.model.UserPrincipal;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.value.ContactNumber;
 import com.kalgooksoo.user.value.Email;
@@ -102,8 +102,8 @@ public class MemoryUserService implements UserService {
                 .orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
 
         if (user.getPassword().equals(password)) {
-            List<String> authorities = findAuthoritiesByUserId(user.getId()).stream().map(Authority::getName).toList();
-            return new UserPrincipal(user, authorities);
+            List<String> authorityNames = findAuthoritiesByUserId(user.getId()).stream().map(Authority::getName).toList();
+            return new UserPrincipal(user.getUsername(), user.getPassword(), user.isAccountNonExpired(), user.isAccountNonLocked(), user.isCredentialsNonExpired(), authorityNames);
         }
 
         throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");

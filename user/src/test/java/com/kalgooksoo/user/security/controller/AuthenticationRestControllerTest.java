@@ -2,8 +2,8 @@ package com.kalgooksoo.user.security.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.kalgooksoo.security.command.SignInCommand;
 import com.kalgooksoo.user.command.CreateUserCommand;
-import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.controller.UserRestController;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
@@ -126,7 +126,5 @@ class AuthenticationRestControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andDo(MockMvcResultHandlers.print());
     }
-
-
 
 }

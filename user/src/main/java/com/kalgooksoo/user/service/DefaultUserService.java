@@ -1,10 +1,10 @@
 package com.kalgooksoo.user.service;
 
+import com.kalgooksoo.security.model.UserPrincipal;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
-import com.kalgooksoo.user.model.UserPrincipal;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
@@ -146,8 +146,8 @@ public class DefaultUserService implements UserService {
         Assert.notNull(password, "패스워드가 필요합니다.");
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("계정 정보가 일치하지 않습니다."));
         if (passwordEncoder.matches(password, user.getPassword())) {
-            List<String> authorities = authorityRepository.findByUserId(user.getId()).stream().map(Authority::getName).toList();
-            return new UserPrincipal(user, authorities);
+            List<String> authorityNames = authorityRepository.findByUserId(user.getId()).stream().map(Authority::getName).toList();
+            return new UserPrincipal(user.getUsername(), user.getPassword(), user.isAccountNonExpired(), user.isAccountNonLocked(), user.isCredentialsNonExpired(), authorityNames);
         }
         throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
     }
