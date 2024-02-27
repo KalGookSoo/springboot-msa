@@ -1,8 +1,8 @@
 package com.kalgooksoo.security.controller;
 
 import com.kalgooksoo.security.command.SignInCommand;
-import com.kalgooksoo.security.jwt.JwtProvider;
 import com.kalgooksoo.security.jwt.TokenModel;
+import com.kalgooksoo.security.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -15,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthenticationRestController {
 
-    private final JwtProvider jwtProvider;
-
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AuthenticationService authenticationService;
 
     /**
      * 토큰 생성
@@ -46,10 +42,9 @@ public class AuthenticationRestController {
     })
     @PostMapping("/token")
     public ResponseEntity<TokenModel> createToken(@Valid @RequestBody SignInCommand command) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(command.username(), command.password());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuthenticationToken);
+        Authentication authentication = authenticationService.authenticate(command.username(), command.password());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtProvider.generateToken(authentication);
+        String jwt = authenticationService.generateToken(authentication);
         return ResponseEntity.status(HttpStatus.OK).body(TokenModel.success(jwt));
     }
 
@@ -76,11 +71,8 @@ public class AuthenticationRestController {
     @GetMapping("/token")
     public ResponseEntity<Authentication> findToken(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String bearerToken) {
         String token = bearerToken.substring(7);
-        if (jwtProvider.validateToken(token)) {
-            return ResponseEntity.ok(jwtProvider.getAuthentication(token));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Authentication authentication = authenticationService.authenticate(token);
+        return ResponseEntity.ok(authentication);
     }
 
     /**
@@ -105,13 +97,8 @@ public class AuthenticationRestController {
     @PostMapping("/token-refresh")
     public ResponseEntity<TokenModel> refreshToken(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String bearerToken) {
         String token = bearerToken.substring(7);
-        if (jwtProvider.validateToken(token)) {
-            String newToken = jwtProvider.generateToken(jwtProvider.getAuthentication(token));
-            TokenModel tokenModel = TokenModel.success(newToken);
-            return ResponseEntity.ok(tokenModel);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        String generatedToken = authenticationService.refreshToken(token);
+        return ResponseEntity.ok(TokenModel.success(generatedToken));
     }
 
 }
