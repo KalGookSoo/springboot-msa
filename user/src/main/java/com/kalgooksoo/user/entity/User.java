@@ -1,4 +1,4 @@
-package com.kalgooksoo.user.domain;
+package com.kalgooksoo.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kalgooksoo.user.value.ContactNumber;

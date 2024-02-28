@@ -1,7 +1,6 @@
 package com.kalgooksoo.user;
 
-import com.kalgooksoo.security.SecurityApplication;
-import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.entity.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.service.UserService;
 import org.slf4j.Logger;
@@ -10,12 +9,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.Import;
 
 /**
  * 계정 서비스 애플리케이션
  */
-@Import(SecurityApplication.class)
 @EnableDiscoveryClient
 @SpringBootApplication
 public class UserApplication implements CommandLineRunner {
@@ -41,4 +38,5 @@ public class UserApplication implements CommandLineRunner {
             logger.info("계정이 이미 존재합니다");
         }
     }
+
 }

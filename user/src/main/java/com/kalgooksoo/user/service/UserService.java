@@ -1,9 +1,9 @@
 package com.kalgooksoo.user.service;
 
-import com.kalgooksoo.security.model.UserPrincipal;
+import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.command.UpdateUserCommand;
-import com.kalgooksoo.user.domain.Authority;
-import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.entity.Authority;
+import com.kalgooksoo.user.entity.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.search.UserSearch;
 import org.springframework.data.domain.Page;
@@ -92,7 +92,7 @@ public interface UserService {
      * @param password 패스워드
      * @return 계정
      */
-    UserPrincipal verify(String username, String password);
+    UserSummary verify(String username, String password);
 
     /**
      * 계정 식별자로 권한 조회

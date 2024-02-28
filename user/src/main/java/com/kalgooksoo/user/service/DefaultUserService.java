@@ -1,10 +1,10 @@
 package com.kalgooksoo.user.service;
 
-import com.kalgooksoo.security.model.UserPrincipal;
 import com.kalgooksoo.user.command.UpdateUserCommand;
-import com.kalgooksoo.user.domain.Authority;
-import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.entity.Authority;
+import com.kalgooksoo.user.entity.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
@@ -13,6 +13,7 @@ import com.kalgooksoo.user.value.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class DefaultUserService implements UserService {
 
     private final AuthorityRepository authorityRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
      * @see UserService#createUser(User)
@@ -141,13 +142,13 @@ public class DefaultUserService implements UserService {
      * @see UserService#verify(String, String)
      */
     @Override
-    public UserPrincipal verify(String username, String password) {
+    public UserSummary verify(String username, String password) {
         Assert.notNull(username, "계정명이 필요합니다.");
         Assert.notNull(password, "패스워드가 필요합니다.");
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("계정 정보가 일치하지 않습니다."));
         if (passwordEncoder.matches(password, user.getPassword())) {
-            List<String> authorityNames = authorityRepository.findByUserId(user.getId()).stream().map(Authority::getName).toList();
-            return new UserPrincipal(user.getUsername(), user.getPassword(), user.isAccountNonExpired(), user.isAccountNonLocked(), user.isCredentialsNonExpired(), authorityNames);
+            List<Authority> authorities = authorityRepository.findByUserId(user.getId());
+            return new UserSummary(user, authorities);
         }
         throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
     }

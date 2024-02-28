@@ -1,10 +1,10 @@
 package com.kalgooksoo.user.service;
 
-import com.kalgooksoo.security.model.UserPrincipal;
 import com.kalgooksoo.user.command.UpdateUserCommand;
-import com.kalgooksoo.user.domain.Authority;
-import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.entity.Authority;
+import com.kalgooksoo.user.entity.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,14 +47,13 @@ class UserServiceTest {
     @Autowired
     private AuthorityRepository authorityRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private User testUser;
 
     @BeforeEach
     void setup() throws UsernameAlreadyExistsException {
-        userService = new DefaultUserService(userRepository, authorityRepository, passwordEncoder);
+        userService = new DefaultUserService(userRepository, authorityRepository);
         User account = User.create("tester", "12345678", "테스터", null, null);
         testUser = userService.createUser(account);
     }
@@ -217,7 +217,7 @@ class UserServiceTest {
         String password = "12345678";
 
         // When
-        UserPrincipal verifiedUser = userService.verify(username, password);
+        UserSummary verifiedUser = userService.verify(username, password);
 
         // Then
         assertNotNull(verifiedUser);

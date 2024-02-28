@@ -1,12 +1,12 @@
 package com.kalgooksoo.user.controller;
 
-import com.kalgooksoo.security.command.SignInCommand;
-import com.kalgooksoo.security.model.UserPrincipal;
+import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
-import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.entity.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
 import com.kalgooksoo.user.value.ContactNumber;
@@ -174,9 +174,9 @@ public class UserRestController {
      * @return 계정
      */
     @PostMapping("/sign-in")
-    public ResponseEntity<EntityModel<UserPrincipal>> signIn(@Valid @RequestBody SignInCommand command) {
-        UserPrincipal verifiedUser = userService.verify(command.username(), command.password());
-        EntityModel<UserPrincipal> resource = EntityModel.of(verifiedUser);
+    public ResponseEntity<EntityModel<UserSummary>> signIn(@Valid @RequestBody SignInCommand command) {
+        UserSummary verifiedUser = userService.verify(command.username(), command.password());
+        EntityModel<UserSummary> resource = EntityModel.of(verifiedUser);
         WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).signIn(command));
         resource.add(linkTo.withRel("self"));
         return ResponseEntity.ok(resource);

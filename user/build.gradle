@@ -21,7 +21,7 @@ ext {
 }
 
 dependencies {
-    implementation project(':security')
+//    implementation project(':security')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
@@ -38,9 +38,6 @@ dependencies {
 
     // 서비스 레지스트리 클라이언트
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
-    // 분산 추적
-    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
