@@ -1,5 +1,6 @@
 package com.kalgooksoo.security.service;
 
+import com.kalgooksoo.security.command.SignInCommand;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -10,11 +11,10 @@ public interface AuthenticationService {
     /**
      * 인증 주체를 반환합니다.
      *
-     * @param username 계정명
-     * @param password 패스워드
+     * @param command 인증 명령
      * @return 인증 주체
      */
-    Authentication authenticate(String username, String password);
+    Authentication authenticate(SignInCommand command);
 
     /**
      * 인증 주체를 반환합니다.

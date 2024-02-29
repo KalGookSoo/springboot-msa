@@ -42,7 +42,7 @@ public class AuthenticationRestController {
     })
     @PostMapping("/token")
     public ResponseEntity<TokenModel> createToken(@Valid @RequestBody SignInCommand command) {
-        Authentication authentication = authenticationService.authenticate(command.username(), command.password());
+        Authentication authentication = authenticationService.authenticate(command);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = authenticationService.generateToken(authentication);
         return ResponseEntity.status(HttpStatus.OK).body(TokenModel.success(jwt));

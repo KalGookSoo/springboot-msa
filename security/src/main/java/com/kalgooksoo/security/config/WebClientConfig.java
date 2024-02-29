@@ -5,9 +5,11 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpHeaders;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
@@ -42,7 +44,8 @@ public class WebClientConfig {
                         .addHandlerLast(new WriteTimeoutHandler(3)));
 
         return WebClient.builder()
-                .baseUrl("http://user-service")
+                .baseUrl("lb://user-service")
+                .defaultHeaders(httpHeaders -> httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .filter(filterFunction)
                 .build();

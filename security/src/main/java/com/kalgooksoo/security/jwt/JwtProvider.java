@@ -3,6 +3,8 @@ package com.kalgooksoo.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +22,9 @@ import java.util.stream.Collectors;
 @Component
 public class JwtProvider {
 
-    private final String secret;
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
+
+    private final String secret;// FIXME 암호화 알고리즘 변경할 것
 
     private final long expirationMilliSeconds; // 30 minutes
 
@@ -76,13 +80,15 @@ public class JwtProvider {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException ex) {
-            System.out.println("Invalid JWT token");
+            LOGGER.error("유효하지 않은 JWT 토큰");
         } catch (ExpiredJwtException ex) {
-            System.out.println("Expired JWT token");
+            LOGGER.error("만료된 JWT 토큰");
         } catch (UnsupportedJwtException ex) {
-            System.out.println("Unsupported JWT token");
+            LOGGER.error("지원하지 않는 JWT 토큰");
         } catch (IllegalArgumentException ex) {
-            System.out.println("JWT claims string is empty.");
+            LOGGER.error("JWT 클레임 문자열이 비어 있습니다.");
+        } catch (@SuppressWarnings("deprecation") SignatureException ex) {
+            LOGGER.error("JWT 서명이 로컬에서 계산된 서명과 일치하지 않습니다.");
         }
         return false;
     }
