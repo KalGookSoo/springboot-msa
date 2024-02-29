@@ -1,36 +1,92 @@
-### Eco System
-- Java 17
-- Gradle
-- Spring Boot 3.2.2
-- Spring Cloud Config Server: git 저장소를 기반으로 한 중앙 집중식 외부 구성 관리. 구성 리소스는 직접적으로 Spring Environment에 매핑되지만, 필요한 경우 Spring 애플리케이션이 아니어도 사용할 수 있습니다.
-- Spring Cloud Netflix Eureka: Spring 애플리케이션과 다른 애플리케이션 모두에 의한 등록을 지원하는 서비스 등록 및 발견.
-- Spring Cloud Gateway: 동적 라우팅, 모니터링, 복원력, 보안 등을 제공합니다.
+# SPRINGBOOT-MSA
+`SPRINGBOOT-MSA` 프로젝트는 Spring Boot 기반의 마이크로서비스 아키텍처를 구현한 프로젝트입니다.
 
-### 구동 절차
-1. ConfigServerApplication 실행
-2. ServiceRegistryApplication 실행
-3. GatewayApplication 실행
-4. 그 외 MicroserviceApplication 실행
+---
 
-### TODO
-- API 버저닝
-- 도메인 엔티티 버저닝(동시성 제어 및 트랜잭션 고립 레벨 조절)
-- 이벤트 소싱
-- 메시시 큐잉(카프카 쓸 예정)
-- 권한 체크
-- 서킷 브레이커
-- 분산 추적(Zipkin 쓸 예정)
-- 이벤트 소싱(트랜잭션 제어)
+## 목차
+1. [프로젝트 정보](#프로젝트-정보)
+2. [서비스 구성](#서비스-구성)
+3. [데이터베이스 세팅](#데이터베이스-세팅)
+4. [구동 절차](#구동-절차)
+5. [부록](#부록)
 
-### install zipkin
-```shell
-docker run -d -p 9411:9411 --name zipkin openzipkin/zipkin
+---
+
+## 프로젝트 정보
+- **프로그래밍 언어**: Java
+- **Java 버전**: 17
+- **빌드 도구**: Gradle
+- **스프링 부트 버전**: 3.2.2
+- **스프링 클라우드 버전**: 2023.0.0
+
+---
+
+## 서비스 구성
+`api-gateway`, `config-server`, `service-registry`, `micro-service` 4 종류의 서비스로 구성되어 있습니다.
+```mermaid
+graph LR
+    A[Client] -->|Interacts| B[API Gateway]
+    B -->|Routes to| D[User Service]
+    B -->|Routes to| E[Security Service]
+    D -->|Registers with| C[Service Registry]
+    E -->|Registers with| C
+    D -->|Imports config from| F[Config Server]
+    E -->|Imports config from| F
 ```
+_`분산 추적 모니터링`, `message-queue`, `event-sourcing`은 추후 구현할 예정._
+
+### Config Server
+- `config-server`는 `spring-cloud-config`로 구성하였습니다.
+- `config-server`는 외부 구성을 중앙 집중식으로 관리합니다.
+- `config-server`는 `git` 저장소 또는 파일 시스템을 기반으로 한 외부 구성을 제공합니다.
+
+### API Gateway
+- `api-gateway`는 `spring-cloud-gateway`로 구성하였습니다.
+- 클라이언트는 `api-gateway`와 상호작용합니다.
+- `api-gateway`는 클라이언트의 요청을 라우팅, 로드밸런싱, 필터링을 담당합니다.
+- `api-gateway`는 `service-registry`에 등록된 `micro-service`에 라우팅합니다.
+- `api-gateway`는 라우팅하기 전 인증 및 인가를 검증하여 필터링할 수 있습니다.
+
+### Service Registry
+- `service-registry`는 `netflix eureka`로 구성하였습니다.
+- `service-registry`는 `micro-service`의 등록 및 발견을 담당합니다.
+- `service-registry`는 `micro-service`의 상태를 모니터링합니다.
+
+
+### Micro Service
+- `micro-service`는 `netflix-eureka-client`로 구성하였습니다.
+- `micro-service`는 구동할 때 `service-registry`에 클라이언트로써 등록을 요청합니다.
+- `micro-service`는 구동할 때 `config-server`의 설정 정보를 import합니다.
+
+#### 구현 규칙
+- `micro-service`는 독자적인 생명 주기를 가져야 합니다.
+- `micro-service`는 독립적인 데이터베이스를 가질 수 있어야 합니다. 즉 다른 모듈에 대한 제약 조건이 있으면 안된다. 제약 조건이 필요한 경우(정합성 및 일관성이 비즈니스에 중요한 요소일 경우) `Bounded Context`의 범위를 조절하여 도메인을 구성할 수 있도록 합니다.
+- `micro-service`는 RESTful API를 제공해야 합니다. **REST API 성숙도 3단계 모델**을 따르도록 합니다.
+- `micro-service`는 **OpenAPI Specification 3.x.x** 버전에 맞게 작성되어야 합니다.
+- `micro-service`는 OpenAPI Specification을 사용하여 API 문서를 자동으로 생성해야 합니다. 이는 **Swagger**를 사용하여 구현합니다.
+- `micro-service`는 테스트 가능한 코드를 작성해야 합니다. 테스트 코드는 **단위 테스트**, **슬라이스 테스트**를 작성하도록 합니다.
+- `micro-service`는 특정 **Persistence Framework**에 의존적인 코드를 최소화하도록 합니다.([Dirty Check 지양](#dirty-check-지양), [JpaRepository 지양](#jparepository-및-spring-data-jpa가-자동으로-주입해주는-인터페이스-지양))
+- `micro-service`는 **Spring Boot Actuator**를 사용하여 모니터링 및 관리 기능을 제공해야 합니다.
+
+---
 
 ### 데이터베이스 세팅
-DBMS 벤더는 PostgreSQL을 사용합니다.<br>
-테스트 환경은 H2DB를 사용합니다.<br>
-테스트환경은 spring.profiles.active를 test로 할당합니다.
+현재 기본값으로 설정된 DBMS 벤더는 H2입니다.
+hibernate 구성 설정으로 애플리케이션 구동 시 자동으로 데이터베이스 테이블을 생성하도록 설정되어 있습니다.
+```yaml
+# Datasource
+spring.datasource.driver-class-name: org.h2.Driver
+spring.datasource.url: jdbc:h2:mem:testdb
+#spring.datasource.url=jdbc:h2:file:./testdb # H2 데이터베이스를 파일 기반으로 사용할 경우 주석을 해제할 것
+spring.datasource.username: sa
+spring.datasource.password: password
+
+spring.jpa.show-sql: true
+spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto: update
+```
+
+PostgreSQL을 사용할 경우에는 아래의 스크립트를 실행 후 설정 파일을 수정합니다.
 ```sql
 -- 데이터베이스 생성
 CREATE DATABASE august;
@@ -49,38 +105,42 @@ CREATE SCHEMA springboot_msa;
 -- 스키마에 대한 모든 권한 부여
 GRANT ALL PRIVILEGES ON SCHEMA springboot_msa TO kalgooksoo;
 ```
+```yaml
+# Datasource
+spring.datasource.driver-class-name: org.postgresql.Driver
+spring.datasource.url: jdbc:postgresql://localhost:5432/august?currentSchema=springboot_msa
+spring.datasource.username: kalgooksoo
+spring.datasource.password: 1234
 
-### OpenAPI Specification
-
-이 프로젝트는 OpenAPI Specification을 사용하여 API 문서를 자동으로 생성합니다.
-
-- Swagger UI를 통해 API 문서를 실시간으로 확인하려면 웹 브라우저에서 `/swagger-ui/index.html` 경로로 접속합니다.
-- OAS 3.0 형식의 API 문서는 `/v3/api-docs.yaml` 경로에서 파일을 다운로드할 수 있습니다.
-
-### Persistance
-Persistence framework는 Hibernate를 사용합니다.<br>
-하지만 JPA의 의존적인 기능은 지양하기 위해서 Data Access Layer에는 벤더 의존적인 코드를 최소화하였습니다.<br>
-
-또한 서비스 레이어에서 Dirty check를 지양하였습니다. 따라서 영속화 코드를 명시적으로 작성하였습니다.
-```java
-/**
- * 패스워드 변경
- *
- * @param id             계정 식별자
- * @param originPassword 기존 패스워드
- * @param newPassword    새로운 패스워드
- */
-@Override
-public void updatePassword(String id, String originPassword, String newPassword) throws PasswordNotMatchException {
-    User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
-    if (!passwordEncoder.matches(originPassword, user.getPassword())) {
-        throw new PasswordNotMatchException(originPassword, "기존 패스워드가 일치하지 않습니다.");
-    }
-    user.changePassword(passwordEncoder.encode(newPassword));
-    userRepository.save(user);
-}
+spring.jpa.open-in-view: true
+spring.jpa.show-sql: true
+spring.jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto: update
 ```
-DBMS 벤더에 의존적인 쿼리를 지양하기 위해 JPQL을 사용하였습니다.
+
+---
+
+### 구동 절차
+1. ConfigServerApplication 실행
+2. ServiceRegistryApplication 실행
+3. GatewayApplication 실행
+4. 그 외 MicroserviceApplication 실행
+
+---
+
+### 부록
+
+#### OpenAPI Specification
+이 프로젝트는 OpenAPI Specification을 사용하여 API 문서를 자동으로 생성합니다.
+- Swagger UI를 통해 API 문서를 실시간으로 확인하려면 웹 브라우저에서 `{micro-service}/swagger-ui/index.html` 경로로 접속합니다.
+- OAS 3.0 형식의 API 문서는 `{micro-service}/v3/api-docs.yaml` 경로에서 파일을 다운로드할 수 있습니다.
+
+#### 특정 Persistence Framework에 의존적인 코드 지양
+특정 `Persistence Framework`에 의존적인 코드를 지양하기 위해서 `Data Access Layer`의 인터페이스 명세에는 벤더 의존적인 코드를 최소화하였습니다.<br>
+
+
+##### DBMS 벤더에 의존적인 쿼리 지양
+또한 DBMS 벤더에 의존적인 쿼리를 지양하기 위해 JPQL을 사용하였습니다.
 ```java
 /**
  * 검색 조건에 기반한 계정 목록 조회
@@ -144,3 +204,46 @@ private void setParameters(TypedQuery<?> query, UserSearch search) {
     }
 }
 ```
+
+---
+
+#### JpaRepository 및 `spring-data-jpa`가 자동으로 주입해주는 인터페이스 지양
+1. 실제로 사용하지 않는 메서드는 지양합니다.
+2. 구현체의 간단한 Mocking, Stubbing을 위해 지양합니다.
+3. 추후 CQRS 패턴 도입을 위해 지양합니다.
+4. Persistence Framework에 의존적인 코드 최소화를 위해 지양합니다.
+
+---
+
+#### Dirty Check 지양
+Persistence Framework에 의존적인 코드 최소화를 위해 지양합니다. 따라서 영속화 코드를 명시적으로 작성하였습니다.
+```java
+/**
+ * 패스워드 변경
+ *
+ * @param id             계정 식별자
+ * @param originPassword 기존 패스워드
+ * @param newPassword    새로운 패스워드
+ */
+@Override
+public void updatePassword(String id, String originPassword, String newPassword) {
+    User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
+    if (!passwordEncoder.matches(originPassword, user.getPassword())) {
+        throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
+    }
+    user.changePassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
+}
+```
+
+---
+
+#### Data Access Layer에서는 비즈니스 로직을 최소화합니다.
+Data Access Layer에서는 비즈니스 로직을 최소화하고, 단순한 CRUD 작업을 수행하도록 합니다.<br>
+데이터베이스 커넥션 없이 단위테스트를 할 수 있도록 하기 위함입니다.
+
+---
+
+#### Update command에 대해서는 조회 -> 수정 -> 저장 순서로 처리합니다.
+Data Access Layer의 비즈니스 로직을 최소화하기 위함입니다.<br>
+추후 도메인 엔티티에 @Version을 사용하여 `Optimistic Locking`을 적용할 예정입니다.
