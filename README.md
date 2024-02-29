@@ -1,6 +1,8 @@
 # Spring Boot MSA
 `springboot-msa` 프로젝트는 Spring Boot 기반의 마이크로서비스 아키텍처를 구현한 프로젝트입니다.
 
+[태스크 목록 바로가기](https://github.com/users/KalGookSoo/projects/3)
+
 ---
 
 ## 목차
