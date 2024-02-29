@@ -1,10 +1,16 @@
 # USER-SERVICE
-[프로젝트 정보](#프로젝트-정보)  
-[도메인 엔티티](#도메인-엔티티)
-[OpenAPI](#OpenAPI)
+`USER-SERVICE`는 사용자 정보를 관리하는 서비스입니다.
+
+---
+
+## 목차
+1. [프로젝트 정보](#프로젝트-정보)  
+2. [도메인 엔티티](#도메인-엔티티)
+3. [API 명세서](#api-명세서)
+
+---
 
 ## 프로젝트 정보
-
 - **프로그래밍 언어**: Java
 - **Java 버전**: 17
 - **빌드 도구**: Gradle
@@ -12,8 +18,8 @@
 - **스프링 클라우드 버전**: 2023.0.0
 
 ---
-## 도메인 엔티티
 
+## 도메인 엔티티
 ```mermaid
 classDiagram
     class User {
@@ -36,7 +42,7 @@ classDiagram
 
 ---
 
-## OpenAPI
-[계정 OpenAPI](docs%2Fuser-api-docs.yaml)
+## API 명세서
+[OpenAPI](docs%2Fuser-api-docs.yaml)
 
 ---
