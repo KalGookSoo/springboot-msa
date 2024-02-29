@@ -1,47 +1,42 @@
-# USER-SERVICE API
+# USER-SERVICE
+[프로젝트 정보](#프로젝트-정보)  
+[도메인 엔티티](#도메인-엔티티)
+[OpenAPI](#OpenAPI)
 
-## 계정 생성
+## 프로젝트 정보
 
-**POST** `/users`
+- **프로그래밍 언어**: Java
+- **Java 버전**: 17
+- **빌드 도구**: Gradle
+- **스프링 부트 버전**: 3.2.2
+- **스프링 클라우드 버전**: 2023.0.0
 
-이 API는 새로운 사용자 계정을 생성합니다.
+---
+## 도메인 엔티티
+
+```mermaid
+classDiagram
+    class User {
+        -String id
+        +create()
+        +update()
+        +changePassword()
+        +isAccountNonExpired()
+        +isAccountNonLocked()
+        +isCredentialsNonExpired()
+        +isEnabled()
+    }
+    class Authority {
+        -String id
+        -String userId
+        +create()
+    }
+    User "1" -- "N" Authority : has
+```
 
 ---
 
-## 계정 목록 조회
-
-**GET** `/users`
-
-이 API는 모든 사용자 계정의 목록을 반환합니다. 이 요청은 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
+## OpenAPI
+[계정 OpenAPI](docs%2Fuser-api-docs.yaml)
 
 ---
-
-## 계정 조회
-
-**GET** `/users/{id}`
-
-이 API는 주어진 ID에 해당하는 사용자 계정의 정보를 반환합니다. 이 요청은 해당 계정의 소유자 또는 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
-
----
-
-## 계정 수정
-
-**PUT** `/users/{id}`
-
-이 API는 주어진 ID에 해당하는 사용자 계정의 정보를 수정합니다. 이 요청은 해당 계정의 소유자 또는 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
-
----
-
-## 계정 삭제
-
-**DELETE** `/users/{id}`
-
-이 API는 주어진 ID에 해당하는 사용자 계정을 삭제합니다. 이 요청은 해당 계정의 소유자 또는 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
-
----
-
-## 계정 패스워드 수정
-
-**PUT** `/users/{id}/password`
-
-이 API는 주어진 ID에 해당하는 사용자 계정의 패스워드를 수정합니다. 이 요청은 해당 계정의 소유자 또는 `ADMIN` 권한을 가진 사용자만 수행할 수 있습니다.
