@@ -39,7 +39,8 @@ public class SecurityConfig {
             "/swagger-ui/swagger-ui-bundle.js",
             "/v3/api-docs/swagger-config",
             "/swagger-ui/favicon-32x32.png",
-            "/v3/api-docs"
+            "/v3/api-docs",
+            "/v3/api-docs.yaml",
     };
 
     @Bean
