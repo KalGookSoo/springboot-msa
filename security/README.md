@@ -1,5 +1,5 @@
-# SECURITY-SERVICE
-`SECURITY-SERVICE`는 사용자 인증 및 인가 부여를 담당하는 서비스입니다.
+# Security Service
+`security-service`는 사용자 인증 및 인가 부여를 담당하는 서비스입니다.
 
 ---
 
@@ -11,11 +11,12 @@
 ---
 
 ## 프로젝트 정보
-- **프로그래밍 언어**: Java
-- **Java 버전**: 17
-- **빌드 도구**: Gradle
-- **스프링 부트 버전**: 3.2.2
-- **스프링 클라우드 버전**: 2023.0.0
+![Language](https://img.shields.io/badge/language-Java-blue)
+![Java Version](https://img.shields.io/badge/Java-17-blue)
+![Build Tool](https://img.shields.io/badge/build%20tool-Gradle-orange)
+![Spring Boot Version](https://img.shields.io/badge/Spring%20Boot-3.2.2-green)
+![Spring Cloud Version](https://img.shields.io/badge/Spring%20Cloud-2023.0.0-green)
+![License](https://img.shields.io/badge/license-Apache%202.0-brightgreen)
 
 ---
 
