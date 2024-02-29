@@ -207,7 +207,7 @@ private void setParameters(TypedQuery<?> query, UserSearch search) {
 
 #### JpaRepository 및 Spring Data JPA가 자동으로 주입해주는 인터페이스 지양
 1. 실제로 사용하지 않는 메서드는 지양합니다.
-2. 구현체의 간단한 `Mocking`, `Stubbing`을 위해 지양합니다.
+2. 인터페이스의 간단한 `Mocking`, `Stubbing`을 위해 지양합니다.
 3. 추후 `CQRS` 패턴 도입을 위해 지양합니다.
 4. `Persistence Framework`에 의존적인 코드 최소화를 위해 지양합니다.
 
