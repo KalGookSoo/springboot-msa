@@ -41,3 +41,8 @@ sequenceDiagram
         ApiGateway->>Client: 401 Unauthorized
     end
 ```
+
+---
+
+## API 명세서
+[OpenAPI](docs%2Fsecurity-api-docs.yaml)
