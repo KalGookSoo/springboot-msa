@@ -1,8 +1,9 @@
 package com.kalgooksoo.security.config;
 
-import com.kalgooksoo.security.jwt.JwtAccessDeniedHandler;
-import com.kalgooksoo.security.jwt.JwtAuthenticationEntryPoint;
-import lombok.RequiredArgsConstructor;
+import com.kalgooksoo.core.jwt.JwtAccessDeniedHandler;
+import com.kalgooksoo.core.jwt.JwtAuthenticationEntryPoint;
+import com.kalgooksoo.core.jwt.JwtProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,15 +16,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Value("${jwt.secret}")
+    private String secret;
 
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    @Value("${jwt.expiration-milli-seconds}")
+    private long tokenValidityInSeconds;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,7 +46,7 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         // 예외 발생 시 처리를 위한 핸들러를 설정합니다.
-        http.exceptionHandling(exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler));
+        http.exceptionHandling(exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint()).accessDeniedHandler(jwtAccessDeniedHandler()));
 
         return http.build();
     }
@@ -52,6 +54,21 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+        return new JwtAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public JwtAccessDeniedHandler jwtAccessDeniedHandler() {
+        return new JwtAccessDeniedHandler();
+    }
+
+    @Bean
+    public JwtProvider jwtProvider() {
+        return new JwtProvider(secret, tokenValidityInSeconds);
     }
 
 }

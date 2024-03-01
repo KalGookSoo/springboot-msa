@@ -1,7 +1,7 @@
 package com.kalgooksoo.security.controller;
 
 import com.kalgooksoo.security.command.SignInCommand;
-import com.kalgooksoo.security.jwt.TokenModel;
+import com.kalgooksoo.core.jwt.TokenModel;
 import com.kalgooksoo.security.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

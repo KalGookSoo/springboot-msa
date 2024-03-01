@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -36,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.*;
         "eureka.client.enabled=false",
         "spring.cloud.config.enabled=false"
 })
-@ActiveProfiles("test")
 class UserServiceTest {
 
     private UserService userService;

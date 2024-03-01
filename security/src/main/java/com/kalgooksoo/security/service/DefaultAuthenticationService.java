@@ -3,7 +3,7 @@ package com.kalgooksoo.security.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.kalgooksoo.security.client.UserClient;
 import com.kalgooksoo.security.command.SignInCommand;
-import com.kalgooksoo.security.jwt.JwtProvider;
+import com.kalgooksoo.core.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,8 +24,6 @@ public class DefaultAuthenticationService implements AuthenticationService {
     private final UserClient userClient;
 
     private final JwtProvider jwtProvider;
-
-//    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Override
     public Authentication authenticate(SignInCommand command) {

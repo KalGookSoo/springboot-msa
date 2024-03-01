@@ -1,19 +1,35 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+    }
+}
+
 rootProject.name = 'springboot-msa'
-//include 'acl'
-include 'api-gateway'
-//include 'article'
-//include 'attachment'
-//include 'category'
-//include 'comment'
-include 'core'
-include 'config-server'
-//include 'course'
-//include 'enrollment'
-//include 'kafka'
-include 'security'
-//include 'major'
-//include 'menu'
-//include 'professor'
-include 'service-registry'
-//include 'student'
-include 'user'
+
+
+//include ':acl'
+include ':api-gateway'
+//include ':article'
+//include ':attachment'
+//include ':category'
+//include ':comment'
+include ':core:jwt'
+include ':core:exception'
+include ':config-server'
+//include ':course'
+//include ':enrollment'
+//include ':kafka'
+include ':security'
+//include ':major'
+//include ':menu'
+//include ':professor'
+include ':service-registry'
+//include ':student'
+include ':user'

@@ -1,4 +1,4 @@
-package com.kalgooksoo.security.jwt;
+package com.kalgooksoo.core.jwt;
 
 import org.springframework.http.HttpStatus;
 

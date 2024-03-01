@@ -11,14 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "eureka.client.enabled=false",
         "spring.cloud.config.enabled=false"
 })
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class AuthenticationRestControllerTest {
 
@@ -78,7 +72,7 @@ class AuthenticationRestControllerTest {
     @DisplayName("사용자 인증 주체를 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
     void getAuthentication() throws Exception {
         // Given
-        SignInCommand command = new SignInCommand("tester", "12345678");
+        SignInCommand command = new SignInCommand("admin", "12341234");
 
         String bearerToken = mockMvc.perform(post("/auth/token")
                         .contentType(MediaType.APPLICATION_JSON)

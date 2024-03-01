@@ -2,8 +2,8 @@ package com.kalgooksoo.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.CreateUserCommand;
+import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.entity.User;
@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "eureka.client.enabled=false",
         "spring.cloud.config.enabled=false"
 })
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class UserRestControllerTest {
 
