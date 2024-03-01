@@ -41,7 +41,7 @@ public class AuthenticationRestController {
             @ApiResponse(responseCode = "401", description = "잘못된 자격 증명")
     })
     @PostMapping("/token")
-    public ResponseEntity<TokenModel> createToken(@Valid @RequestBody SignInCommand command) {
+    public ResponseEntity<TokenModel> generateToken(@Valid @RequestBody SignInCommand command) {
         Authentication authentication = authenticationService.authenticate(command);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = authenticationService.generateToken(authentication);
