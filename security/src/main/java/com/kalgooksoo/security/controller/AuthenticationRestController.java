@@ -15,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -69,7 +69,12 @@ public class AuthenticationRestController {
     })
     @GetMapping("/token")
     public ResponseEntity<Authentication> findToken(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String bearerToken) {
-        String token = bearerToken.substring(7);
+        String token;
+        try {
+            token = bearerToken.substring(7);
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new AccessDeniedException("토큰이 유효하지 않습니다");
+        }
         Authentication authentication = authenticationService.authenticate(token);
         return ResponseEntity.ok(authentication);
     }
@@ -95,7 +100,12 @@ public class AuthenticationRestController {
     })
     @PostMapping("/token-refresh")
     public ResponseEntity<TokenModel> refreshToken(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String bearerToken) {
-        String token = bearerToken.substring(7);
+        String token;
+        try {
+            token = bearerToken.substring(7);
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new AccessDeniedException("토큰이 유효하지 않습니다");
+        }
         String generatedToken = authenticationService.refreshToken(token);
         return ResponseEntity.ok(TokenModel.success(generatedToken));
     }
