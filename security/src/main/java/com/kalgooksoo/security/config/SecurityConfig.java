@@ -21,11 +21,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    private final String secret;
 
-    @Value("${jwt.expiration-milli-seconds}")
-    private long tokenValidityInSeconds;
+    private final long tokenValidityInSeconds;
+
+    public SecurityConfig(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration-milli-seconds}") long tokenValidityInSeconds) {
+        this.secret = secret;
+        this.tokenValidityInSeconds = tokenValidityInSeconds;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
