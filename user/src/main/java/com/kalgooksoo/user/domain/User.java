@@ -73,14 +73,12 @@ public class User {
     private ContactNumber contactNumber;
 
     /**
-     * 엔티티가 생성된 시간입니다.
-     * 엔티티가 데이터베이스에 처음 저장될 때의 시간을 자동으로 저장합니다.
+     * 생성 일시
      */
     private LocalDateTime createdAt;
 
     /**
-     * 엔티티가 마지막으로 수정된 시간입니다.
-     * 엔티티가 데이터베이스에 저장될 때마다 시간을 자동으로 업데이트합니다.
+     * 수정 일시
      */
     private LocalDateTime modifiedAt;
 
