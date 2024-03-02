@@ -23,7 +23,7 @@ dependencies {
 
     implementation 'org.springframework.hateoas:spring-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.security:spring-security-crypto'
 
     // OpenAPI UI
