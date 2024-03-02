@@ -41,6 +41,10 @@ public class GatewayConfig {
                 .path("/auth/**")
                 .uri("lb://security-service"));
 
+        routes.route("menu-service", p -> p
+                .path("/menus/**")
+                .uri("lb://menu-service"));
+
         return routes.build();
 
     }
