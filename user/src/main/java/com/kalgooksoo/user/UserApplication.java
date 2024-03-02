@@ -1,6 +1,6 @@
 package com.kalgooksoo.user;
 
-import com.kalgooksoo.user.entity.User;
+import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.service.UserService;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 package com.kalgooksoo.user.repository;
 
-import com.kalgooksoo.user.entity.User;
+import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.search.UserSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

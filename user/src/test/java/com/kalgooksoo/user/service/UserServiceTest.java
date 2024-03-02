@@ -1,8 +1,8 @@
 package com.kalgooksoo.user.service;
 
 import com.kalgooksoo.user.command.UpdateUserCommand;
-import com.kalgooksoo.user.entity.Authority;
-import com.kalgooksoo.user.entity.User;
+import com.kalgooksoo.user.domain.Authority;
+import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.repository.AuthorityRepository;
@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
         "eureka.client.enabled=false",
         "spring.cloud.config.enabled=false"
 })
+@ActiveProfiles("test")
 class UserServiceTest {
 
     private UserService userService;

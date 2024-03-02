@@ -1,6 +1,6 @@
 package com.kalgooksoo.user.repository;
 
-import com.kalgooksoo.user.entity.Authority;
+import com.kalgooksoo.user.domain.Authority;
 
 import java.util.List;
 

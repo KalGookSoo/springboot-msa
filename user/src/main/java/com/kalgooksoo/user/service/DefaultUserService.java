@@ -1,15 +1,15 @@
 package com.kalgooksoo.user.service;
 
 import com.kalgooksoo.user.command.UpdateUserCommand;
-import com.kalgooksoo.user.entity.Authority;
-import com.kalgooksoo.user.entity.User;
+import com.kalgooksoo.user.domain.Authority;
+import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
-import com.kalgooksoo.user.value.ContactNumber;
-import com.kalgooksoo.user.value.Email;
+import com.kalgooksoo.user.domain.ContactNumber;
+import com.kalgooksoo.user.domain.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

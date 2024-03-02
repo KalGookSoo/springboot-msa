@@ -6,7 +6,7 @@ import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
-import com.kalgooksoo.user.entity.User;
+import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.cloud.config.enabled=false"
 })
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class UserRestControllerTest {
 
     @Autowired

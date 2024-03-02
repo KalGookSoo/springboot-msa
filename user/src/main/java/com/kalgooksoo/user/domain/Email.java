@@ -1,4 +1,4 @@
-package com.kalgooksoo.user.value;
+package com.kalgooksoo.user.domain;
 
 
 import jakarta.persistence.Embeddable;

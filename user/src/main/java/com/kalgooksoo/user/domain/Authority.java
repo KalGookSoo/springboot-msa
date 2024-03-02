@@ -1,4 +1,4 @@
-package com.kalgooksoo.user.entity;
+package com.kalgooksoo.user.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

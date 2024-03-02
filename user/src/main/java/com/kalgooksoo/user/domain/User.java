@@ -1,8 +1,6 @@
-package com.kalgooksoo.user.entity;
+package com.kalgooksoo.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kalgooksoo.user.value.ContactNumber;
-import com.kalgooksoo.user.value.Email;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

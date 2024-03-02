@@ -1,7 +1,7 @@
 package com.kalgooksoo.user.model;
 
-import com.kalgooksoo.user.entity.Authority;
-import com.kalgooksoo.user.entity.User;
+import com.kalgooksoo.user.domain.Authority;
+import com.kalgooksoo.user.domain.User;
 
 import java.util.List;
 
