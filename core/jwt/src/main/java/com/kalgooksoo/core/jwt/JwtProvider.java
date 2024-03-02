@@ -71,6 +71,11 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String token) {
+
+        if (!hasText(token)) {
+            return false;
+        }
+
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
@@ -86,6 +91,10 @@ public class JwtProvider {
             LOGGER.error("JWT 서명이 로컬에서 계산된 서명과 일치하지 않습니다.");
         }
         return false;
+    }
+
+    private boolean hasText(String str) {
+        return str != null && !str.isEmpty();
     }
 
 }

@@ -13,14 +13,3 @@ spring:
     web-application-type: reactive
   config:
     import: 'optional:configserver:http://localhost:8888'
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: user-service
-#          uri: lb://user-service
-#          predicates:
-#            - Path=/users/**
-#        - id: security-service
-#          uri: lb://security-service
-#          predicates:
-#            - Path=/auth/**

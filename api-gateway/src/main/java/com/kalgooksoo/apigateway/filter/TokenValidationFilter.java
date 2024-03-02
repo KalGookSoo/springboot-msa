@@ -11,20 +11,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@Component
 public class TokenValidationFilter extends AbstractGatewayFilterFactory<TokenValidationFilter.Config> {
 
     private final Logger logger = LoggerFactory.getLogger(TokenValidationFilter.class);
 
     private final WebClient webClient;
 
-    public TokenValidationFilter(WebClient.Builder webClientBuilder) {
+    public TokenValidationFilter(WebClient webClient) {
         super(Config.class);
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8081").build();// FIXME baseUrl 하드코딩 제거할 것
+        this.webClient = webClient;
     }
 
     @Override

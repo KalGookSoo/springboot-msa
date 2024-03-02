@@ -6,6 +6,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class GatewayConfig {
@@ -34,6 +35,16 @@ public class GatewayConfig {
 
         return routes.build();
 
+    }
+
+    @Bean
+    public TokenValidationFilter tokenValidationFilter() {
+        return new TokenValidationFilter(webClient());
+    }
+
+    @Bean
+    public WebClient webClient() {
+        return WebClient.builder().baseUrl("http://localhost:8081").build();// FIXME baseUrl 하드코딩 제거할 것
     }
 
 }
