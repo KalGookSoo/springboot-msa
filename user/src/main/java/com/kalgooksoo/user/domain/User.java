@@ -118,7 +118,7 @@ public class User {
     }
 
     public void changePassword(String password) {
-        Assert.notNull(password, "패스워드는 null이 될 수 없습니다.");
+        Assert.notNull(password, "패스워드는 null이 될 수 없습니다");
         this.password = password;
         this.credentialsExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
         this.modifiedAt = LocalDateTime.now();
