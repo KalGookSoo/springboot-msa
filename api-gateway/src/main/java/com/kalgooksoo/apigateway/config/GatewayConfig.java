@@ -11,6 +11,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class GatewayConfig {
 
+    /**
+     * RouteLocator 빈을 생성합니다.
+     * TODO 이 내용을 application.yaml에 정의할 수 있도록 변경해야 함. api-gateway의 재기동 없이 config-server의 refresh만으로 라우트 변경이 가능해야 함.
+     *
+     * @param builder               RouteLocatorBuilder
+     * @param tokenValidationFilter TokenValidationFilter
+     * @return RouteLocator 빈
+     */
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder, TokenValidationFilter tokenValidationFilter) {
         RouteLocatorBuilder.Builder routes = builder.routes();
