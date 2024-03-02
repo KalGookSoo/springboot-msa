@@ -7,8 +7,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -68,6 +70,29 @@ public class Menu {
      */
     public boolean isRoot() {
         return parentId == null;
+    }
+
+    public static Menu createRoot(String name, String url, String createdBy) {
+        Assert.notNull(createdBy, "생성자는 null이 될 수 없습니다");
+        Menu menu = new Menu();
+        menu.id = UUID.randomUUID().toString();
+        menu.name = name;
+        menu.url = url;
+        menu.createdBy = createdBy;
+        menu.createdAt = LocalDateTime.now();
+        return menu;
+    }
+
+    public static Menu createChild(String name, String url, String parentId, String createdBy) {
+        Assert.notNull(createdBy, "생성자는 null이 될 수 없습니다");
+        Menu menu = new Menu();
+        menu.id = UUID.randomUUID().toString();
+        menu.name = name;
+        menu.url = url;
+        menu.parentId = parentId;
+        menu.createdBy = createdBy;
+        menu.createdAt = LocalDateTime.now();
+        return menu;
     }
 
 }

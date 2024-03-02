@@ -14,6 +14,7 @@ ext {
 }
 
 dependencies {
+    implementation project(':core:principal')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
