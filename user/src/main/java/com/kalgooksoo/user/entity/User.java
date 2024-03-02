@@ -22,7 +22,7 @@ import static lombok.AccessLevel.PROTECTED;
  */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
@@ -165,6 +165,7 @@ public class User {
      * 계정이 사용 가능한지 여부를 반환합니다.
      * @return 계정이 사용 가능한지 여부
      */
+    @SuppressWarnings("unused")
     public boolean isEnabled() {
         boolean accountNonLocked = isAccountNonLocked();
         boolean accountNonExpired = isAccountNonExpired();
