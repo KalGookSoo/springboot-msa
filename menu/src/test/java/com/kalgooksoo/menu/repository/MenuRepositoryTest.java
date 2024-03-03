@@ -1,8 +1,6 @@
 package com.kalgooksoo.menu.repository;
 
 import com.kalgooksoo.menu.domain.Menu;
-import com.kalgooksoo.principal.PrincipalProvider;
-import com.kalgooksoo.principal.StubPrincipalProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +15,6 @@ class MenuRepositoryTest {
 
     private MenuRepository menuRepository;
 
-    private final PrincipalProvider principalProvider = new StubPrincipalProvider();
-
-    private final String createdBy = principalProvider.getUsername();
-
     @Autowired
     private TestEntityManager entityManager;
 
@@ -33,7 +27,7 @@ class MenuRepositoryTest {
     @DisplayName("메뉴를 생성합니다.")
     void saveTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
 
         // When
         Menu savedMenu = menuRepository.save(menu);
@@ -46,7 +40,7 @@ class MenuRepositoryTest {
     @DisplayName("메뉴를 조회합니다.")
     void findByIdTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
         Menu savedMenu = menuRepository.save(menu);
 
         // When
@@ -61,7 +55,7 @@ class MenuRepositoryTest {
     @DisplayName("메뉴를 수정합니다.")
     void updateTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
         Menu savedMenu = menuRepository.save(menu);
 
         // When
@@ -78,7 +72,7 @@ class MenuRepositoryTest {
     @DisplayName("메뉴를 삭제합니다.")
     void deleteTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
         Menu savedMenu = menuRepository.save(menu);
 
         // When

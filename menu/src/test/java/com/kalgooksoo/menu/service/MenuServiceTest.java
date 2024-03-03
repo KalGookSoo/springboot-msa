@@ -4,8 +4,6 @@ import com.kalgooksoo.menu.command.MenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.model.HierarchicalMenu;
 import com.kalgooksoo.menu.repository.MenuRepository;
-import com.kalgooksoo.principal.PrincipalProvider;
-import com.kalgooksoo.principal.StubPrincipalProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,10 +31,6 @@ class MenuServiceTest {
 
     private MenuService menuService;
 
-    private final PrincipalProvider principalProvider = new StubPrincipalProvider();
-
-    private final String createdBy = principalProvider.getUsername();
-
     @BeforeEach
     void setup() {
         menuService = new DefaultMenuService(menuRepository);
@@ -46,7 +40,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성합니다.")
     void createTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
 
         // When
         Menu savedMenu = menuService.create(menu);
@@ -59,11 +53,11 @@ class MenuServiceTest {
     @DisplayName("메뉴를 수정합니다.")
     void updateTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
         Menu savedMenu = menuService.create(menu);
 
         // When
-        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles");
+        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
         Menu updatedMenu = menuService.update(savedMenu.getId(), command);
 
         // Then
@@ -76,7 +70,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 조회합니다.")
     void findByIdTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
         Menu savedMenu = menuService.create(menu);
 
         // When
@@ -91,7 +85,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 삭제합니다.")
     void deleteByIdTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
         Menu savedMenu = menuService.create(menu);
 
         // When
@@ -107,11 +101,11 @@ class MenuServiceTest {
     void findAllTest() {
         // Given
         IntStream.rangeClosed(1, 5).forEach(i -> {
-            Menu parent = Menu.create("메뉴" + i, "http://www.kalgooksoo.com/categories/" + i + "/articles", null, createdBy);
+            Menu parent = Menu.create("메뉴" + i, "http://www.kalgooksoo.com/categories/" + i + "/articles", null, "anonymous");
             Menu savedParent = menuService.create(parent);
-            Menu child = Menu.create("하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedParent.getId(), createdBy);
+            Menu child = Menu.create("하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedParent.getId(), "anonymous");
             Menu savedChild = menuService.create(child);
-            Menu grandChild = Menu.create("하위하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedChild.getId(), createdBy);
+            Menu grandChild = Menu.create("하위하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedChild.getId(), "anonymous");
             menuService.create(grandChild);
         });
 
@@ -132,9 +126,9 @@ class MenuServiceTest {
     @DisplayName("자식 메뉴를 추가합니다.")
     void addChildTest() {
         // Given
-        Menu parent = Menu.create("국민참여", "http://www.kalgooksoo.com/categories/3/articles", null, createdBy);
+        Menu parent = Menu.create("국민참여", "http://www.kalgooksoo.com/categories/3/articles", null, "anonymous");
         Menu savedParent = menuService.create(parent);
-        Menu child = Menu.create("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedParent.getId(), createdBy);
+        Menu child = Menu.create("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedParent.getId(), "anonymous");
 
         // When
         menuService.create(child);
