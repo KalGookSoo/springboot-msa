@@ -56,10 +56,11 @@ public class UserRestController {
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         try {
             User createdEntity = userService.createUser(user);
-            EntityModel<User> resource = EntityModel.of(createdEntity);
-            WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(createdEntity.getId()));
-            resource.add(linkTo.withRel("self"));
-            return ResponseEntity.status(HttpStatus.CREATED).body(resource);
+            EntityModel<User> entityModel = EntityModel.of(createdEntity);
+            UserRestController userRestController = methodOn(this.getClass());
+            WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(userRestController.findById(createdEntity.getId()));
+            entityModel.add(webMvcLinkBuilder.withRel("self"));
+            return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
         } catch (UsernameAlreadyExistsException e) {
             throw new UsernameAlreadyExistsException(command.username(), "계정이 이미 존재합니다");
         }
@@ -85,8 +86,11 @@ public class UserRestController {
         Page<User> page = userService.findAll(search, search.pageable());
 
         List<EntityModel<User>> users = page.getContent().stream()
-                .map(user -> EntityModel.of(user,
-                        WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(user.getId())).withRel("self")))
+                .map(user -> {
+                    UserRestController userRestController = methodOn(this.getClass());
+                    WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(userRestController.findById(user.getId()));
+                    return EntityModel.of(user, webMvcLinkBuilder.withRel("self"));
+                })
                 .collect(Collectors.toList());
 
         PagedModel.PageMetadata metadata = new PagedModel.PageMetadata(page.getSize(), page.getNumber(), page.getTotalElements(), page.getTotalPages());
@@ -112,10 +116,10 @@ public class UserRestController {
         if (foundEntity.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        EntityModel<User> resource = EntityModel.of(foundEntity.get());
+        EntityModel<User> entityModel = EntityModel.of(foundEntity.get());
         WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(id));
-        resource.add(linkTo.withRel("self"));
-        return ResponseEntity.ok(resource);
+        entityModel.add(linkTo.withRel("self"));
+        return ResponseEntity.ok(entityModel);
     }
 
     /**
@@ -131,10 +135,10 @@ public class UserRestController {
             @Valid @RequestBody UpdateUserCommand command
     ) {
         User updatedEntity = userService.update(id, command);
-        EntityModel<User> resource = EntityModel.of(updatedEntity);
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(id));
-        resource.add(linkTo.withRel("self"));
-        return ResponseEntity.ok(resource);
+        EntityModel<User> entityModel = EntityModel.of(updatedEntity);
+        WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(id));
+        entityModel.add(webMvcLinkBuilder.withRel("self"));
+        return ResponseEntity.ok(entityModel);
     }
 
     /**
@@ -176,10 +180,11 @@ public class UserRestController {
     @PostMapping("/sign-in")
     public ResponseEntity<EntityModel<UserSummary>> signIn(@Valid @RequestBody SignInCommand command) {
         UserSummary verifiedUser = userService.verify(command.username(), command.password());
-        EntityModel<UserSummary> resource = EntityModel.of(verifiedUser);
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).signIn(command));
-        resource.add(linkTo.withRel("self"));
-        return ResponseEntity.ok(resource);
+        EntityModel<UserSummary> entityModel = EntityModel.of(verifiedUser);
+        UserRestController userRestController = methodOn(this.getClass());
+        WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(userRestController.signIn(command));
+        entityModel.add(webMvcLinkBuilder.withRel("self"));
+        return ResponseEntity.ok(entityModel);
     }
 
 }
