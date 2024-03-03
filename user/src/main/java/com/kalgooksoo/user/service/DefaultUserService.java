@@ -76,8 +76,7 @@ public class DefaultUserService implements UserService {
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         user.update(name, email, contactNumber);
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
     /**
@@ -113,12 +112,8 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public void deleteById(String id) {
-        try {
-            userRepository.deleteById(id);
-            authorityRepository.deleteByUserId(id);
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("계정을 찾을 수 없습니다.");
-        }
+        userRepository.deleteById(id);
+        authorityRepository.deleteByUserId(id);
     }
 
     /**
@@ -135,6 +130,8 @@ public class DefaultUserService implements UserService {
     }
 
     /**
+     * 계정 정보를 검증합니다.
+     *
      * @param username 계정명
      * @param password 패스워드
      * @return 계정 정보가 일치하면 계정 정보를 반환합니다.
