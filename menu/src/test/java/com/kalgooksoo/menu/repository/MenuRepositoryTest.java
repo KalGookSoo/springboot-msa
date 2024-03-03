@@ -24,8 +24,6 @@ class MenuRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    private Menu testMenu;
-
     @BeforeEach
     void setup() {
         menuRepository = new MenuJpaRepository(entityManager.getEntityManager());
@@ -42,6 +40,53 @@ class MenuRepositoryTest {
 
         // Then
         assertNotNull(savedMenu);
+    }
+
+    @Test
+    @DisplayName("메뉴를 조회합니다.")
+    void findByIdTest() {
+        // Given
+        Menu menu = Menu.createRoot("공지사항", "http://www.kalgooksoo.com/boards/1/articles", createdBy);
+        Menu savedMenu = menuRepository.save(menu);
+
+        // When
+        Menu foundMenu = menuRepository.findById(savedMenu.getId()).orElse(null);
+
+        // Then
+        assertNotNull(foundMenu);
+        assertEquals(savedMenu.getId(), foundMenu.getId());
+    }
+
+    @Test
+    @DisplayName("메뉴를 수정합니다.")
+    void updateTest() {
+        // Given
+        Menu menu = Menu.createRoot("공지사항", "http://www.kalgooksoo.com/boards/1/articles", createdBy);
+        Menu savedMenu = menuRepository.save(menu);
+
+        // When
+        savedMenu.update("오시는 길", "http://www.kalgooksoo.com/boards/2/articles");
+        Menu updatedMenu = menuRepository.save(savedMenu);
+
+        // Then
+        assertNotNull(updatedMenu);
+        assertEquals(savedMenu.getId(), updatedMenu.getId());
+        assertEquals("오시는 길", updatedMenu.getName());
+    }
+
+    @Test
+    @DisplayName("메뉴를 삭제합니다.")
+    void deleteTest() {
+        // Given
+        Menu menu = Menu.createRoot("공지사항", "http://www.kalgooksoo.com/boards/1/articles", createdBy);
+        Menu savedMenu = menuRepository.save(menu);
+
+        // When
+        menuRepository.deleteById(savedMenu.getId());
+        Menu deletedMenu = menuRepository.findById(savedMenu.getId()).orElse(null);
+
+        // Then
+        assertNull(deletedMenu);
     }
 
 }
