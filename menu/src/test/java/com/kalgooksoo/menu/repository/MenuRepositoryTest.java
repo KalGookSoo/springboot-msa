@@ -33,7 +33,7 @@ class MenuRepositoryTest {
     @DisplayName("메뉴를 생성합니다.")
     void saveTest() {
         // Given
-        Menu menu = Menu.createRoot("공지사항", "http://www.kalgooksoo.com/boards/1/articles", createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
 
         // When
         Menu savedMenu = menuRepository.save(menu);
@@ -46,7 +46,7 @@ class MenuRepositoryTest {
     @DisplayName("메뉴를 조회합니다.")
     void findByIdTest() {
         // Given
-        Menu menu = Menu.createRoot("공지사항", "http://www.kalgooksoo.com/boards/1/articles", createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
         Menu savedMenu = menuRepository.save(menu);
 
         // When
@@ -61,11 +61,11 @@ class MenuRepositoryTest {
     @DisplayName("메뉴를 수정합니다.")
     void updateTest() {
         // Given
-        Menu menu = Menu.createRoot("공지사항", "http://www.kalgooksoo.com/boards/1/articles", createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
         Menu savedMenu = menuRepository.save(menu);
 
         // When
-        savedMenu.update("오시는 길", "http://www.kalgooksoo.com/boards/2/articles");
+        savedMenu.update("오시는 길", "http://www.kalgooksoo.com/categories/2/articles");
         Menu updatedMenu = menuRepository.save(savedMenu);
 
         // Then
@@ -78,7 +78,7 @@ class MenuRepositoryTest {
     @DisplayName("메뉴를 삭제합니다.")
     void deleteTest() {
         // Given
-        Menu menu = Menu.createRoot("공지사항", "http://www.kalgooksoo.com/boards/1/articles", createdBy);
+        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
         Menu savedMenu = menuRepository.save(menu);
 
         // When
