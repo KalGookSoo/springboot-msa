@@ -6,7 +6,8 @@
 ## 목차
 1. [프로젝트 정보](#프로젝트-정보)
 2. [토큰 발급 시나리오](#토큰-발급-시나리오)
-3. [API 명세서](#api-명세서)
+3. [토큰 검증 시나리오](#토큰-검증-시나리오)
+4. [API 명세서](#api-명세서)
 
 ---
 
@@ -24,19 +25,39 @@
 ```mermaid
 sequenceDiagram
     participant Client as Client
-    participant ApiGateway as API-GATEWAY
-    participant SecurityService as SECURITY-SERVICE
-    participant UserService as USER-SERVICE
+    participant ApiGateway as API Gateway
+    participant SecurityService as Security Service
+    participant UserService as User Service
 
-    Client->>ApiGateway: POST /auth/token (username, password)
-    ApiGateway->>SecurityService: POST /auth/token (username, password)
-    SecurityService->>UserService: POST /users/sign-in (username, password)
+    Client->>ApiGateway: POST /auth/token
+    ApiGateway->>SecurityService: POST /auth/token
+    SecurityService->>UserService: POST /users/sign-in
     alt Successful Verification
         UserService->>SecurityService: 200 OK
         SecurityService->>ApiGateway: 200 OK
         ApiGateway->>Client: 200 OK, Return Token
     else Failed Verification
         UserService->>SecurityService: 400 Bad Request
+        SecurityService->>ApiGateway: 401 Unauthorized
+        ApiGateway->>Client: 401 Unauthorized
+    end
+```
+
+---
+
+## 토큰 검증 시나리오
+```mermaid
+sequenceDiagram
+    participant Client as Client
+    participant ApiGateway as API Gateway
+    participant SecurityService as Security Service
+
+    Client->>ApiGateway: GET /auth/token
+    ApiGateway->>SecurityService: GET /auth/token
+    alt Successful Verification
+        SecurityService->>ApiGateway: 200 OK
+        ApiGateway->>Client: 200 OK
+    else Failed Verification
         SecurityService->>ApiGateway: 401 Unauthorized
         ApiGateway->>Client: 401 Unauthorized
     end
