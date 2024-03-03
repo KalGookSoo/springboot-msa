@@ -22,6 +22,4 @@ public interface MenuService {
 
     void deleteById(String id);
 
-    void addChild(String menuId, Menu child);
-
 }

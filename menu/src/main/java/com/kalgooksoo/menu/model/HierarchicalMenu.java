@@ -23,4 +23,7 @@ public record HierarchicalMenu(
         LocalDateTime createdAt,
         LocalDateTime modifiedAt
 ) {
+    public static HierarchicalMenu of(String id, String name, String url, List<HierarchicalMenu> children, String createdBy, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        return new HierarchicalMenu(id, name, url, children, createdBy, createdAt, modifiedAt);
+    }
 }
