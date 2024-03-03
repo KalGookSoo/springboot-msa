@@ -7,7 +7,7 @@ import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
-import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

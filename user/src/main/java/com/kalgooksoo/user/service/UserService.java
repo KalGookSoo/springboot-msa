@@ -4,7 +4,7 @@ import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
 import com.kalgooksoo.user.domain.User;
-import com.kalgooksoo.user.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.search.UserSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

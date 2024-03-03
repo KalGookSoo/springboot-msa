@@ -1,4 +1,4 @@
-package com.kalgooksoo.user.exception;
+package com.kalgooksoo.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
