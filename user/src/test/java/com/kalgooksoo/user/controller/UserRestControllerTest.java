@@ -34,10 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 계정 REST 컨트롤러 테스트
  */
 @Transactional
-@SpringBootTest(properties = {
-        "eureka.client.enabled=false",
-        "spring.cloud.config.enabled=false"
-})
+@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class UserRestControllerTest {

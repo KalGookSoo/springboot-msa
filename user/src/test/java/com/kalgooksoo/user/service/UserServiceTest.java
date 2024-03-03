@@ -32,10 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * 계정 서비스 테스트
  */
 @Transactional
-@SpringBootTest(properties = {
-        "eureka.client.enabled=false",
-        "spring.cloud.config.enabled=false"
-})
+@SpringBootTest
 @ActiveProfiles("test")
 class UserServiceTest {
 

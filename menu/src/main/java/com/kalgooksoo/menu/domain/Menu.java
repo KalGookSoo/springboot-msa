@@ -95,4 +95,10 @@ public class Menu {
         return menu;
     }
 
+    public void update(String name, String url) {
+        this.name = name;
+        this.url = url;
+        this.modifiedAt = LocalDateTime.now();
+    }
+
 }
