@@ -70,4 +70,15 @@ public class ExceptionHandlingController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(ERROR_KEY, e.getMessage()));
     }
 
+    /**
+     * IllegalStateException 예외를 처리하는 메서드입니다.
+     *
+     * @param e 발생한 IllegalStateException 예외
+     * @return 에러 정보를 담은 ResponseEntity 객체를 반환합니다. 상태 코드는 BAD_REQUEST(400)입니다.
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalStateException(IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(ERROR_KEY, e.getMessage()));
+    }
+
 }
