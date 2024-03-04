@@ -24,6 +24,9 @@
 ## Domain
 
 ```mermaid
+---
+title: User Service Domain
+---
 classDiagram
     class User {
         -String id
@@ -62,6 +65,9 @@ classDiagram
 
 ## Entity Relationship Diagram
 ```mermaid
+---
+title: User Service ERD
+---
 erDiagram
     tb_user {
         string id PK
