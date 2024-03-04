@@ -26,7 +26,9 @@
 ```mermaid
 classDiagram
     class User {
-        +String id
+        -String id
+        -Email email
+        -ContactNumber contactNumber
         +create(): User
         +update(): void
         +changePassword(): void
@@ -35,12 +37,25 @@ classDiagram
         +isCredentialsNonExpired(): boolean
         +isEnabled(): boolean
     }
+    class Email {
+        -String id
+        -String domain
+        +value()
+    }
+    class ContactNumber {
+        -String first
+        -String middle
+        -String last
+        +value()
+    }
     class Authority {
-        +String id
-        +String userId
+        -String id
+        -String userId
         +create(): Authority
     }
-    User "1" -- "*" Authority: has
+    User "1" -- "N" Authority: has
+    User "1" -- "1" Email: has
+    User "1" -- "1" ContactNumber: has
 ```
 
 ---
