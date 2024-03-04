@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,8 +32,6 @@ class MenuRestControllerTest {
 
     private MockMvc mockMvc;
 
-    private MenuRestController menuRestController;
-
     @Autowired
     private TestEntityManager entityManager;
 
@@ -44,15 +41,169 @@ class MenuRestControllerTest {
     void setUp() {
         MenuRepository menuRepository = new MenuJpaRepository(entityManager.getEntityManager());
         MenuService menuService = new DefaultMenuService(menuRepository);
-        menuRestController = new MenuRestController(menuService);
+        MenuRestController menuRestController = new MenuRestController(menuService);
         mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
     }
 
     @Test
-    @DisplayName("메뉴 생성")
-    void create() throws Exception {
+    @DisplayName("메뉴를 생성합니다. 성공 시 응답 코드 201을 반환합니다.")
+    void createSouldReturnCreated() throws Exception {
         // Given
         MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+
+        // When
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 생성합니다. 실패 시 응답 코드 400을 반환합니다.")
+    void createSouldReturnBadRequest() throws Exception {
+        // Given
+        MenuCommand command = new MenuCommand(null, "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+
+        // When
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴 목록을 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
+    void findAllShouldReturnOk() throws Exception {
+        // Given
+        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+
+        // When
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
+    void findByIdShouldReturnOk() throws Exception {
+        // Given
+        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+
+        // When
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 조회합니다. 존재하지 않는 메뉴 조회 시 응답 코드 404를 반환합니다.")
+    void findByIdShouldReturnNotFound() throws Exception {
+        // Given
+        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+
+        // When
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 수정합니다. 성공 시 응답 코드 200을 반환합니다.")
+    void updateByIdShouldReturnOk() throws Exception {
+        // Given
+        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+
+        // When
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 수정합니다. 실패 시 응답 코드 400을 반환합니다.")
+    void updateByIdShouldReturnBadRequest() throws Exception {
+        // Given
+        MenuCommand command = new MenuCommand(null, "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+
+        // When
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 수정합니다. 존재하지 않는 메뉴 수정 시 응답 코드 404를 반환합니다.")
+    void updateByIdShouldReturnNotFound() throws Exception {
+        // Given
+        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+
+        // When
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 삭제합니다. 성공 시 응답 코드 204를 반환합니다.")
+    void deleteByIdShouldReturnNoContent() throws Exception {
+        // Given
+        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("오시는 길"))
+                .andDo(MockMvcResultHandlers.print());
 
         // When
         mockMvc.perform(post("/menus")
