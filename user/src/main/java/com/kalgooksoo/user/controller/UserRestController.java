@@ -55,21 +55,17 @@ public class UserRestController {
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
-        try {
-            userService.createUser(user);
+        userService.createUser(user);
 
-            EntityModel<User> entityModel = EntityModel.of(user);
-            ResponseEntity<EntityModel<User>> invocationValue = methodOn(this.getClass())
-                    .findById(user.getId());
+        EntityModel<User> entityModel = EntityModel.of(user);
+        ResponseEntity<EntityModel<User>> invocationValue = methodOn(this.getClass())
+                .findById(user.getId());
 
-            Link link = WebMvcLinkBuilder.linkTo(invocationValue)
-                    .withRel("self");
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
 
-            EntityModel.of(user, link);
-            return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
-        } catch (UsernameAlreadyExistsException e) {
-            throw new UsernameAlreadyExistsException(command.username(), "계정이 이미 존재합니다");
-        }
+        EntityModel.of(user, link);
+        return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
     }
 
     /**
