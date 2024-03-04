@@ -1,16 +1,16 @@
 package com.kalgooksoo.user.controller;
 
-import com.kalgooksoo.user.command.SignInCommand;
+import com.kalgooksoo.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.command.CreateUserCommand;
+import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
+import com.kalgooksoo.user.domain.ContactNumber;
+import com.kalgooksoo.user.domain.Email;
 import com.kalgooksoo.user.domain.User;
-import com.kalgooksoo.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
-import com.kalgooksoo.user.domain.ContactNumber;
-import com.kalgooksoo.user.domain.Email;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -55,11 +56,16 @@ public class UserRestController {
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         try {
-            User createdEntity = userService.createUser(user);
-            EntityModel<User> entityModel = EntityModel.of(createdEntity);
-            UserRestController userRestController = methodOn(this.getClass());
-            WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(userRestController.findById(createdEntity.getId()));
-            entityModel.add(webMvcLinkBuilder.withRel("self"));
+            userService.createUser(user);
+
+            EntityModel<User> entityModel = EntityModel.of(user);
+            ResponseEntity<EntityModel<User>> invocationValue = methodOn(this.getClass())
+                    .findById(user.getId());
+
+            Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                    .withRel("self");
+
+            EntityModel.of(user, link);
             return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
         } catch (UsernameAlreadyExistsException e) {
             throw new UsernameAlreadyExistsException(command.username(), "계정이 이미 존재합니다");
@@ -85,20 +91,28 @@ public class UserRestController {
     public ResponseEntity<PagedModel<EntityModel<User>>> findAll(UserSearch search) {
         Page<User> page = userService.findAll(search, search.pageable());
 
-        List<EntityModel<User>> users = page.getContent().stream()
+        List<EntityModel<User>> entityModels = page.getContent()
+                .stream()
                 .map(user -> {
-                    UserRestController userRestController = methodOn(this.getClass());
-                    WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(userRestController.findById(user.getId()));
-                    return EntityModel.of(user, webMvcLinkBuilder.withRel("self"));
+                    ResponseEntity<EntityModel<User>> invocationValue = methodOn(this.getClass())
+                            .findById(user.getId());
+
+                    Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                            .withRel("self");
+
+                    return EntityModel.of(user, link);
                 })
                 .collect(Collectors.toList());
 
         PagedModel.PageMetadata metadata = new PagedModel.PageMetadata(page.getSize(), page.getNumber(), page.getTotalElements(), page.getTotalPages());
-        PagedModel<EntityModel<User>> pagedModel = PagedModel.of(users, metadata);
 
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findAll(search));
-        pagedModel.add(linkTo.withRel("self"));
+        ResponseEntity<PagedModel<EntityModel<User>>> invocationValue = methodOn(this.getClass())
+                .findAll(search);
 
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        PagedModel<EntityModel<User>> pagedModel = PagedModel.of(entityModels, metadata, link);
         return ResponseEntity.ok(pagedModel);
     }
 
@@ -112,13 +126,15 @@ public class UserRestController {
     public ResponseEntity<EntityModel<User>> findById(
             @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
-        Optional<User> foundEntity = userService.findById(id);
-        if (foundEntity.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        EntityModel<User> entityModel = EntityModel.of(foundEntity.get());
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(id));
-        entityModel.add(linkTo.withRel("self"));
+        User user = userService.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
+
+        ResponseEntity<EntityModel<User>> invocationValue = methodOn(this.getClass())
+                .findById(id);
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<User> entityModel = EntityModel.of(user, link);
         return ResponseEntity.ok(entityModel);
     }
 
@@ -134,10 +150,15 @@ public class UserRestController {
             @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
             @Valid @RequestBody UpdateUserCommand command
     ) {
-        User updatedEntity = userService.update(id, command);
-        EntityModel<User> entityModel = EntityModel.of(updatedEntity);
-        WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).findById(id));
-        entityModel.add(webMvcLinkBuilder.withRel("self"));
+        User user = userService.update(id, command);
+
+        ResponseEntity<EntityModel<User>> invocationValue = methodOn(this.getClass())
+                .findById(id);
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<User> entityModel = EntityModel.of(user, link);
         return ResponseEntity.ok(entityModel);
     }
 
@@ -179,11 +200,15 @@ public class UserRestController {
      */
     @PostMapping("/sign-in")
     public ResponseEntity<EntityModel<UserSummary>> signIn(@Valid @RequestBody SignInCommand command) {
-        UserSummary verifiedUser = userService.verify(command.username(), command.password());
-        EntityModel<UserSummary> entityModel = EntityModel.of(verifiedUser);
-        UserRestController userRestController = methodOn(this.getClass());
-        WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(userRestController.signIn(command));
-        entityModel.add(webMvcLinkBuilder.withRel("self"));
+        UserSummary userSummary = userService.verify(command.username(), command.password());
+
+        ResponseEntity<EntityModel<UserSummary>> invocationValue = methodOn(this.getClass())
+                .signIn(command);
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<UserSummary> entityModel = EntityModel.of(userSummary, link);
         return ResponseEntity.ok(entityModel);
     }
 
