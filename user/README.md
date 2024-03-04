@@ -5,8 +5,9 @@
 
 ## 목차
 1. [프로젝트 정보](#프로젝트-정보)  
-2. [도메인 엔티티](#도메인-엔티티)
-3. [API 명세서](#api-명세서)
+2. [Domain](#domain)
+3. [Entity Relationship Diagram](#entity-relationship-diagram)
+3. [Open API Specification](#open-api-specification)
 
 ---
 
@@ -20,30 +21,57 @@
 
 ---
 
-## 도메인 엔티티
+## Domain
+
 ```mermaid
 classDiagram
     class User {
-        -String id
-        +create()
-        +update()
-        +changePassword()
-        +isAccountNonExpired()
-        +isAccountNonLocked()
-        +isCredentialsNonExpired()
-        +isEnabled()
+        +String id
+        +create(): User
+        +update(): void
+        +changePassword(): void
+        +isAccountNonExpired(): boolean
+        +isAccountNonLocked(): boolean
+        +isCredentialsNonExpired(): boolean
+        +isEnabled(): boolean
     }
     class Authority {
-        -String id
-        -String userId
-        +create()
+        +String id
+        +String userId
+        +create(): Authority
     }
-    User "1" -- "N" Authority : has
+    User "1" -- "*" Authority: has
 ```
 
 ---
 
-## API 명세서
-[OpenAPI](docs%2Fuser-api-docs.yaml)
-
+## Entity Relationship Diagram
+```mermaid
+erDiagram
+    tb_user {
+        string id PK
+        string first_contact_number
+        string middle_contact_number
+        string last_contact_number
+        timestamp created_at
+        timestamp credentials_expired_at
+        string email_domain
+        string email_id
+        timestamp expired_at
+        timestamp locked_at
+        timestamp modified_at
+        string name
+        string password
+        string username
+    }
+    tb_authority {
+        string id PK
+        string name
+        string user_id FK
+    }
+    tb_user ||--o{ tb_authority: has
+```
 ---
+
+## Open API Specification
+[API 명세 바로가기](docs%2Fuser-api-docs.yaml)
