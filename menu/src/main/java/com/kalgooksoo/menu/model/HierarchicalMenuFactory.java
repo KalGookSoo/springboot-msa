@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public interface MenuHierarchyFactory {
+public interface HierarchicalMenuFactory {
 
     static HierarchicalMenu toHierarchical(Menu menu, Map<String, List<Menu>> menuMap) {
         List<Menu> children = menuMap.getOrDefault(menu.getId(), new ArrayList<>());

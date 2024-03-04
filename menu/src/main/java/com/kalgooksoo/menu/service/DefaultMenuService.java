@@ -3,7 +3,7 @@ package com.kalgooksoo.menu.service;
 import com.kalgooksoo.menu.command.MenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.model.HierarchicalMenu;
-import com.kalgooksoo.menu.model.MenuHierarchyFactory;
+import com.kalgooksoo.menu.model.HierarchicalMenuFactory;
 import com.kalgooksoo.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -50,7 +50,7 @@ public class DefaultMenuService implements MenuService {
 
         return menus.stream()
                 .filter(Menu::isRoot)
-                .map(menu -> MenuHierarchyFactory.toHierarchical(menu, menuMap))
+                .map(menu -> HierarchicalMenuFactory.toHierarchical(menu, menuMap))
                 .toList();
     }
 
