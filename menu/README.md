@@ -24,28 +24,22 @@
 ## Domain
 
 ```mermaid
+---
+title: Menu Service Domain
+---
 classDiagram
     class HierarchicalMenu {
-        +String id
-        +String name
-        +String url
-        +List<HierarchicalMenu> children
-        +String createdBy
-        +LocalDateTime createdAt
-        +LocalDateTime modifiedAt
+        -String id
+        -List<HierarchicalMenu> children
         +of(): HierarchicalMenu
     }
     class HierarchicalMenuFactory {
+        <<interface>>
         +toHierarchical(): HierarchicalMenu
     }
     class Menu {
-        +String id
-        +String name
-        +String url
-        +String parentId
-        +String createdBy
-        +LocalDateTime createdAt
-        +LocalDateTime modifiedAt
+        -String id
+        -String parentId
         +create(): Menu
         +update(): void
         +isRoot(): boolean
@@ -59,6 +53,9 @@ classDiagram
 
 ## Entity Relationship Diagram
 ```mermaid
+---
+title: Menu Service ERD
+---
 erDiagram
     tb_menu {
         string id PK
