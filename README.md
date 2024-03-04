@@ -33,8 +33,10 @@ graph LR
     B -->|Routes to| E[Micro Service#2]
     D -->|Registers with| C[Service Registry]
     E -->|Registers with| C
+    B -->|Registers with| C
     D -->|Imports config from| F[Config Server]
     E -->|Imports config from| F
+    B -->|Imports config from| F
 ```
 _`분산 추적 모니터링`, `message-queue`, `event-sourcing`은 추후 구현할 예정._
 
