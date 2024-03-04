@@ -21,12 +21,105 @@
 
 ---
 
+## Domain
 ```mermaid
-erDiagram
-    Category ||--o{ Article : has
-    Article ||--o{ Comment : has
-    Article ||--o{ Attachment : has
+---
+title: Board Service Domain
+---
+classDiagram
+    class Category {
+        -String id
+        +create(): Category
+        +update(): void
+    }
+    class Article {
+        -String id
+        -String categoryId
+        +create(): Article
+        +update(): void
+        +increaseViews()
+        +increaseLikes()
+        +decreaseLikes()
+        +increaseDislikes()
+        +decreaseDislikes()
+    }
+    class Attachment {
+        -String id
+        -String articleId
+        +create(): Attachment
+        +update(): void
+    }
+    class Comment {
+        -String id
+        -String articleId
+        +create(): Comment
+        +update(): void
+        +increaseLikes()
+        +decreaseLikes()
+        +increaseDislikes()
+        +decreaseDislikes()
+    }
+    Category "1" -- "N" Article: has
+    Article "1" -- "N" Attachment: has
+    Article "1" -- "N" Comment: has
 ```
+
+---
+
+## Entity Relationship Diagram
+```mermaid
+---
+title: Board Service ERD
+---
+erDiagram
+    tb_article ||--o{ tb_attachment : has
+    tb_article ||--o{ tb_comment : has
+    tb_category ||--o{ tb_article : has
+    tb_category {
+        string id PK
+        string name
+        string type
+        string created_by
+        timestamp created_at
+        timestamp modified_at
+    }
+    tb_article {
+        string id PK
+        string category_id FK
+        string title
+        text content
+        integer views
+        integer likes
+        integer dislikes
+        string created_by
+        timestamp created_at
+        timestamp modified_at
+    }
+    tb_attachment {
+        string id PK
+        string article_id FK
+        string name
+        string path_name
+        string mime_type
+        bigint size
+        string created_by
+        timestamp created_at
+        timestamp modified_at
+    }
+    tb_comment {
+        string id PK
+        string article_id FK
+        text content
+        integer likes
+        integer dislikes
+        string created_by
+        timestamp created_at
+        timestamp modified_at
+    }
+```
+
+---
+
 
 
 ## Open API Specification
