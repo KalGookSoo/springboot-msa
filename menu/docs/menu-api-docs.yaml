@@ -1,0 +1,154 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8082
+  description: Generated server url
+tags:
+- name: MenuRestController
+  description: 메뉴 API
+paths:
+  /menus/{id}:
+    get:
+      tags:
+      - MenuRestController
+      operationId: findById
+      parameters:
+      - name: id
+        in: path
+        description: 메뉴 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelMenu'
+    put:
+      tags:
+      - MenuRestController
+      operationId: updateById
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelMenu'
+    delete:
+      tags:
+      - MenuRestController
+      operationId: deleteById
+      responses:
+        "200":
+          description: OK
+  /menus:
+    get:
+      tags:
+      - MenuRestController
+      operationId: findAll
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CollectionModelEntityModelMenu'
+    post:
+      tags:
+      - MenuRestController
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelMenu'
+components:
+  schemas:
+    EntityModelMenu:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+        parentId:
+          type: string
+        createdBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        root:
+          type: boolean
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Link'
+    MenuCommand:
+      required:
+      - createdBy
+      - name
+      - url
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        parentId:
+          type: string
+        createdBy:
+          type: string
+      description: 메뉴 커맨드
+    CollectionModelEntityModelMenu:
+      type: object
+      properties:
+        _embedded:
+          type: object
+          properties:
+            menuList:
+              type: array
+              items:
+                $ref: '#/components/schemas/EntityModelMenu'
+        _links:
+          $ref: '#/components/schemas/Links'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        hreflang:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+        templated:
+          type: boolean
