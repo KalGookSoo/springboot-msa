@@ -5,11 +5,6 @@ java {
     sourceCompatibility = '17'
 }
 
-repositories {
-    mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
-}
-
 ext {
     set('springCloudVersion', "2023.0.0")
 }
