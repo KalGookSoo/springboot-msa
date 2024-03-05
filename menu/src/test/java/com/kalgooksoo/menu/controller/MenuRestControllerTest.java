@@ -231,7 +231,7 @@ class MenuRestControllerTest {
         mockMvc.perform(delete("/menus/{id}", menu.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andDo(MockMvcResultHandlers.print());
     }
 
