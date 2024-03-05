@@ -51,7 +51,6 @@ class UserRestControllerTest {
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
-    @DisplayName("테스트 계정을 생성합니다.")
     void setup() {
         UserRepository userRepository = new UserJpaRepository(entityManager.getEntityManager());
         AuthorityRepository authorityRepository = new AuthorityJpaRepository(entityManager.getEntityManager());
