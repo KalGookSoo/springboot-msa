@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -67,6 +68,17 @@ class MenuServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴를 수정합니다. 존재하지 않는 메뉴에 대해 수정을 시도할 경우 NoSuchElementException이 발생합니다.")
+    void updateShouldThrowNoSuchElementException() {
+        // Given
+        String invalidId = "invalidId";
+        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+
+        // Then
+        assertThrows(NoSuchElementException.class, () -> menuService.update(invalidId, command));
+    }
+
+    @Test
     @DisplayName("메뉴를 조회합니다.")
     void findByIdTest() {
         // Given
@@ -81,6 +93,8 @@ class MenuServiceTest {
         assertEquals(savedMenu.getId(), foundMenu.get().getId());
     }
 
+
+
     @Test
     @DisplayName("메뉴를 삭제합니다.")
     void deleteByIdTest() {
@@ -94,6 +108,16 @@ class MenuServiceTest {
         // Then
         Optional<Menu> foundMenu = menuService.findById(savedMenu.getId());
         assertTrue(foundMenu.isEmpty());
+    }
+
+    @Test
+    @DisplayName("메뉴를 삭제합니다. 존재하지 않는 메뉴에 대해 삭제를 시도할 경우 NoSuchElementException이 발생합니다.")
+    void deleteByIdShouldThrowNoSuchElementException() {
+        // Given
+        String invalidId = "invalidId";
+
+        // Then
+        assertThrows(NoSuchElementException.class, () -> menuService.deleteById(invalidId));
     }
 
     @Test
