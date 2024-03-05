@@ -37,31 +37,39 @@ public class MenuRestController {
     public ResponseEntity<EntityModel<Menu>> create(@Valid @RequestBody MenuCommand command) {
         Menu menu = Menu.create(command.name(), command.url(), command.parentId(), command.createdBy());
         menuService.create(menu);
-        EntityModel<Menu> entityModel = EntityModel.of(menu);
-        MenuRestController menuRestController = methodOn(this.getClass());
-        WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(menuRestController.findById(menu.getId()));
-        entityModel.add(webMvcLinkBuilder.withRel("self"));
+
+        ResponseEntity<EntityModel<Menu>> invocationValue = methodOn(this.getClass())
+                .findById(menu.getId());
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<Menu> entityModel = EntityModel.of(menu, link);
         return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
     }
 
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> findAll() {
-        List<HierarchicalMenu> menus = menuService.findAll();
-        List<EntityModel<HierarchicalMenu>> entityModels = menus.stream()
+        List<EntityModel<HierarchicalMenu>> entityModels = menuService.findAll()
+                .stream()
                 .map(hierarchicalMenu -> {
-                    MenuRestController menuRestController = methodOn(this.getClass());
-                    ResponseEntity<EntityModel<Menu>> invocationValue = menuRestController.findById(hierarchicalMenu.id());
-                    WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(invocationValue);
-                    Link link = webMvcLinkBuilder.withRel("self");
+                    ResponseEntity<EntityModel<Menu>> invocationValue = methodOn(this.getClass())
+                            .findById(hierarchicalMenu.id());
+
+                    Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                            .withRel("self");
+
                     return EntityModel.of(hierarchicalMenu, link);
                 })
                 .toList();
-        CollectionModel<EntityModel<HierarchicalMenu>> collectionModel = CollectionModel.of(entityModels);
-        MenuRestController menuRestController = methodOn(this.getClass());
-        ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> invocationValue = menuRestController.findAll();
-        WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(invocationValue);
-        Link link = webMvcLinkBuilder.withRel("self");
-        collectionModel.add(link);
+
+        ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> invocationValue = methodOn(this.getClass())
+                .findAll();
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        CollectionModel<EntityModel<HierarchicalMenu>> collectionModel = CollectionModel.of(entityModels, link);
         return ResponseEntity.ok(collectionModel);
     }
 
@@ -70,11 +78,14 @@ public class MenuRestController {
             @Parameter(description = "메뉴 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
         Menu menu = menuService.findById(id).orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
-        EntityModel<Menu> entityModel = EntityModel.of(menu);
-        MenuRestController menuRestController = methodOn(this.getClass());
-        ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> invocationValue = menuRestController.findAll();
-        WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(invocationValue);
-        entityModel.add(webMvcLinkBuilder.withRel("self"));
+
+        ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> invocationValue = methodOn(this.getClass())
+                .findAll();
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<Menu> entityModel = EntityModel.of(menu, link);
         return ResponseEntity.ok(entityModel);
     }
 
@@ -84,11 +95,14 @@ public class MenuRestController {
             @Valid @RequestBody MenuCommand command
     ) {
         Menu menu = menuService.update(id, command);
-        EntityModel<Menu> entityModel = EntityModel.of(menu);
-        MenuRestController menuRestController = methodOn(this.getClass());
-        ResponseEntity<EntityModel<Menu>> invocationValue = menuRestController.findById(menu.getId());
-        WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(invocationValue);
-        entityModel.add(webMvcLinkBuilder.withRel("self"));
+
+        ResponseEntity<EntityModel<Menu>> invocationValue = methodOn(this.getClass())
+                .findById(menu.getId());
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<Menu> entityModel = EntityModel.of(menu, link);
         return ResponseEntity.ok(entityModel);
     }
 

@@ -2,6 +2,7 @@ package com.kalgooksoo.menu.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.kalgooksoo.exception.ExceptionHandlingController;
 import com.kalgooksoo.menu.command.MenuCommand;
 import com.kalgooksoo.menu.repository.MenuJpaRepository;
 import com.kalgooksoo.menu.repository.MenuRepository;
@@ -42,7 +43,8 @@ class MenuRestControllerTest {
         MenuRepository menuRepository = new MenuJpaRepository(entityManager.getEntityManager());
         MenuService menuService = new DefaultMenuService(menuRepository);
         MenuRestController menuRestController = new MenuRestController(menuService);
-        mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
+        ExceptionHandlingController exceptionHandlingController = new ExceptionHandlingController();
+        mockMvc = MockMvcBuilders.standaloneSetup(menuRestController, exceptionHandlingController).build();
     }
 
     @Test
