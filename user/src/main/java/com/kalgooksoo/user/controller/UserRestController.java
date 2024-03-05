@@ -57,14 +57,13 @@ public class UserRestController {
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         userService.createUser(user);
 
-        EntityModel<User> entityModel = EntityModel.of(user);
         ResponseEntity<EntityModel<User>> invocationValue = methodOn(this.getClass())
                 .findById(user.getId());
 
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                 .withRel("self");
 
-        EntityModel.of(user, link);
+        EntityModel<User> entityModel = EntityModel.of(user, link);
         return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
     }
 
