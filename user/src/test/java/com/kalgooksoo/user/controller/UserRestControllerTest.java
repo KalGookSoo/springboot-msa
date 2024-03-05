@@ -9,19 +9,12 @@ import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
-import com.kalgooksoo.user.repository.AuthorityJpaRepository;
-import com.kalgooksoo.user.repository.AuthorityRepository;
-import com.kalgooksoo.user.repository.UserJpaRepository;
-import com.kalgooksoo.user.repository.UserRepository;
-import com.kalgooksoo.user.service.DefaultUserService;
-import com.kalgooksoo.user.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -29,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -39,24 +33,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 계정 REST 컨트롤러 테스트
  */
-@DataJpaTest
+@Transactional
+@SpringBootTest
 @ActiveProfiles("test")
 class UserRestControllerTest {
 
     private MockMvc mockMvc;
 
     @Autowired
-    private TestEntityManager entityManager;
+    private UserRestController userRestController;
+
+    @Autowired
+    private ExceptionHandlingController exceptionHandlingController;
 
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
     void setup() {
-        UserRepository userRepository = new UserJpaRepository(entityManager.getEntityManager());
-        AuthorityRepository authorityRepository = new AuthorityJpaRepository(entityManager.getEntityManager());
-        UserService userService = new DefaultUserService(userRepository, authorityRepository);
-        UserRestController userRestController = new UserRestController(userService);
-        ExceptionHandlingController exceptionHandlingController = new ExceptionHandlingController();
         mockMvc = MockMvcBuilders.standaloneSetup(userRestController, exceptionHandlingController).build();
     }
 
@@ -70,9 +63,9 @@ class UserRestControllerTest {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(command)))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(jsonPath("$.username").value("tester2"));
     }
 
     @Test
@@ -80,13 +73,17 @@ class UserRestControllerTest {
     void createUserConflictTest() throws Exception {
         // Given
         CreateUserCommand command = new CreateUserCommand("tester", "12345678", "테스터2", null, null, null, null, null);
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated());
 
         // When
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isConflict())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -99,8 +96,8 @@ class UserRestControllerTest {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -112,13 +109,12 @@ class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(jsonPath("$.username").value("tester2"));
 
         // When
         mockMvc.perform(get("/users"))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -128,9 +124,9 @@ class UserRestControllerTest {
         // When
         mockMvc.perform(get("/users")
                         .param("username", "not-exist-username"))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded").doesNotExist())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(jsonPath("$._embedded").doesNotExist());
     }
 
     @Test
@@ -143,7 +139,6 @@ class UserRestControllerTest {
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
         EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -152,8 +147,8 @@ class UserRestControllerTest {
 
         // When
         mockMvc.perform(get("/users/{id}", user.getId()))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
     }
 
     // 존재하지 않는 계정 조회 시 404
@@ -163,8 +158,8 @@ class UserRestControllerTest {
         // Given
         // When
         mockMvc.perform(get("/users/{id}", UUID.randomUUID()))
-                .andExpect(status().isNotFound())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -177,7 +172,6 @@ class UserRestControllerTest {
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
         EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -191,8 +185,8 @@ class UserRestControllerTest {
         mockMvc.perform(put("/users/{id}", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateUserCommand)))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -205,7 +199,6 @@ class UserRestControllerTest {
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
         EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -218,8 +211,8 @@ class UserRestControllerTest {
         mockMvc.perform(put("/users/{id}", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateUserCommand)))
-                .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -232,8 +225,8 @@ class UserRestControllerTest {
         mockMvc.perform(put("/users/{id}", UUID.randomUUID())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isNotFound())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -246,7 +239,6 @@ class UserRestControllerTest {
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
         EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -255,8 +247,8 @@ class UserRestControllerTest {
 
         // When
         mockMvc.perform(delete("/users/{id}", user.getId()))
-                .andExpect(status().isNoContent())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -265,8 +257,8 @@ class UserRestControllerTest {
         // Given
         // When
         mockMvc.perform(delete("/users/{id}", UUID.randomUUID()))
-                .andExpect(status().isNotFound())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -279,7 +271,6 @@ class UserRestControllerTest {
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
         EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -292,8 +283,8 @@ class UserRestControllerTest {
         mockMvc.perform(put("/users/{id}/password", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateUserPasswordCommand)))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -306,7 +297,6 @@ class UserRestControllerTest {
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
         EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -319,8 +309,8 @@ class UserRestControllerTest {
         mockMvc.perform(put("/users/{id}/password", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateUserPasswordCommand)))
-                .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -334,21 +324,19 @@ class UserRestControllerTest {
         mockMvc.perform(put("/users/{id}/password", UUID.randomUUID())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isNotFound())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("계정명과 패스워드로 계정을 확인합니다. 성공 시 응답 코드 200을 반환합니다.")
     void verifyTest() throws Exception {
         // Given
-        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        CreateUserCommand command = new CreateUserCommand("tester", "12345678", "테스터2", null, null, null, null, null);
         MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.username").value("tester"))
                 .andReturn().getResponse();
 
         EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -361,8 +349,8 @@ class UserRestControllerTest {
         mockMvc.perform(post("/users/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(signInCommand)))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -375,7 +363,6 @@ class UserRestControllerTest {
                         .content(mapper.writeValueAsString(command)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("tester2"))
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
         EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -388,8 +375,8 @@ class UserRestControllerTest {
         mockMvc.perform(post("/users/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(signInCommand)))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
     }
 
 }
