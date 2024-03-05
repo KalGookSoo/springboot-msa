@@ -1,29 +1,35 @@
 package com.kalgooksoo.user.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.kalgooksoo.exception.ExceptionHandlingController;
 import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
-import com.kalgooksoo.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.repository.AuthorityJpaRepository;
+import com.kalgooksoo.user.repository.AuthorityRepository;
+import com.kalgooksoo.user.repository.UserJpaRepository;
+import com.kalgooksoo.user.repository.UserRepository;
+import com.kalgooksoo.user.service.DefaultUserService;
 import com.kalgooksoo.user.service.UserService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -33,29 +39,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 계정 REST 컨트롤러 테스트
  */
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
+@DataJpaTest
 @ActiveProfiles("test")
 class UserRestControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private UserService userService;
-
-    private User testUser;
+    private TestEntityManager entityManager;
 
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
     @DisplayName("테스트 계정을 생성합니다.")
-    void setup() throws UsernameAlreadyExistsException {
+    void setup() {
+        UserRepository userRepository = new UserJpaRepository(entityManager.getEntityManager());
+        AuthorityRepository authorityRepository = new AuthorityJpaRepository(entityManager.getEntityManager());
+        UserService userService = new DefaultUserService(userRepository, authorityRepository);
         UserRestController userRestController = new UserRestController(userService);
-        CreateUserCommand command = new CreateUserCommand("tester", "12345678", "테스터", null, null, null, null, null);
-        ResponseEntity<EntityModel<User>> responseEntity = userRestController.create(command);
-        testUser = Objects.requireNonNull(responseEntity.getBody()).getContent();
+        ExceptionHandlingController exceptionHandlingController = new ExceptionHandlingController();
+        mockMvc = MockMvcBuilders.standaloneSetup(userRestController, exceptionHandlingController).build();
     }
 
     @Test
@@ -105,6 +108,14 @@ class UserRestControllerTest {
     @DisplayName("계정 목록을 조회합니다. 성공 시 응답 코드 200을 반환합니다. ")
     void findAllTest() throws Exception {
         // Given
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print());
+
         // When
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
@@ -123,13 +134,25 @@ class UserRestControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-    // 계정 조회 시 200
     @Test
     @DisplayName("계정을 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
     void findByIdTest() throws Exception {
         // Given
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse();
+
+        EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
+        User user = entityModel.getContent();
+        Assertions.assertThat(user).isNotNull();
+
         // When
-        mockMvc.perform(get("/users/{id}", testUser.getId()))
+        mockMvc.perform(get("/users/{id}", user.getId()))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -149,12 +172,26 @@ class UserRestControllerTest {
     @DisplayName("계정을 수정합니다. 성공 시 응답 코드 200을 반환합니다.")
     void updateByIdTest() throws Exception {
         // Given
-        UpdateUserCommand command = new UpdateUserCommand("테스터 업데이트", "updated", "email.com", "010", "1234", "5678");
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse();
+
+        EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
+        User user = entityModel.getContent();
+        Assertions.assertThat(user).isNotNull();
+
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand("테스터 업데이트", "updated", "email.com", "010", "1234", "5678");
+
 
         // When
-        mockMvc.perform(put("/users/{id}", testUser.getId())
+        mockMvc.perform(put("/users/{id}", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(command)))
+                .content(mapper.writeValueAsString(updateUserCommand)))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -163,12 +200,25 @@ class UserRestControllerTest {
     @DisplayName("계정을 수정합니다. 실패 시 응답 코드 400을 반환합니다.")
     void updateByIdBadRequestTest() throws Exception {
         // Given
-        UpdateUserCommand command = new UpdateUserCommand(null, "updated", "email.com", "010", "1234", "5678");
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse();
+
+        EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
+        User user = entityModel.getContent();
+        Assertions.assertThat(user).isNotNull();
+
+        UpdateUserCommand updateUserCommand = new UpdateUserCommand(null, "updated", "email.com", "010", "1234", "5678");
 
         // When
-        mockMvc.perform(put("/users/{id}", testUser.getId())
+        mockMvc.perform(put("/users/{id}", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(command)))
+                .content(mapper.writeValueAsString(updateUserCommand)))
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -191,8 +241,21 @@ class UserRestControllerTest {
     @DisplayName("계정을 삭제합니다. 성공 시 응답 코드 204을 반환합니다.")
     void deleteByIdTest() throws Exception {
         // Given
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse();
+
+        EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
+        User user = entityModel.getContent();
+        Assertions.assertThat(user).isNotNull();
+
         // When
-        mockMvc.perform(delete("/users/{id}", testUser.getId()))
+        mockMvc.perform(delete("/users/{id}", user.getId()))
                 .andExpect(status().isNoContent())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -211,12 +274,25 @@ class UserRestControllerTest {
     @DisplayName("계정 패스워드를 수정합니다. 성공 시 응답 코드 200을 반환합니다.")
     void updatePasswordTest() throws Exception {
         // Given
-        UpdateUserPasswordCommand command = new UpdateUserPasswordCommand("12345678", "1234567890");
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse();
+
+        EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
+        User user = entityModel.getContent();
+        Assertions.assertThat(user).isNotNull();
+
+        UpdateUserPasswordCommand updateUserPasswordCommand = new UpdateUserPasswordCommand("12345678", "1234567890");
 
         // When
-        mockMvc.perform(put("/users/{id}/password", testUser.getId())
+        mockMvc.perform(put("/users/{id}/password", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(command)))
+                .content(mapper.writeValueAsString(updateUserPasswordCommand)))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -225,12 +301,25 @@ class UserRestControllerTest {
     @DisplayName("계정 패스워드를 수정합니다. 실패 시 응답 코드 400을 반환합니다.")
     void updatePasswordBadRequestTest() throws Exception {
         // Given
-        UpdateUserPasswordCommand command = new UpdateUserPasswordCommand("incorrectPassword", "1234567890");
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse();
+
+        EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
+        User user = entityModel.getContent();
+        Assertions.assertThat(user).isNotNull();
+
+        UpdateUserPasswordCommand updateUserPasswordCommand = new UpdateUserPasswordCommand("incorrectPassword", "1234567890");
 
         // When
-        mockMvc.perform(put("/users/{id}/password", testUser.getId())
+        mockMvc.perform(put("/users/{id}/password", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(command)))
+                .content(mapper.writeValueAsString(updateUserPasswordCommand)))
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
 
@@ -254,12 +343,25 @@ class UserRestControllerTest {
     @DisplayName("계정명과 패스워드로 계정을 확인합니다. 성공 시 응답 코드 200을 반환합니다.")
     void verifyTest() throws Exception {
         // Given
-        SignInCommand command = new SignInCommand("tester", "12345678");
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse();
+
+        EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
+        User user = entityModel.getContent();
+        Assertions.assertThat(user).isNotNull();
+
+        SignInCommand signInCommand = new SignInCommand("tester", "12345678");
 
         // When
         mockMvc.perform(post("/users/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(signInCommand)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
     }
@@ -268,12 +370,25 @@ class UserRestControllerTest {
     @DisplayName("계정명과 패스워드로 계정을 확인합니다. 실패 시 응답 코드 400을 반환합니다.")
     void verifyBadRequestTest() throws Exception {
         // Given
-        SignInCommand command = new SignInCommand("tester", "invalidPassword");
+        CreateUserCommand command = new CreateUserCommand("tester2", "12345678", "테스터2", null, null, null, null, null);
+        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(command)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("tester2"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse();
+
+        EntityModel<User> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
+        User user = entityModel.getContent();
+        Assertions.assertThat(user).isNotNull();
+
+        SignInCommand signInCommand = new SignInCommand("tester", "invalidPassword");
 
         // When
         mockMvc.perform(post("/users/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(signInCommand)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest());
     }
