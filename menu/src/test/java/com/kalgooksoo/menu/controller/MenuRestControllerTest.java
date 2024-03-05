@@ -205,8 +205,8 @@ class MenuRestControllerTest {
         mockMvc.perform(put("/menus/{id}", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isNotFound())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
     }
 
     @Test

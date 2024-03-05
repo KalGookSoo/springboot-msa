@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class DefaultMenuService implements MenuService {
 
     @Override
     public Menu update(String id, MenuCommand command) {
-        Menu menu = menuRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴가 존재하지 않습니다"));
+        Menu menu = menuRepository.findById(id).orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
         menu.update(command.name(), command.url());
         return menuRepository.save(menu);
     }
