@@ -37,11 +37,13 @@ public class DefaultMenuService implements MenuService {
         return menuRepository.save(menu);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Menu> findById(String id) {
         return menuRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<HierarchicalMenu> findAll() {
         List<Menu> menus = menuRepository.findAll();
