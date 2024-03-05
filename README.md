@@ -46,6 +46,8 @@ _`분산 추적 모니터링`, `message-queue`, `event-sourcing`은 추후 구�
 - [service-registry](./service-registry/README.md)
 - [user-service](./user/README.md)
 - [security-service](./security/README.md)
+- [menu-service](./menu/README.md)
+- [board-service](./board/README.md)
 
 ### Micro Service 구현 규칙
 - `micro-service`는 `netflix-eureka-client`로 구성하였습니다.
