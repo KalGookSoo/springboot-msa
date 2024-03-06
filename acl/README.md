@@ -1,5 +1,11 @@
 # Acl Service
-`acl-service`는 접근제어목록 정보를 관리하는 서비스입니다.
+- `acl-service`는 접근제어목록 정보를 관리하는 서비스입니다.
+- `acl-service`는 `Domain Object Security`(도메인 객체 보안)을 위한 서비스입니다.
+- `acl-service`는 `Spring Security`의 `spring-security-acl`을 참조하여 구현되었습니다.
+- `spring-security-acl`의 테이블 명세와 동일하도록 유지하였습니다.
+  - 현 프로젝트의 네이밍 규칙과 `Primary Key`의 포맷이 다릅니다.
+  - `spring-security-acl`로 빠르게 치환 가능하도록 하기 위함입니다.
+
 
 ---
 
@@ -79,4 +85,8 @@ erDiagram
 
 
 ## Open API Specification
-[API 명세 바로가기](docs%2Facl-api-docs.yaml)
+_애플리케이션 구동 후 /v3/api-docs.yaml로 요청을 하여 최신 OAS 문서를 다운로드 받을 수 있습니다._
+
+[API 명세 바로가기](./docs%2Facl-api-docs.yaml)
+
+[스웨거 에디터 바로가기](https://editor.swagger.io/)
