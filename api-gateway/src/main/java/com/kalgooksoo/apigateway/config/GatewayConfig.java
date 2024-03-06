@@ -49,6 +49,10 @@ public class GatewayConfig {
                 .path("/boards/**")
                 .uri("lb://board-service"));
 
+        routes.route("acl-service", p -> p
+                .path("/acl/**")
+                .uri("lb://acl-service"));
+
         return routes.build();
 
     }
