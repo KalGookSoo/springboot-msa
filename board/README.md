@@ -123,4 +123,8 @@ erDiagram
 
 
 ## Open API Specification
-[API 명세 바로가기](docs%2Fboard-api-docs.yaml)
+_애플리케이션 구동 후 /v3/api-docs.yaml로 요청을 하여 최신 OAS 문서를 다운로드 받을 수 있습니다._
+
+[API 명세 바로가기](./docs%2Fboard-api-docs.yaml)
+
+[스웨거 에디터 바로가기](https://editor.swagger.io/)
