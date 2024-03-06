@@ -1,6 +1,9 @@
-package com.kalgooksoo.domain;
+package com.kalgooksoo.board.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +14,7 @@ import java.time.LocalDateTime;
 import static lombok.AccessLevel.PROTECTED;
 
 /**
- * 게시글
+ * 댓글
  */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
@@ -19,9 +22,9 @@ import static lombok.AccessLevel.PROTECTED;
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
-@Table(name = "tb_article")
+@Table(name = "tb_comment")
 @DynamicInsert
-public class Article {
+public class Comment {
 
     /**
      * 식별자
@@ -30,35 +33,15 @@ public class Article {
     private String id;
 
     /**
-     * 카테고리 식별자
+     * 게시글 식별자
      */
-    private String categoryId;
-
-    /**
-     * 제목
-     */
-    private String title;
+    private String articleId;
 
     /**
      * 본문
      */
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    /**
-     * 조회수
-     */
-    private int views;
-
-    /**
-     * 좋아요
-     */
-    private int likes;
-
-    /**
-     * 싫어요
-     */
-    private int dislikes;
 
     /**
      * 생성자
@@ -76,41 +59,41 @@ public class Article {
     private LocalDateTime modifiedAt;
 
     /**
-     * 게시글을 생성합니다.
-     *
-     * @param title      제목
-     * @param content    본문
-     * @param categoryId 카테고리 식별자
-     * @param createdBy  생성자
-     * @return 게시글
+     * 좋아요
      */
-    public static Article create(String title, String content, String categoryId, String createdBy) {
-        Article article = new Article();
-        article.title = title;
-        article.content = content;
-        article.categoryId = categoryId;
-        article.createdBy = createdBy;
-        return article;
+    private int likes;
+
+    /**
+     * 싫어요
+     */
+    private int dislikes;
+
+    /**
+     * 댓글을 생성합니다.
+     *
+     * @param articleId 게시글 식별자
+     * @param content   본문
+     * @param createdBy 생성자
+     * @return 댓글
+     */
+    public static Comment create(String articleId, String content, String createdBy) {
+        Comment comment = new Comment();
+        comment.id = java.util.UUID.randomUUID().toString();
+        comment.articleId = articleId;
+        comment.content = content;
+        comment.createdBy = createdBy;
+        comment.createdAt = LocalDateTime.now();
+        return comment;
     }
 
     /**
-     * 게시글을 수정합니다.
+     * 댓글을 수정합니다.
      *
-     * @param title      제목
-     * @param content    본문
-     * @param categoryId 카테고리 식별자
+     * @param content 본문
      */
-    public void update(String title, String content, String categoryId) {
-        this.title = title;
+    public void update(String content) {
         this.content = content;
-        this.categoryId = categoryId;
-    }
-
-    /**
-     * 조회수를 증가시킵니다.
-     */
-    public void increaseViews() {
-        this.views++;
+        this.modifiedAt = LocalDateTime.now();
     }
 
     /**

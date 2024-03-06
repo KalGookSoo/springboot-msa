@@ -1,4 +1,4 @@
-package com.kalgooksoo.domain;
+package com.kalgooksoo.board.domain;
 
 import lombok.Getter;
 
