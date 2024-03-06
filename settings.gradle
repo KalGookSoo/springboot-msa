@@ -14,7 +14,7 @@ dependencyResolutionManagement {
 rootProject.name = 'springboot-msa'
 
 
-//include ':acl'
+include ':acl'
 include ':api-gateway'
 include ':board'
 include ':core:jwt'
