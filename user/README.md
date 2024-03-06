@@ -70,7 +70,7 @@ title: User Service ERD
 ---
 erDiagram
     tb_user {
-        string id PK
+        string(36) id PK
         string first_contact_number
         string middle_contact_number
         string last_contact_number
@@ -86,11 +86,11 @@ erDiagram
         string username
     }
     tb_authority {
-        string id PK
+        string(36) id PK
         string name
-        string user_id FK
+        string(36) user_id FK
     }
-    tb_user ||--o{ tb_authority: has
+    tb_user ||--o{ tb_authority: user_id
 ```
 ---
 

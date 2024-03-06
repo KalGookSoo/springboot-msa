@@ -72,11 +72,8 @@ classDiagram
 title: Board Service ERD
 ---
 erDiagram
-    tb_article ||--o{ tb_attachment : has
-    tb_article ||--o{ tb_comment : has
-    tb_category ||--o{ tb_article : has
     tb_category {
-        string id PK
+        string(36) id PK
         string name
         string type
         string created_by
@@ -84,8 +81,8 @@ erDiagram
         timestamp modified_at
     }
     tb_article {
-        string id PK
-        string category_id FK
+        string(36) id PK
+        string(36) category_id FK
         string title
         text content
         integer views
@@ -96,8 +93,8 @@ erDiagram
         timestamp modified_at
     }
     tb_attachment {
-        string id PK
-        string article_id FK
+        string(36) id PK
+        string(36) article_id FK
         string name
         string path_name
         string mime_type
@@ -107,8 +104,8 @@ erDiagram
         timestamp modified_at
     }
     tb_comment {
-        string id PK
-        string article_id FK
+        string(36) id PK
+        string(36) article_id FK
         text content
         integer likes
         integer dislikes
@@ -116,6 +113,9 @@ erDiagram
         timestamp created_at
         timestamp modified_at
     }
+    tb_article ||--o{ tb_attachment : article_id
+    tb_article ||--o{ tb_comment : article_id
+    tb_category ||--o{ tb_article : category_id
 ```
 
 ---

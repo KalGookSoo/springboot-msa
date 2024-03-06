@@ -58,14 +58,15 @@ title: Menu Service ERD
 ---
 erDiagram
     tb_menu {
-        string id PK
-        string parent_id
+        string(36) id PK
+        string(36) parent_id
         string name
         string url
         timestamp created_at
         string created_by
         timestamp modified_at
     }
+    tb_menu ||--o{ tb_menu : parent_id
 ```
 
 ---
