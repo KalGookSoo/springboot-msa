@@ -29,7 +29,7 @@ public class AclConfig {
     }
 
     @Bean
-    public LookupStrategy lookupStrategy() {
+    public LookupStrategy lookupStrategy() {// TODO SecurityContextHolder에서 가져온 인증주체 ROLE에 대해 어떻게 처리할 것인지 생각해볼 것
         return new BasicLookupStrategy(dataSource, aclCache(), aclAuthorizationStrategy(), new ConsoleAuditLogger());
     }
 
@@ -48,8 +48,12 @@ public class AclConfig {
     }
 
     @Bean
-    public AclAuthorizationStrategy aclAuthorizationStrategy() {
-        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    public AclAuthorizationStrategy aclAuthorizationStrategy() {// FIXME
+        return new AclAuthorizationStrategyImpl(
+                new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_USER"),
+                new SimpleGrantedAuthority("ROLE_GUEST")
+        );
     }
 
 }
