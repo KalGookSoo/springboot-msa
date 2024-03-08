@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.security.acls.model.AccessControlEntry;
-import org.springframework.security.acls.model.Acl;
-import org.springframework.security.acls.model.AuditableAccessControlEntry;
-import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.*;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -58,6 +55,14 @@ public class AclEntry implements AccessControlEntry, AuditableAccessControlEntry
      */
     @Override
     public Permission getPermission() {
+        return null;
+    }
+
+    /**
+     * @see org.springframework.security.acls.domain.AccessControlEntryImpl#getSid()
+     */
+    @Override
+    public Sid getSid() {
         return null;
     }
 

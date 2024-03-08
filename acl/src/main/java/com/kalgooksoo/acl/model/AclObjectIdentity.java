@@ -41,7 +41,7 @@ public class AclObjectIdentity implements ObjectIdentity {
     private Boolean entriesInheriting;
 
     /**
-     * org.springframework.security.acls.domain#getIdentifier
+     * @see org.springframework.security.acls.domain.ObjectIdentityImpl#getIdentifier()
      */
     @Override
     public Serializable getIdentifier() {
@@ -49,7 +49,7 @@ public class AclObjectIdentity implements ObjectIdentity {
     }
 
     /**
-     * org.springframework.security.acls.domain#getType
+     * @see org.springframework.security.acls.domain.ObjectIdentityImpl#getType()
      */
     @Override
     public String getType() {
