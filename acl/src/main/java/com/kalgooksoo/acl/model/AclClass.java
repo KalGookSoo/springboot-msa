@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -14,6 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode
+@ToString
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
