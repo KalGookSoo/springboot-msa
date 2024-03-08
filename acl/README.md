@@ -40,25 +40,25 @@
 title: Acl Service ERD
 ---
 erDiagram
-    acl_sid ||--o{ acl_object_identity : owner_sid
-    acl_sid ||--o{ acl_entry : sid
-    acl_class ||--o{ acl_object_identity : object_id_class
-    acl_object_identity ||--o{ acl_entry : acl_object_identity
-    acl_object_identity ||--o{ acl_object_identity : parent_object
+    tb_acl_sid ||--o{ tb_acl_object_identity : owner_sid
+    tb_acl_sid ||--o{ tb_acl_entry : sid
+    tb_acl_class ||--o{ tb_acl_object_identity : object_id_class
+    tb_acl_object_identity ||--o{ tb_acl_entry : acl_object_identity
+    tb_acl_object_identity ||--o{ tb_acl_object_identity : parent_object
 
-    acl_sid {
+    tb_acl_sid {
         bigserial id PK
         boolean principal
         varchar(100) sid
     }
 
-    acl_class {
+    tb_acl_class {
         bigserial id PK
         varchar(100) class
         varchar(100) class_id_type
     }
 
-    acl_object_identity {
+    tb_acl_object_identity {
         bigserial id PK
         bigint owner_sid FK
         bigint object_id_class FK
@@ -67,7 +67,7 @@ erDiagram
         boolean entries_inheriting
     }
 
-    acl_entry {
+    tb_acl_entry {
         bigserial id PK
         bigint acl_object_identity FK
         bigint sid FK
