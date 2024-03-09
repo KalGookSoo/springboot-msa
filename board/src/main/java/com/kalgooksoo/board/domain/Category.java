@@ -1,5 +1,7 @@
 package com.kalgooksoo.board.domain;
 
+import com.kalgooksoo.board.model.CreateCategoryCommand;
+import com.kalgooksoo.board.model.UpdateCategoryCommand;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,6 +32,11 @@ public class Category {
     private String id;
 
     /**
+     * 상위 카테고리 식별자
+     */
+    private String parentId;
+
+    /**
      * 이름
      */
     private String name;
@@ -57,17 +64,16 @@ public class Category {
 
     /**
      * 카테고리를 생성합니다.
-     *
-     * @param name 이름
-     * @param type 타입
-     * @param createdBy 생성자
+     * 
+     * @param command 카테고리 생성 커맨드
      * @return 카테고리
      */
-    public static Category create(String name, CategoryType type, String createdBy) {
+    public static Category create(CreateCategoryCommand command) {
         Category category = new Category();
-        category.name = name;
-        category.type = type;
-        category.createdBy = createdBy;
+        category.parentId = command.parentId();
+        category.name = command.name();
+        category.type = CategoryType.valueOf(command.type());
+        category.createdBy = command.createdBy();
         category.createdAt = LocalDateTime.now();
         return category;
     }
@@ -75,13 +81,22 @@ public class Category {
     /**
      * 카테고리를 수정합니다.
      *
-     * @param name 이름
-     * @param type 타입
+     * @param command 카테고리 수정 커맨드
      */
-    public void update(String name, CategoryType type) {
-        this.name = name;
-        this.type = type;
+    public void update(UpdateCategoryCommand command) {
+        this.parentId = command.parentId();
+        this.name = command.name();
+        this.type = CategoryType.valueOf(command.type());
         this.modifiedAt = LocalDateTime.now();
+    }
+
+    /**
+     * 최상위 메뉴 여부를 반환합니다.
+     *
+     * @return 최상위 메뉴 여부
+     */
+    public boolean isRoot() {
+        return parentId == null;
     }
 
 }
