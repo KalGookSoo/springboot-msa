@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -70,6 +71,7 @@ public class Category {
      * @return 카테고리
      */
     public static Category create(CreateCategoryCommand command) {
+        Assert.notNull(command, "카테고리 생성 커맨드는 필수입니다.");
         Category category = new Category();
         category.id = UUID.randomUUID().toString();
         category.parentId = command.parentId();
