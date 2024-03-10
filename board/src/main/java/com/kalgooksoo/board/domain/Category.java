@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -70,6 +71,7 @@ public class Category {
      */
     public static Category create(CreateCategoryCommand command) {
         Category category = new Category();
+        category.id = UUID.randomUUID().toString();
         category.parentId = command.parentId();
         category.name = command.name();
         category.type = CategoryType.valueOf(command.type());
