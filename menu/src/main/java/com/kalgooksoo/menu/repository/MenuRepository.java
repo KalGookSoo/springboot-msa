@@ -12,9 +12,9 @@ public interface MenuRepository {
 
     Menu save(Menu menu);
 
-    Optional<Menu> findById(String id);
-
     List<Menu> findAll();
+
+    Optional<Menu> findById(String id);
 
     void deleteById(String id);
 

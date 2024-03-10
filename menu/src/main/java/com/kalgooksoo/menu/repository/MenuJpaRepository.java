@@ -28,14 +28,14 @@ public class MenuJpaRepository implements MenuRepository {
     }
 
     @Override
-    public Optional<Menu> findById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
-        return Optional.ofNullable(em.find(Menu.class, id));
+    public List<Menu> findAll() {
+        return em.createQuery("select menu from Menu menu", Menu.class).getResultList();
     }
 
     @Override
-    public List<Menu> findAll() {
-        return em.createQuery("select menu from Menu menu", Menu.class).getResultList();
+    public Optional<Menu> findById(String id) {
+        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        return Optional.ofNullable(em.find(Menu.class, id));
     }
 
     @Override
