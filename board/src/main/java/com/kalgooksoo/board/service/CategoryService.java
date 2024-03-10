@@ -2,6 +2,7 @@ package com.kalgooksoo.board.service;
 
 import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.model.CreateCategoryCommand;
+import com.kalgooksoo.board.model.HierarchicalCategory;
 import com.kalgooksoo.board.model.UpdateCategoryCommand;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface CategoryService {
 
     Category create(CreateCategoryCommand command);
 
-    List<Category> findAll();
+    List<HierarchicalCategory> findAll();
 
     Optional<Category> findById(String id);
 

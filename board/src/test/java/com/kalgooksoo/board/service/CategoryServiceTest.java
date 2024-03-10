@@ -3,6 +3,7 @@ package com.kalgooksoo.board.service;
 import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.domain.CategoryType;
 import com.kalgooksoo.board.model.CreateCategoryCommand;
+import com.kalgooksoo.board.model.HierarchicalCategory;
 import com.kalgooksoo.board.model.UpdateCategoryCommand;
 import com.kalgooksoo.board.repository.CategoryJpaRepository;
 import com.kalgooksoo.board.repository.CategoryRepository;
@@ -70,17 +71,17 @@ class CategoryServiceTest {
         categoryService.create(createCategoryCommand);
 
         // When
-        List<Category> categories = categoryService.findAll();
+        List<HierarchicalCategory> categories = categoryService.findAll();
 
         // Then
-        assertTrue(categories.stream().anyMatch(c -> c.getName().equals("공지사항")));
+        assertTrue(categories.stream().anyMatch(c -> c.name().equals("공지사항")));
     }
 
     @Test
     @DisplayName("모든 카테고리를 조회합니다. 실패 시 빈 목록을 반환합니다.")
     void findAllTestWithEmpty() {
         // When
-        List<Category> categories = categoryService.findAll();
+        List<HierarchicalCategory> categories = categoryService.findAll();
 
         // Then
         assertTrue(categories.isEmpty());
