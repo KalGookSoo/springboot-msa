@@ -9,6 +9,7 @@ import com.kalgooksoo.board.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,8 @@ public class DefaultCategoryService implements CategoryService {
 
     @Override
     public Category create(CreateCategoryCommand command) {
-        Category category = Category.create(command);
+        Assert.notNull(command, "CreateCategoryCommand는 null이 될 수 없습니다.");
+        Category category = Category.create(command.parentId(), command.name(), command.type(), command.createdBy());
         return categoryRepository.save(category);
     }
 
@@ -54,7 +56,7 @@ public class DefaultCategoryService implements CategoryService {
     public void update(String id, UpdateCategoryCommand command) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("카테고리가 존재하지 않습니다."));
-        category.update(command);
+        category.update(command.name(), command.type());
         categoryRepository.save(category);
     }
 

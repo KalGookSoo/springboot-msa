@@ -120,7 +120,7 @@ class CategoryServiceTest {
         // Given
         CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
         Category savedCategory = categoryService.create(createCategoryCommand);
-        UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand(null, "공지사항 수정", CategoryType.PUBLIC.name());
+        UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand("공지사항 수정", CategoryType.PUBLIC.name());
 
         // When
         categoryService.update(savedCategory.getId(), updateCategoryCommand);
@@ -134,7 +134,7 @@ class CategoryServiceTest {
     void updateShouldThrowNoSuchElementException() {
         // Given
         String invalidId = UUID.randomUUID().toString();
-        UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand(null, "공지사항 수정", CategoryType.PUBLIC.name());
+        UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand("공지사항 수정", CategoryType.PUBLIC.name());
 
         // When & Then
         assertThrows(NoSuchElementException.class, () -> categoryService.update(invalidId, updateCategoryCommand));

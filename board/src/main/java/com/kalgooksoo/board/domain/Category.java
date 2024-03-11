@@ -64,33 +64,26 @@ public class Category {
      */
     private LocalDateTime modifiedAt;
 
-    /**
-     * 카테고리를 생성합니다.
-     * 
-     * @param command 카테고리 생성 커맨드
-     * @return 카테고리
-     */
-    public static Category create(CreateCategoryCommand command) {
-        Assert.notNull(command, "카테고리 생성 커맨드는 필수입니다.");
+    public static Category create(String parentId, String name, String type, String createdBy) {
         Category category = new Category();
+        Assert.notNull(createdBy, "생성자는 필수입니다.");
         category.id = UUID.randomUUID().toString();
-        category.parentId = command.parentId();
-        category.name = command.name();
-        category.type = CategoryType.valueOf(command.type());
-        category.createdBy = command.createdBy();
+        category.parentId = parentId;
+        category.name = name;
+        category.type = CategoryType.valueOf(type);
+        category.createdBy = createdBy;
         category.createdAt = LocalDateTime.now();
         return category;
     }
 
-    /**
-     * 카테고리를 수정합니다.
-     *
-     * @param command 카테고리 수정 커맨드
-     */
-    public void update(UpdateCategoryCommand command) {
-        this.parentId = command.parentId();
-        this.name = command.name();
-        this.type = CategoryType.valueOf(command.type());
+    public void update(String name, String type) {
+        this.name = name;
+        this.type = CategoryType.valueOf(type);
+        this.modifiedAt = LocalDateTime.now();
+    }
+
+    public void moveTo(String parentId) {
+        this.parentId = parentId;
         this.modifiedAt = LocalDateTime.now();
     }
 

@@ -2,7 +2,6 @@ package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.domain.CategoryType;
-import com.kalgooksoo.board.model.CreateCategoryCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,7 @@ class CategoryRepositoryTest {
     @DisplayName("카테고리를 저장합니다. 성공 시 카테고리를 반환합니다.")
     void saveTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        Category category = Category.create(createCategoryCommand);
+        Category category = Category.create(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
 
         // When
         Category savedCategory = categoryRepository.save(category);
@@ -60,8 +58,7 @@ class CategoryRepositoryTest {
     @DisplayName("모든 카테고리를 조회합니다. 성공 시 카테고리 목록을 반환합니다.")
     void findAllTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        Category category = Category.create(createCategoryCommand);
+        Category category = Category.create(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
         Category savedCategory = categoryRepository.save(category);
 
         // When
@@ -87,8 +84,7 @@ class CategoryRepositoryTest {
     @DisplayName("카테고리를 조회합니다. 성공 시 카테고리를 반환합니다.")
     void findByIdTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        Category category = Category.create(createCategoryCommand);
+        Category category = Category.create(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
         Category savedCategory = categoryRepository.save(category);
 
         // When
@@ -115,8 +111,7 @@ class CategoryRepositoryTest {
     @DisplayName("카테고리를 삭제합니다. 성공 시 삭제된 카테고리를 조회할 수 없습니다.")
     void deleteTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        Category category = Category.create(createCategoryCommand);
+        Category category = Category.create(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
         Category savedCategory = categoryRepository.save(category);
 
         // When

@@ -11,9 +11,6 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "카테고리 수정 커맨드")
 public record UpdateCategoryCommand(
         
-        @Parameter(description = "상위 카테고리 식별자", schema = @Schema(description = "상위 카테고리 식별자"))
-        String parentId,
-
         @Parameter(description = "이름", schema = @Schema(description = "이름"), required = true)
         @NotBlank(message = "이름은 필수입니다")
         String name,
