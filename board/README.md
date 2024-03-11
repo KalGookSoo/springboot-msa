@@ -27,10 +27,21 @@
 title: Board Service Domain
 ---
 classDiagram
+    class HierarchicalCategoryFactory {
+        <<interface>>
+        +toHierarchical(): HierarchicalCategory
+    }
+    class HierarchicalCategory {
+        -String id
+        -List<HierarchicalCategory> children
+        +of(): HierarchicalCategory
+    }
     class Category {
         -String id
+        -String parentId
         +create(): Category
         +update(): void
+        +moveTo(): void
     }
     class Article {
         -String id
@@ -59,6 +70,9 @@ classDiagram
         +increaseDislikes()
         +decreaseDislikes()
     }
+    HierarchicalCategoryFactory ..> HierarchicalCategory: creates
+    HierarchicalCategoryFactory ..> Category: uses
+    HierarchicalCategory o-- HierarchicalCategory: children
     Category "1" -- "N" Article: has
     Article "1" -- "N" Attachment: has
     Article "1" -- "N" Comment: has
@@ -113,9 +127,10 @@ erDiagram
         timestamp created_at
         timestamp modified_at
     }
+    tb_category ||--o{ tb_category : parent_id
+    tb_category ||--o{ tb_article : category_id
     tb_article ||--o{ tb_attachment : article_id
     tb_article ||--o{ tb_comment : article_id
-    tb_category ||--o{ tb_article : category_id
 ```
 
 ---
