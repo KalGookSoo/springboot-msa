@@ -4,6 +4,7 @@ import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.domain.CategoryType;
 import com.kalgooksoo.board.model.CreateCategoryCommand;
 import com.kalgooksoo.board.model.HierarchicalCategory;
+import com.kalgooksoo.board.model.MoveCategoryCommand;
 import com.kalgooksoo.board.model.UpdateCategoryCommand;
 import com.kalgooksoo.board.repository.CategoryJpaRepository;
 import com.kalgooksoo.board.repository.CategoryRepository;
@@ -123,10 +124,10 @@ class CategoryServiceTest {
         UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand("공지사항 수정", CategoryType.PUBLIC.name());
 
         // When
-        categoryService.update(savedCategory.getId(), updateCategoryCommand);
+        Category updatedCategory = categoryService.update(savedCategory.getId(), updateCategoryCommand);
 
         // Then
-        assertEquals("공지사항 수정", updateCategoryCommand.name());
+        assertEquals("공지사항 수정", updatedCategory.getName());
     }
 
     @Test
@@ -172,6 +173,34 @@ class CategoryServiceTest {
 
         // When & Then
         assertThrows(NoSuchElementException.class, () -> categoryService.delete(invalidId));
+    }
+
+    @Test
+    @DisplayName("카테고리를 이동합니다. 성공 시 이동된 카테고리를 반환합니다.")
+    void moveToTest() {
+        // Given
+        CreateCategoryCommand createCategoryCommand1 = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        Category savedCategory1 = categoryService.create(createCategoryCommand1);
+        CreateCategoryCommand createCategoryCommand2 = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        Category savedCategory2 = categoryService.create(createCategoryCommand2);
+        MoveCategoryCommand moveCategoryCommand = new MoveCategoryCommand(savedCategory1.getId());
+
+        // When
+        Category movedCategory = categoryService.move(savedCategory2.getId(), moveCategoryCommand);
+
+        // Then
+        assertEquals(movedCategory.getParentId(), savedCategory1.getId());
+    }
+
+    @Test
+    @DisplayName("카테고리를 이동합니다. 존재하지 않는 카테고리에 대해 이동을 시도할 경우 NoSuchElementException이 발생합니다.")
+    void moveToShouldThrowNoSuchElementException() {
+        // Given
+        String invalidId = UUID.randomUUID().toString();
+        MoveCategoryCommand moveCategoryCommand = new MoveCategoryCommand(UUID.randomUUID().toString());
+
+        // When & Then
+        assertThrows(NoSuchElementException.class, () -> categoryService.move(invalidId, moveCategoryCommand));
     }
 
 }

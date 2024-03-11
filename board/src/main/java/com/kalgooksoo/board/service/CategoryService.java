@@ -3,6 +3,7 @@ package com.kalgooksoo.board.service;
 import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.model.CreateCategoryCommand;
 import com.kalgooksoo.board.model.HierarchicalCategory;
+import com.kalgooksoo.board.model.MoveCategoryCommand;
 import com.kalgooksoo.board.model.UpdateCategoryCommand;
 
 import java.util.List;
@@ -19,8 +20,10 @@ public interface CategoryService {
 
     Optional<Category> findById(String id);
 
-    void update(String id, UpdateCategoryCommand command);
+    Category update(String id, UpdateCategoryCommand command);
 
     void delete(String id);
+
+    Category move(String id, MoveCategoryCommand command);
 
 }

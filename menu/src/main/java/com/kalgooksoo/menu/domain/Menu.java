@@ -90,4 +90,9 @@ public class Menu {
         this.modifiedAt = LocalDateTime.now();
     }
 
+    public void moveTo(String parentId) {
+        this.parentId = parentId;
+        this.modifiedAt = LocalDateTime.now();
+    }
+
 }
