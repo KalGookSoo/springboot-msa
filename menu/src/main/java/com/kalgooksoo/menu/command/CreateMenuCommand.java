@@ -6,15 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * 메뉴 커맨드
+ * 메뉴 생성 커맨드
  *
  * @param name      메뉴명
  * @param url       URL
  * @param parentId  부모 메뉴 ID
  * @param createdBy 생성자
  */
-@Schema(description = "메뉴 커맨드")
-public record MenuCommand(
+@Schema(description = "메뉴 생성 커맨드")
+public record CreateMenuCommand(
 
         @Parameter(description = "메뉴명. 이 필드는 필수입니다.", schema = @Schema(description = "메뉴명. 이 필드는 필수입니다."), required = true)
         @NotBlank(message = "메뉴명은 필수입니다")

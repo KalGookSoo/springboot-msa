@@ -1,6 +1,8 @@
 package com.kalgooksoo.menu.service;
 
-import com.kalgooksoo.menu.command.MenuCommand;
+import com.kalgooksoo.menu.command.CreateMenuCommand;
+import com.kalgooksoo.menu.command.MoveMenuCommand;
+import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.model.HierarchicalMenu;
 import com.kalgooksoo.menu.repository.MenuRepository;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,10 +44,10 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성합니다.")
     void createTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        CreateMenuCommand command = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
 
         // When
-        Menu savedMenu = menuService.create(menu);
+        Menu savedMenu = menuService.create(command);
 
         // Then
         assertNotNull(savedMenu);
@@ -54,12 +57,12 @@ class MenuServiceTest {
     @DisplayName("메뉴를 수정합니다.")
     void updateTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
-        Menu savedMenu = menuService.create(menu);
+        CreateMenuCommand command = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        Menu savedMenu = menuService.create(command);
 
         // When
-        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
-        Menu updatedMenu = menuService.update(savedMenu.getId(), command);
+        UpdateMenuCommand updateMenuCommand = new UpdateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles");
+        Menu updatedMenu = menuService.update(savedMenu.getId(), updateMenuCommand);
 
         // Then
         assertNotNull(updatedMenu);
@@ -72,7 +75,7 @@ class MenuServiceTest {
     void updateShouldThrowNoSuchElementException() {
         // Given
         String invalidId = "invalidId";
-        MenuCommand command = new MenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        UpdateMenuCommand command = new UpdateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles");
 
         // Then
         assertThrows(NoSuchElementException.class, () -> menuService.update(invalidId, command));
@@ -82,8 +85,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 조회합니다.")
     void findByIdTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
-        Menu savedMenu = menuService.create(menu);
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        Menu savedMenu = menuService.create(createMenuCommand);
 
         // When
         Optional<Menu> foundMenu = menuService.findById(savedMenu.getId());
@@ -99,8 +102,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 삭제합니다.")
     void deleteByIdTest() {
         // Given
-        Menu menu = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
-        Menu savedMenu = menuService.create(menu);
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        Menu savedMenu = menuService.create(createMenuCommand);
 
         // When
         menuService.deleteById(savedMenu.getId());
@@ -125,12 +128,12 @@ class MenuServiceTest {
     void findAllTest() {
         // Given
         IntStream.rangeClosed(1, 5).forEach(i -> {
-            Menu parent = Menu.create("메뉴" + i, "http://www.kalgooksoo.com/categories/" + i + "/articles", null, "anonymous");
-            Menu savedParent = menuService.create(parent);
-            Menu child = Menu.create("하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedParent.getId(), "anonymous");
-            Menu savedChild = menuService.create(child);
-            Menu grandChild = Menu.create("하위하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedChild.getId(), "anonymous");
-            menuService.create(grandChild);
+            CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+            Menu savedParent = menuService.create(createMenuCommand1);
+            CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedParent.getId(), "anonymous");
+            Menu savedChild = menuService.create(createMenuCommand2);
+            CreateMenuCommand createMenuCommand3 = new CreateMenuCommand("하위하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedChild.getId(), "anonymous");
+            menuService.create(createMenuCommand3);
         });
 
         // When
@@ -150,16 +153,43 @@ class MenuServiceTest {
     @DisplayName("자식 메뉴를 추가합니다.")
     void addChildTest() {
         // Given
-        Menu parent = Menu.create("국민참여", "http://www.kalgooksoo.com/categories/3/articles", null, "anonymous");
-        Menu savedParent = menuService.create(parent);
-        Menu child = Menu.create("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedParent.getId(), "anonymous");
+        CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        Menu savedParent = menuService.create(createMenuCommand1);
+        CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedParent.getId(), "anonymous");
 
         // When
-        menuService.create(child);
+        Menu savedChild = menuService.create(createMenuCommand2);
 
         // Then
-        Optional<Menu> foundParent = menuService.findById(savedParent.getId());
-        assertTrue(foundParent.isPresent());
+        assertEquals(savedParent.getId(), savedChild.getParentId());
+    }
+
+    @Test
+    @DisplayName("메뉴를 이동합니다. 성공 시 이동된 메뉴를 반환합니다.")
+    void moveToTest() {
+        // Given
+        CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        Menu savedMenu1 = menuService.create(createMenuCommand1);
+        CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedMenu1.getId(), "anonymous");
+        Menu savedMenu2 = menuService.create(createMenuCommand2);
+        MoveMenuCommand moveMenuCommand = new MoveMenuCommand(savedMenu1.getId());
+
+        // When
+        Menu movedMenu = menuService.move(savedMenu2.getId(), moveMenuCommand);
+
+        // Then
+        assertEquals(movedMenu.getParentId(), savedMenu1.getId());
+    }
+
+    @Test
+    @DisplayName("메뉴를 이동합니다. 존재하지 않는 메뉴에 대해 이동을 시도할 경우 NoSuchElementException이 발생합니다.")
+    void moveToShouldThrowNoSuchElementException() {
+        // Given
+        String invalidId = UUID.randomUUID().toString();
+        MoveMenuCommand moveMenuCommand = new MoveMenuCommand(UUID.randomUUID().toString());
+
+        // When & Then
+        assertThrows(NoSuchElementException.class, () -> menuService.move(invalidId, moveMenuCommand));
     }
 
 }

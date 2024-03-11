@@ -1,6 +1,7 @@
 package com.kalgooksoo.menu.controller;
 
-import com.kalgooksoo.menu.command.MenuCommand;
+import com.kalgooksoo.menu.command.CreateMenuCommand;
+import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.model.HierarchicalMenu;
 import com.kalgooksoo.menu.service.MenuService;
@@ -34,9 +35,8 @@ public class MenuRestController {
     private final MenuService menuService;
 
     @PostMapping
-    public ResponseEntity<EntityModel<Menu>> create(@Valid @RequestBody MenuCommand command) {
-        Menu menu = Menu.create(command.name(), command.url(), command.parentId(), command.createdBy());
-        menuService.create(menu);
+    public ResponseEntity<EntityModel<Menu>> create(@Valid @RequestBody CreateMenuCommand command) {
+        Menu menu = menuService.create(command);
 
         ResponseEntity<EntityModel<Menu>> invocationValue = methodOn(this.getClass())
                 .findById(menu.getId());
@@ -92,7 +92,7 @@ public class MenuRestController {
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<Menu>> updateById(
             @Parameter(description = "메뉴 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
-            @Valid @RequestBody MenuCommand command
+            @Valid @RequestBody UpdateMenuCommand command
     ) {
         Menu menu = menuService.update(id, command);
 

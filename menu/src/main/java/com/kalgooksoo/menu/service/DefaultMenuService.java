@@ -1,6 +1,8 @@
 package com.kalgooksoo.menu.service;
 
-import com.kalgooksoo.menu.command.MenuCommand;
+import com.kalgooksoo.menu.command.CreateMenuCommand;
+import com.kalgooksoo.menu.command.MoveMenuCommand;
+import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.model.HierarchicalMenu;
 import com.kalgooksoo.menu.model.HierarchicalMenuFactory;
@@ -26,13 +28,15 @@ public class DefaultMenuService implements MenuService {
     private final MenuRepository menuRepository;
 
     @Override
-    public Menu create(Menu menu) {
+    public Menu create(CreateMenuCommand command) {
+        Menu menu = Menu.create(command.name(), command.url(), command.parentId(), command.createdBy());
         return menuRepository.save(menu);
     }
 
     @Override
-    public Menu update(String id, MenuCommand command) {
-        Menu menu = menuRepository.findById(id).orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
+    public Menu update(String id, UpdateMenuCommand command) {
+        Menu menu = menuRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
         menu.update(command.name(), command.url());
         return menuRepository.save(menu);
     }
@@ -60,6 +64,14 @@ public class DefaultMenuService implements MenuService {
     @Override
     public void deleteById(String id) {
         menuRepository.deleteById(id);
+    }
+
+    @Override
+    public Menu move(String id, MoveMenuCommand command) {
+        Menu menu = menuRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
+        menu.moveTo(command.parentId());
+        return menuRepository.save(menu);
     }
 
 }

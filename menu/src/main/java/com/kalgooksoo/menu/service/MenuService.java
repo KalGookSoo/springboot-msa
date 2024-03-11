@@ -1,6 +1,8 @@
 package com.kalgooksoo.menu.service;
 
-import com.kalgooksoo.menu.command.MenuCommand;
+import com.kalgooksoo.menu.command.CreateMenuCommand;
+import com.kalgooksoo.menu.command.MoveMenuCommand;
+import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.model.HierarchicalMenu;
 
@@ -12,14 +14,16 @@ import java.util.Optional;
  */
 public interface MenuService {
 
-    Menu create(Menu menu);
+    Menu create(CreateMenuCommand menu);
 
-    Menu update(String id, MenuCommand command);
+    Menu update(String id, UpdateMenuCommand command);
 
     Optional<Menu> findById(String id);
 
     List<HierarchicalMenu> findAll();
 
     void deleteById(String id);
+
+    Menu move(String id, MoveMenuCommand command);
 
 }
