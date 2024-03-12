@@ -22,7 +22,7 @@ public interface MenuService {
 
     List<HierarchicalMenu> findAll();
 
-    void deleteById(String id);
+    void delete(String id);
 
     Menu move(String id, MoveMenuCommand command);
 

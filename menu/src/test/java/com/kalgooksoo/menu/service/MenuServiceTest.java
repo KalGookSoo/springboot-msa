@@ -106,7 +106,7 @@ class MenuServiceTest {
         Menu savedMenu = menuService.create(createMenuCommand);
 
         // When
-        menuService.deleteById(savedMenu.getId());
+        menuService.delete(savedMenu.getId());
 
         // Then
         Optional<Menu> foundMenu = menuService.findById(savedMenu.getId());
@@ -120,7 +120,7 @@ class MenuServiceTest {
         String invalidId = "invalidId";
 
         // Then
-        assertThrows(NoSuchElementException.class, () -> menuService.deleteById(invalidId));
+        assertThrows(NoSuchElementException.class, () -> menuService.delete(invalidId));
     }
 
     @Test

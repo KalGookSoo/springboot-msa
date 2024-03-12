@@ -62,7 +62,7 @@ public class DefaultMenuService implements MenuService {
     }
 
     @Override
-    public void deleteById(String id) {
+    public void delete(String id) {
         menuRepository.deleteById(id);
     }
 

@@ -110,7 +110,7 @@ public class MenuRestController {
     public ResponseEntity<Void> deleteById(
             @Parameter(description = "메뉴 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
-        menuService.deleteById(id);
+        menuService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
