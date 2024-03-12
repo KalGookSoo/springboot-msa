@@ -2,10 +2,10 @@ package com.kalgooksoo.board.service;
 
 import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.domain.CategoryType;
-import com.kalgooksoo.board.model.CreateCategoryCommand;
+import com.kalgooksoo.board.command.CreateCategoryCommand;
 import com.kalgooksoo.board.model.HierarchicalCategory;
-import com.kalgooksoo.board.model.MoveCategoryCommand;
-import com.kalgooksoo.board.model.UpdateCategoryCommand;
+import com.kalgooksoo.board.command.MoveCategoryCommand;
+import com.kalgooksoo.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.board.repository.CategoryJpaRepository;
 import com.kalgooksoo.board.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;

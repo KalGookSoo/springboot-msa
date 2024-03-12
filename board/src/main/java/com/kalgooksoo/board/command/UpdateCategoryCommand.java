@@ -1,4 +1,4 @@
-package com.kalgooksoo.board.model;
+package com.kalgooksoo.board.command;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;

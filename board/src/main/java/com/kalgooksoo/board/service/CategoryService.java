@@ -1,10 +1,10 @@
 package com.kalgooksoo.board.service;
 
 import com.kalgooksoo.board.domain.Category;
-import com.kalgooksoo.board.model.CreateCategoryCommand;
+import com.kalgooksoo.board.command.CreateCategoryCommand;
 import com.kalgooksoo.board.model.HierarchicalCategory;
-import com.kalgooksoo.board.model.MoveCategoryCommand;
-import com.kalgooksoo.board.model.UpdateCategoryCommand;
+import com.kalgooksoo.board.command.MoveCategoryCommand;
+import com.kalgooksoo.board.command.UpdateCategoryCommand;
 
 import java.util.List;
 import java.util.Optional;

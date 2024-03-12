@@ -1,7 +1,5 @@
 package com.kalgooksoo.board.domain;
 
-import com.kalgooksoo.board.model.CreateCategoryCommand;
-import com.kalgooksoo.board.model.UpdateCategoryCommand;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

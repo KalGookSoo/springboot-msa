@@ -1,5 +1,8 @@
 package com.kalgooksoo.board.service;
 
+import com.kalgooksoo.board.command.CreateCategoryCommand;
+import com.kalgooksoo.board.command.MoveCategoryCommand;
+import com.kalgooksoo.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.model.*;
 import com.kalgooksoo.board.repository.CategoryRepository;
