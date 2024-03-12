@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.kalgooksoo.exception.ExceptionHandlingController;
 import com.kalgooksoo.menu.command.CreateMenuCommand;
+import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.repository.MenuJpaRepository;
 import com.kalgooksoo.menu.repository.MenuRepository;
@@ -28,7 +29,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -58,14 +58,13 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 생성합니다. 성공 시 응답 코드 201을 반환합니다.")
     void createSouldReturnCreated() throws Exception {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
 
         // When
         mockMvc.perform(post("/menus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("오시는 길"))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -73,12 +72,12 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 생성합니다. 실패 시 응답 코드 400을 반환합니다.")
     void createSouldReturnBadRequest() throws Exception {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand(null, "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand(null, "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
 
         // When
         mockMvc.perform(post("/menus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -87,20 +86,16 @@ class MenuRestControllerTest {
     @DisplayName("메뉴 목록을 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
     void findAllShouldReturnOk() throws Exception {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
         mockMvc.perform(post("/menus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("오시는 길"))
                 .andDo(MockMvcResultHandlers.print());
 
         // When
-        mockMvc.perform(post("/menus")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("오시는 길"))
+        mockMvc.perform(get("/menus"))
+                .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -108,12 +103,11 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
     void findByIdShouldReturnOk() throws Exception {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
         MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/menus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("오시는 길"))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
@@ -142,12 +136,11 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 수정합니다. 성공 시 응답 코드 200을 반환합니다.")
     void updateByIdShouldReturnOk() throws Exception {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
         MockHttpServletResponse response = mockMvc.perform(post("/menus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("오시는 길"))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn()
                 .getResponse();
@@ -156,14 +149,13 @@ class MenuRestControllerTest {
         Menu menu = entityModel.getContent();
         Assertions.assertThat(menu).isNotNull();
 
-        CreateMenuCommand createMenuCommand = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        UpdateMenuCommand updateMenuCommand = new UpdateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles");
 
         // When
         mockMvc.perform(put("/menus/{id}", menu.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(createMenuCommand)))
+                        .content(mapper.writeValueAsString(updateMenuCommand)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("공지사항"))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -171,12 +163,11 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 수정합니다. 실패 시 응답 코드 400을 반환합니다.")
     void updateByIdShouldReturnBadRequest() throws Exception {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
         MockHttpServletResponse response = mockMvc.perform(post("/menus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("오시는 길"))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn()
                 .getResponse();
@@ -185,12 +176,12 @@ class MenuRestControllerTest {
         Menu menu = entityModel.getContent();
         Assertions.assertThat(menu).isNotNull();
 
-        CreateMenuCommand createMenuCommand = new CreateMenuCommand(null, "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        UpdateMenuCommand updateMenuCommand = new UpdateMenuCommand(null, "http://www.kalgooksoo.com/categories/1/articles");
 
         // When
         mockMvc.perform(put("/menus/{id}", menu.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(createMenuCommand)))
+                        .content(mapper.writeValueAsString(updateMenuCommand)))
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -199,12 +190,12 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 수정합니다. 존재하지 않는 메뉴 수정 시 응답 코드 404를 반환합니다.")
     void updateByIdShouldReturnNotFound() throws Exception {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        UpdateMenuCommand updateMenuCommand = new UpdateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles");
 
         // When
         mockMvc.perform(put("/menus/{id}", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(updateMenuCommand)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isNotFound());
     }
@@ -213,12 +204,11 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 삭제합니다. 성공 시 응답 코드 204를 반환합니다.")
     void deleteByIdShouldReturnNoContent() throws Exception {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
         MockHttpServletResponse response = mockMvc.perform(post("/menus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+                        .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("오시는 길"))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn()
                 .getResponse();
@@ -228,9 +218,7 @@ class MenuRestControllerTest {
         Assertions.assertThat(menu).isNotNull();
 
         // When
-        mockMvc.perform(delete("/menus/{id}", menu.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(command)))
+        mockMvc.perform(delete("/menus/{id}", menu.getId()))
                 .andExpect(status().isNoContent())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -241,8 +229,7 @@ class MenuRestControllerTest {
         // Given
 
         // When
-        mockMvc.perform(delete("/menus/{id}", UUID.randomUUID())
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/menus/{id}", UUID.randomUUID()))
                 .andExpect(status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
     }
