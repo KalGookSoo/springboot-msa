@@ -56,7 +56,7 @@ class MenuRestControllerTest {
 
     @Test
     @DisplayName("메뉴를 생성합니다. 성공 시 응답 코드 201을 반환합니다.")
-    void createSouldReturnCreated() throws Exception {
+    void createShouldReturnCreated() throws Exception {
         // Given
         CreateMenuCommand createMenuCommand = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
 
@@ -70,7 +70,7 @@ class MenuRestControllerTest {
 
     @Test
     @DisplayName("메뉴를 생성합니다. 실패 시 응답 코드 400을 반환합니다.")
-    void createSouldReturnBadRequest() throws Exception {
+    void createShouldReturnBadRequest() throws Exception {
         // Given
         CreateMenuCommand createMenuCommand = new CreateMenuCommand(null, "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
 
