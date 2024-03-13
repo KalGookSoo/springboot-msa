@@ -42,7 +42,7 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public User createUser(User user) throws UsernameAlreadyExistsException {
-        if (userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
         }
         user.changePassword(passwordEncoder.encode(user.getPassword()));
@@ -56,7 +56,7 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public User createAdmin(User user) throws UsernameAlreadyExistsException {
-        if (userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
         }
         user.changePassword(passwordEncoder.encode(user.getPassword()));

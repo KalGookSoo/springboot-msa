@@ -70,15 +70,6 @@ public class UserJpaRepository implements UserRepository {
         return new PageImpl<>(users, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), totalRows);
     }
 
-    @Override
-    public boolean existsByUsername(String username) {
-        Assert.notNull(username, "username must not be null");
-        Long count = em.createQuery("select count(user) from User user where user.username = :username", Long.class)
-                .setParameter("username", username)
-                .getSingleResult();
-        return count > 0;
-    }
-
     /**
      * 검색 조건에 기반한 계정 목록 조회
      *

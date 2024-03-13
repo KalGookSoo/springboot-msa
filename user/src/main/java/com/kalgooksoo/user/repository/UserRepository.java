@@ -22,8 +22,6 @@ public interface UserRepository {
 
     Page<User> findAll(Pageable pageable);
 
-    boolean existsByUsername(String username);
-
     Page<User> search(UserSearch search, Pageable pageable);
 
 }
