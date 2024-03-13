@@ -51,19 +51,19 @@ class UserServiceTest {
     @BeforeEach
     void setup() throws UsernameAlreadyExistsException {
         userService = new DefaultUserService(userRepository, authorityRepository);
-        User account = User.create("tester", "12345678", "테스터", null, null);
-        testUser = userService.createUser(account);
+        User user = User.create("tester", "12345678", "테스터", null, null);
+        testUser = userService.createUser(user);
     }
 
     @Test
     @DisplayName("계정을 생성합니다.")
     void createUserTest() {
         // Given
-        User account = User.create("tester2", "12345678", "테스터2", null, null);
+        User user = User.create("tester2", "12345678", "테스터2", null, null);
 
         try {
             // When
-            User createdUser = userService.createUser(account);
+            User createdUser = userService.createUser(user);
 
             // Then
             assertNotNull(createdUser);
@@ -76,8 +76,8 @@ class UserServiceTest {
     @DisplayName("계정 생성 시 이미 존재하는 아이디를 입력하면 UsernameAlreadyExistsException 예외를 발생시킵니다.")
     void createUserWithExistingUsernameTest() throws UsernameAlreadyExistsException {
         // Given
-        User account = User.create("tester2", "12345678", "테스터2", null, null);
-        userService.createUser(account);
+        User user = User.create("tester2", "12345678", "테스터2", null, null);
+        userService.createUser(user);
 
         User invalidUser = User.create("tester2", "12345678", "테스터2", null, null);
 
@@ -89,11 +89,11 @@ class UserServiceTest {
     @DisplayName("계정 생성 시 계정 정책 날짜를 확인합니다.")
     void createUserWithPolicyTest() {
         // Given
-        User account = User.create("tester2", "12345678", "테스터2", null, null);
+        User user = User.create("tester2", "12345678", "테스터2", null, null);
 
         try {
             // When
-            User createdUser = userService.createUser(account);
+            User createdUser = userService.createUser(user);
 
             // Then
             LocalDateTime expectedExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusYears(2L);
@@ -141,11 +141,11 @@ class UserServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
 
         // When
-        Page<User> accounts = userService.findAll(pageRequest);
+        Page<User> page = userService.findAll(pageRequest);
 
         // Then
-        assertNotNull(accounts);
-        assertTrue(accounts.getTotalElements() > 0);
+        assertNotNull(page);
+        assertTrue(page.getTotalElements() > 0);
     }
 
     @Test
@@ -157,11 +157,11 @@ class UserServiceTest {
         search.setUsername("tester");
 
         // When
-        Page<User> accounts = userService.findAll(search, pageRequest);
+        Page<User> page = userService.findAll(search, pageRequest);
 
         // Then
-        assertNotNull(accounts);
-        assertTrue(accounts.getTotalElements() > 0);
+        assertNotNull(page);
+        assertTrue(page.getTotalElements() > 0);
     }
 
 
