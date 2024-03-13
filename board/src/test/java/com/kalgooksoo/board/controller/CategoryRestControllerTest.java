@@ -57,7 +57,7 @@ class CategoryRestControllerTest {
 
     @Test
     @DisplayName("카테고리를 생성합니다. 성공 시 응답 코드 201을 반환합니다.")
-    void createSouldReturnCreated() throws Exception {
+    void createShouldReturnCreated() throws Exception {
         // Given
         CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
 
@@ -71,7 +71,7 @@ class CategoryRestControllerTest {
 
     @Test
     @DisplayName("카테고리를 생성합니다. 실패 시 응답 코드 400을 반환합니다.")
-    void createSouldReturnBadRequest() throws Exception {
+    void createShouldReturnBadRequest() throws Exception {
         // Given
         CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, null, CategoryType.PUBLIC.name(), "admin");
 
@@ -85,7 +85,7 @@ class CategoryRestControllerTest {
 
     @Test
     @DisplayName("카테고리 목록을 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
-    void findAllSouldReturnOk() throws Exception {
+    void findAllShouldReturnOk() throws Exception {
         // Given
         CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
         mockMvc.perform(post("/categories")
@@ -201,7 +201,7 @@ class CategoryRestControllerTest {
 
     @Test
     @DisplayName("카테고리를 삭제합니다. 성공 시 응답 코드 204를 반환합니다.")
-    void deleteSouldReturnNoContent() throws Exception {
+    void deleteShouldReturnNoContent() throws Exception {
         // Given
         CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
         MockHttpServletResponse response = mockMvc.perform(post("/categories")
@@ -224,7 +224,7 @@ class CategoryRestControllerTest {
 
     @Test
     @DisplayName("카테고리를 삭제합니다. 존재하지 않는 카테고리 삭제 시 응답 코드 404를 반환합니다.")
-    void deleteSouldReturnNotFound() throws Exception {
+    void deleteShouldReturnNotFound() throws Exception {
         // Given
 
         // When
