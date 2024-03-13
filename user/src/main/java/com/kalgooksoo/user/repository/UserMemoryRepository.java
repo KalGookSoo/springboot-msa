@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,14 @@ public class UserMemoryRepository implements UserRepository {
         if (user.getId() == null) {
             users.add(user);
         } else {
-            // user.getId()와 같은 id를 가진 user를 찾아서 user로 교체
             users.stream()
                     .filter(u -> u.getId().equals(user.getId()))
                     .findFirst()
-                    .ifPresent(u -> u = user);
+                    .map(u -> user)
+                    .orElseGet(() -> {
+                        users.add(user);
+                        return user;
+                    });
         }
         return user;
     }
@@ -47,7 +51,11 @@ public class UserMemoryRepository implements UserRepository {
 
     @Override
     public void deleteById(String id) {
-        users.removeIf(user -> user.getId().equals(id));
+        users.stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .map(users::remove)
+                .orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
     }
 
     @Override
