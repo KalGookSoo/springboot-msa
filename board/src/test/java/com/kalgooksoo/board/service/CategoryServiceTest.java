@@ -152,7 +152,8 @@ class CategoryServiceTest {
         categoryService.delete(savedCategory.getId());
 
         // Then
-        assertTrue(categoryService.findById(savedCategory.getId()).isEmpty());
+        Optional<Category> deletedCategory = categoryService.findById(savedCategory.getId());
+        assertTrue(deletedCategory.isEmpty());
     }
 
     @Test

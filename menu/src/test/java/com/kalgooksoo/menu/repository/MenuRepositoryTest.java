@@ -124,9 +124,9 @@ class MenuRepositoryTest {
 
         // When
         menuRepository.deleteById(savedMenu.getId());
-        Optional<Menu> deletedMenu = menuRepository.findById(savedMenu.getId());
 
         // Then
+        Optional<Menu> deletedMenu = menuRepository.findById(savedMenu.getId());
         assertTrue(deletedMenu.isEmpty());
     }
 

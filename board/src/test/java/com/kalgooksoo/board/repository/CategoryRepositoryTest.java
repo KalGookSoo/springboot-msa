@@ -116,9 +116,9 @@ class CategoryRepositoryTest {
 
         // When
         categoryRepository.deleteById(savedCategory.getId());
-        Optional<Category> deletedCategory = categoryRepository.findById(savedCategory.getId());
 
         // Then
+        Optional<Category> deletedCategory = categoryRepository.findById(savedCategory.getId());
         assertTrue(deletedCategory.isEmpty());
     }
 
