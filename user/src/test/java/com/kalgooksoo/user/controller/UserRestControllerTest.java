@@ -9,23 +9,29 @@ import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.user.domain.User;
+import com.kalgooksoo.user.repository.AuthorityMemoryRepository;
+import com.kalgooksoo.user.repository.AuthorityRepository;
+import com.kalgooksoo.user.repository.UserMemoryRepository;
+import com.kalgooksoo.user.repository.UserRepository;
+import com.kalgooksoo.user.service.DefaultUserService;
+import com.kalgooksoo.user.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mockito;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,23 +39,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 계정 REST 컨트롤러 테스트
  */
-@Transactional
-@SpringBootTest
-@ActiveProfiles("test")
 class UserRestControllerTest {
 
     private MockMvc mockMvc;
 
-    @Autowired
-    private UserRestController userRestController;
-
-    @Autowired
-    private ExceptionHandlingController exceptionHandlingController;
+    private final PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
 
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
     void setup() {
+        UserRepository userRepository = new UserMemoryRepository();
+        AuthorityRepository authorityRepository = new AuthorityMemoryRepository();
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        UserService userService = new DefaultUserService(userRepository, authorityRepository, passwordEncoder);
+        UserRestController userRestController = new UserRestController(userService);
+        ExceptionHandlingController exceptionHandlingController = new ExceptionHandlingController();
         mockMvc = MockMvcBuilders.standaloneSetup(userRestController, exceptionHandlingController).build();
     }
 
@@ -280,6 +285,7 @@ class UserRestControllerTest {
         UpdateUserPasswordCommand updateUserPasswordCommand = new UpdateUserPasswordCommand("12345678", "1234567890");
 
         // When
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         mockMvc.perform(put("/users/{id}/password", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateUserPasswordCommand)))
@@ -346,6 +352,7 @@ class UserRestControllerTest {
         SignInCommand signInCommand = new SignInCommand("tester", "12345678");
 
         // When
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         mockMvc.perform(post("/users/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(signInCommand)))
