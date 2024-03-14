@@ -228,7 +228,7 @@ class UserServiceTest {
         String id = createdUser.getId();
 
         // When
-        userService.deleteById(id);
+        userService.delete(id);
 
         // Then
         Optional<User> deletedUser = userService.findById(id);
@@ -242,7 +242,7 @@ class UserServiceTest {
         String id = UUID.randomUUID().toString();
 
         // Then
-        assertThrows(NoSuchElementException.class, () -> userService.deleteById(id));
+        assertThrows(NoSuchElementException.class, () -> userService.delete(id));
     }
 
     @Test

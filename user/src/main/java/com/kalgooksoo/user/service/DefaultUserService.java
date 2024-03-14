@@ -116,11 +116,11 @@ public class DefaultUserService implements UserService {
     }
 
     /**
-     * @see UserService#deleteById(String)
+     * @see UserService#delete(String)
      * 삭제 연산은 권한을 가진자에게만 허용할 예정이라 노출해도 무방할 것 같다고 판단하여 예외 처리를 하였습니다.
      */
     @Override
-    public void deleteById(String id) {
+    public void delete(String id) {
         userRepository.deleteById(id);
         authorityRepository.deleteByUserId(id);
     }

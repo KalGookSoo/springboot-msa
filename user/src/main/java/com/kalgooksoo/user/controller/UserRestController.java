@@ -163,7 +163,7 @@ public class UserRestController {
     public ResponseEntity<Void> deleteById(
             @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
-        userService.deleteById(id);
+        userService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

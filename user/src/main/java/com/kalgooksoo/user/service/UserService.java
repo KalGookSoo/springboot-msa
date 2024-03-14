@@ -75,7 +75,7 @@ public interface UserService {
      *
      * @param id 계정 식별자
      */
-    void deleteById(String id);
+    void delete(String id);
 
     /**
      * 패스워드 변경
