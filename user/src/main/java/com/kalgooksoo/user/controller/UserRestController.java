@@ -5,8 +5,6 @@ import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserPasswordCommand;
-import com.kalgooksoo.user.domain.ContactNumber;
-import com.kalgooksoo.user.domain.Email;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.search.UserSearch;
