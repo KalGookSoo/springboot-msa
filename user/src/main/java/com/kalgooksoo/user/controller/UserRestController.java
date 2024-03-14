@@ -52,10 +52,8 @@ public class UserRestController {
      */
     @PostMapping
     public ResponseEntity<EntityModel<User>> create(@Valid @RequestBody CreateUserCommand command) throws UsernameAlreadyExistsException {
-        Email email = new Email(command.emailId(), command.emailDomain());
-        ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
-        User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
-        userService.createUser(user);
+
+        User user = userService.createUser(command);
 
         ResponseEntity<EntityModel<User>> invocationValue = methodOn(this.getClass())
                 .findById(user.getId());

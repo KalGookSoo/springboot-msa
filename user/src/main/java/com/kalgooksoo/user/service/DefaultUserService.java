@@ -1,19 +1,19 @@
 package com.kalgooksoo.user.service;
 
+import com.kalgooksoo.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
+import com.kalgooksoo.user.domain.ContactNumber;
+import com.kalgooksoo.user.domain.Email;
 import com.kalgooksoo.user.domain.User;
-import com.kalgooksoo.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.repository.AuthorityRepository;
 import com.kalgooksoo.user.repository.UserRepository;
 import com.kalgooksoo.user.search.UserSearch;
-import com.kalgooksoo.user.domain.ContactNumber;
-import com.kalgooksoo.user.domain.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,31 +35,41 @@ public class DefaultUserService implements UserService {
 
     private final AuthorityRepository authorityRepository;
 
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     /**
-     * @see UserService#createUser(User)
+     * @see UserService#createUser(CreateUserCommand)
      */
     @Override
-    public User createUser(User user) throws UsernameAlreadyExistsException {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
+    public User createUser(CreateUserCommand command) throws UsernameAlreadyExistsException {
+        if (userRepository.findByUsername(command.username()).isPresent()) {
+            throw new UsernameAlreadyExistsException(command.username(), "계정이 이미 존재합니다");
         }
+
+        Email email = new Email(command.emailId(), command.emailDomain());
+        ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
+        User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         user.changePassword(passwordEncoder.encode(user.getPassword()));
+
         User savedUser = userRepository.save(user);
         authorityRepository.save(Authority.create(savedUser.getId(), "ROLE_USER"));
         return userRepository.save(user);
     }
 
     /**
-     * @see UserService#createAdmin(User)
+     * @see UserService#createAdmin(CreateUserCommand)
      */
     @Override
-    public User createAdmin(User user) throws UsernameAlreadyExistsException {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException(user.getUsername(), "계정이 이미 존재합니다");
+    public User createAdmin(CreateUserCommand command) throws UsernameAlreadyExistsException {
+        if (userRepository.findByUsername(command.username()).isPresent()) {
+            throw new UsernameAlreadyExistsException(command.username(), "계정이 이미 존재합니다");
         }
+
+        Email email = new Email(command.emailId(), command.emailDomain());
+        ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
+        User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         user.changePassword(passwordEncoder.encode(user.getPassword()));
+
         User savedUser = userRepository.save(user);
         authorityRepository.save(Authority.create(savedUser.getId(), "ROLE_ADMIN"));
         return userRepository.save(user);
@@ -70,7 +80,6 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public User update(String id, UpdateUserCommand command) {
-        // FIXME UpdateUserCommand는 표현 계층에 의존적이라 도메인 계층에 노출되어서는 안될 것 같습니다.
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
         String name = command.name();
         Email email = new Email(command.emailId(), command.emailDomain());

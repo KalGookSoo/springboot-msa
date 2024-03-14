@@ -1,5 +1,6 @@
 package com.kalgooksoo.user.service;
 
+import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.model.UserSummary;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;
@@ -20,20 +21,20 @@ public interface UserService {
     /**
      * 계정 생성
      *
-     * @param user 계정
+     * @param command 계정 생성 커맨드
      * @return 생성된 계정
      * @throws UsernameAlreadyExistsException 계정이 이미 존재하는 경우
      */
-    User createUser(User user) throws UsernameAlreadyExistsException;
+    User createUser(CreateUserCommand command) throws UsernameAlreadyExistsException;
 
     /**
      * 관리자 계정 생성
      *
-     * @param user 계정
+     * @param command 계정 생성 커맨드
      * @return 생성된 계정
      * @throws UsernameAlreadyExistsException 계정이 이미 존재하는 경우
      */
-    User createAdmin(User user) throws UsernameAlreadyExistsException;
+    User createAdmin(CreateUserCommand command) throws UsernameAlreadyExistsException;
 
     /**
      * 계정 수정
