@@ -7,7 +7,7 @@ import com.kalgooksoo.exception.ExceptionHandlingController;
 import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
-import com.kalgooksoo.menu.repository.MenuJpaRepository;
+import com.kalgooksoo.menu.repository.MenuMemoryRepository;
 import com.kalgooksoo.menu.repository.MenuRepository;
 import com.kalgooksoo.menu.service.DefaultMenuService;
 import com.kalgooksoo.menu.service.MenuService;
@@ -15,13 +15,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -34,20 +30,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 메뉴 REST 컨트롤러 테스트
  */
-@DataJpaTest
-@ActiveProfiles("test")
 class MenuRestControllerTest {
 
     private MockMvc mockMvc;
-
-    @Autowired
-    private TestEntityManager entityManager;
 
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
     void setUp() {
-        MenuRepository menuRepository = new MenuJpaRepository(entityManager.getEntityManager());
+        MenuRepository menuRepository = new MenuMemoryRepository();
         MenuService menuService = new DefaultMenuService(menuRepository);
         MenuRestController menuRestController = new MenuRestController(menuService);
         ExceptionHandlingController exceptionHandlingController = new ExceptionHandlingController();
