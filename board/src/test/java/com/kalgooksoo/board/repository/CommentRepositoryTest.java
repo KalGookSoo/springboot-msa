@@ -34,7 +34,7 @@ class CommentRepositoryTest {
     @DisplayName("댓글을 저장합니다. 성공 시 댓글을 반환합니다.")
     void saveShouldReturnComment() {
         // Given
-        Comment comment = Comment.create(UUID.randomUUID().toString(), "content", "anonymous");
+        Comment comment = Comment.create(UUID.randomUUID().toString(), null, "content", "anonymous");
 
         // When
         Comment savedComment = commentRepository.save(comment);
@@ -57,7 +57,7 @@ class CommentRepositoryTest {
     @DisplayName("모든 댓글을 조회합니다. 성공 시 댓글 목록을 반환합니다.")
     void findAllShouldReturnComments() {
         // Given
-        Comment comment = Comment.create(UUID.randomUUID().toString(), "content", "anonymous");
+        Comment comment = Comment.create(UUID.randomUUID().toString(), null, "content", "anonymous");
         Comment savedComment = commentRepository.save(comment);
 
         // When
@@ -83,7 +83,7 @@ class CommentRepositoryTest {
     @DisplayName("댓글을 조회합니다. 성공 시 댓글을 반환합니다.")
     void findByIdShouldReturnComment() {
         // Given
-        Comment comment = Comment.create(UUID.randomUUID().toString(), "content", "anonymous");
+        Comment comment = Comment.create(UUID.randomUUID().toString(), null, "content", "anonymous");
         Comment savedComment = commentRepository.save(comment);
 
         // When
@@ -110,7 +110,7 @@ class CommentRepositoryTest {
     @DisplayName("댓글을 삭제합니다. 성공 시 삭제된 댓글을 조회할 수 없습니다.")
     void deleteTest() {
         // Given
-        Comment comment = Comment.create(UUID.randomUUID().toString(), "content", "anonymous");
+        Comment comment = Comment.create(UUID.randomUUID().toString(), null, "content", "anonymous");
         Comment savedComment = commentRepository.save(comment);
 
         // When
