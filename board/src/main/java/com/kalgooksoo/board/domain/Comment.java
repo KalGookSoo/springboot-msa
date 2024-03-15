@@ -8,8 +8,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -77,8 +79,9 @@ public class Comment {
      * @return 댓글
      */
     public static Comment create(String articleId, String content, String createdBy) {
+        Assert.notNull(createdBy, "생성자는 필수입니다.");
         Comment comment = new Comment();
-        comment.id = java.util.UUID.randomUUID().toString();
+        comment.id = UUID.randomUUID().toString();
         comment.articleId = articleId;
         comment.content = content;
         comment.createdBy = createdBy;
