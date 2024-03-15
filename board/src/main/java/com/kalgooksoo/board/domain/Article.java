@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -86,6 +87,7 @@ public class Article {
      */
     public static Article create(String title, String content, String categoryId, String createdBy) {
         Article article = new Article();
+        article.id = UUID.randomUUID().toString();
         article.title = title;
         article.content = content;
         article.categoryId = categoryId;
