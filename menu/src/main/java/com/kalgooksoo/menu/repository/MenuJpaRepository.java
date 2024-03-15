@@ -18,7 +18,7 @@ public class MenuJpaRepository implements MenuRepository {
 
     @Override
     public Menu save(Menu menu) {
-        Assert.notNull(menu, "menu는 null이 될 수 없습니다");
+        Assert.notNull(menu, "메뉴는 NULL이 될 수 없습니다");
         if (menu.getId() == null) {
             em.persist(menu);
         } else {
@@ -34,13 +34,13 @@ public class MenuJpaRepository implements MenuRepository {
 
     @Override
     public Optional<Menu> findById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         return Optional.ofNullable(em.find(Menu.class, id));
     }
 
     @Override
     public void deleteById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         Menu menu = em.find(Menu.class, id);
         if (menu != null) {
             em.remove(menu);
