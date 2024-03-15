@@ -33,9 +33,9 @@ public class Attachment {
     private String id;
 
     /**
-     * 게시글 식별자
+     * 참조 식별자
      */
-    private String articleId;
+    private String referenceId;
 
     /**
      * 이름
@@ -65,17 +65,17 @@ public class Attachment {
     /**
      * 첨부파일을 생성합니다.
      *
-     * @param articleId 게시글 식별자
-     * @param name      이름
-     * @param pathName  경로명
-     * @param mimeType  MIME 타입
-     * @param size      크기
+     * @param referenceId 참조 식별자
+     * @param name        이름
+     * @param pathName    경로명
+     * @param mimeType    MIME 타입
+     * @param size        크기
      * @return 첨부파일
      */
-    public static Attachment create(String articleId, String name, String pathName, String mimeType, long size) {
+    public static Attachment create(String referenceId, String name, String pathName, String mimeType, long size) {
         Attachment attachment = new Attachment();
         attachment.id = UUID.randomUUID().toString();
-        attachment.articleId = articleId;
+        attachment.referenceId = referenceId;
         attachment.name = name;
         attachment.pathName = pathName;
         attachment.mimeType = mimeType;
