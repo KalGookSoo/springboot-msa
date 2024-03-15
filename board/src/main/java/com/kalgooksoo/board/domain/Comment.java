@@ -40,6 +40,11 @@ public class Comment {
     private String articleId;
 
     /**
+     * 부모 댓글 식별자
+     */
+    private String parentId;
+
+    /**
      * 본문
      */
     @Column(columnDefinition = "TEXT")
@@ -74,15 +79,17 @@ public class Comment {
      * 댓글을 생성합니다.
      *
      * @param articleId 게시글 식별자
+     * @param parentId  부모 댓글 식별자
      * @param content   본문
      * @param createdBy 생성자
      * @return 댓글
      */
-    public static Comment create(String articleId, String content, String createdBy) {
+    public static Comment create(String articleId, String parentId, String content, String createdBy) {
         Assert.notNull(createdBy, "생성자는 필수입니다.");
         Comment comment = new Comment();
         comment.id = UUID.randomUUID().toString();
         comment.articleId = articleId;
+        comment.parentId = parentId;
         comment.content = content;
         comment.createdBy = createdBy;
         comment.createdAt = LocalDateTime.now();
@@ -132,5 +139,15 @@ public class Comment {
         }
         this.dislikes--;
     }
+
+    /**
+     * 최상위 메뉴 여부를 반환합니다.
+     *
+     * @return 최상위 메뉴 여부
+     */
+    public boolean isRoot() {
+        return parentId == null;
+    }
+
 
 }
