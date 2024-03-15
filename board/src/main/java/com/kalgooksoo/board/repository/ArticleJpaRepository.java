@@ -18,7 +18,7 @@ public class ArticleJpaRepository implements ArticleRepository {
 
     @Override
     public Article save(Article article) {
-        Assert.notNull(article, "게시글은 null이 될 수 없습니다");
+        Assert.notNull(article, "게시글은 NULL이 될 수 없습니다");
         if (article.getId() == null) {
             em.persist(article);
         } else {
@@ -34,13 +34,13 @@ public class ArticleJpaRepository implements ArticleRepository {
 
     @Override
     public Optional<Article> findById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         return Optional.ofNullable(em.find(Article.class, id));
     }
 
     @Override
     public void deleteById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         Article article = em.find(Article.class, id);
         if (article != null) {
             em.remove(article);

@@ -18,7 +18,7 @@ public class CategoryJpaRepository implements CategoryRepository {
 
     @Override
     public Category save(Category category) {
-        Assert.notNull(category, "category는 null이 될 수 없습니다");
+        Assert.notNull(category, "카테고리는 NULL이 될 수 없습니다");
         if (category.getId() == null) {
             em.persist(category);
         } else {
@@ -34,13 +34,13 @@ public class CategoryJpaRepository implements CategoryRepository {
 
     @Override
     public Optional<Category> findById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         return Optional.ofNullable(em.find(Category.class, id));
     }
 
     @Override
     public void deleteById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         Category category = em.find(Category.class, id);
         if (category != null) {
             em.remove(category);

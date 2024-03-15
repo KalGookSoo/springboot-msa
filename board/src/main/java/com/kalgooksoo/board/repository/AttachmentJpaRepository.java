@@ -18,7 +18,7 @@ public class AttachmentJpaRepository implements AttachmentRepository {
 
     @Override
     public Attachment save(Attachment attachment) {
-        Assert.notNull(attachment, "첨부파일는 null이 될 수 없습니다");
+        Assert.notNull(attachment, "첨부파일는 NULL이 될 수 없습니다");
         if (attachment.getId() == null) {
             em.persist(attachment);
         } else {
@@ -34,13 +34,13 @@ public class AttachmentJpaRepository implements AttachmentRepository {
 
     @Override
     public Optional<Attachment> findById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         return Optional.ofNullable(em.find(Attachment.class, id));
     }
 
     @Override
     public void deleteById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         Attachment attachment = em.find(Attachment.class, id);
         if (attachment != null) {
             em.remove(attachment);

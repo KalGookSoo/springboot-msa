@@ -18,7 +18,7 @@ public class CommentJpaRepository implements CommentRepository {
 
     @Override
     public Comment save(Comment comment) {
-        Assert.notNull(comment, "댓글는 null이 될 수 없습니다");
+        Assert.notNull(comment, "댓글은 NULL이 될 수 없습니다");
         if (comment.getId() == null) {
             em.persist(comment);
         } else {
@@ -34,13 +34,13 @@ public class CommentJpaRepository implements CommentRepository {
 
     @Override
     public Optional<Comment> findById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         return Optional.ofNullable(em.find(Comment.class, id));
     }
 
     @Override
     public void deleteById(String id) {
-        Assert.notNull(id, "id는 null이 될 수 없습니다");
+        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         Comment comment = em.find(Comment.class, id);
         if (comment != null) {
             em.remove(comment);
