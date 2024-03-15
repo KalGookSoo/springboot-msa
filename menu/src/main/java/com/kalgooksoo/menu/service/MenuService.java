@@ -16,11 +16,11 @@ public interface MenuService {
 
     Menu create(CreateMenuCommand menu);
 
-    Menu update(String id, UpdateMenuCommand command);
+    List<HierarchicalMenu> findAll();
 
     Optional<Menu> findById(String id);
 
-    List<HierarchicalMenu> findAll();
+    Menu update(String id, UpdateMenuCommand command);
 
     void delete(String id);
 

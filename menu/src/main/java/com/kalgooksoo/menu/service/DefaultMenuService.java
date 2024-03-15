@@ -33,20 +33,6 @@ public class DefaultMenuService implements MenuService {
         return menuRepository.save(menu);
     }
 
-    @Override
-    public Menu update(String id, UpdateMenuCommand command) {
-        Menu menu = menuRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
-        menu.update(command.name(), command.url());
-        return menuRepository.save(menu);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<Menu> findById(String id) {
-        return menuRepository.findById(id);
-    }
-
     @Transactional(readOnly = true)
     @Override
     public List<HierarchicalMenu> findAll() {
@@ -59,6 +45,20 @@ public class DefaultMenuService implements MenuService {
                 .filter(Menu::isRoot)
                 .map(menu -> HierarchicalMenuFactory.toHierarchical(menu, menuMap))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Menu> findById(String id) {
+        return menuRepository.findById(id);
+    }
+
+    @Override
+    public Menu update(String id, UpdateMenuCommand command) {
+        Menu menu = menuRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
+        menu.update(command.name(), command.url());
+        return menuRepository.save(menu);
     }
 
     @Override
