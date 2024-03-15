@@ -1,5 +1,6 @@
 package com.kalgooksoo.menu.domain;
 
+import com.kalgooksoo.hierarchy.Hierarchical;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -25,7 +26,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "tb_menu")
 @DynamicInsert
-public class Menu {
+public class Menu implements Hierarchical<Menu, String> {
 
     /**
      * 식별자
@@ -63,15 +64,6 @@ public class Menu {
      */
     private LocalDateTime modifiedAt;
 
-    /**
-     * 최상위 메뉴 여부를 반환합니다.
-     *
-     * @return 최상위 메뉴 여부
-     */
-    public boolean isRoot() {
-        return parentId == null;
-    }
-
     public static Menu create(String name, String url, String parentId, String createdBy) {
         Assert.notNull(createdBy, "생성자는 null이 될 수 없습니다");
         Menu menu = new Menu();
@@ -90,6 +82,12 @@ public class Menu {
         this.modifiedAt = LocalDateTime.now();
     }
 
+    @Override
+    public boolean isRoot() {
+        return parentId == null;
+    }
+
+    @Override
     public void moveTo(String parentId) {
         this.parentId = parentId;
         this.modifiedAt = LocalDateTime.now();

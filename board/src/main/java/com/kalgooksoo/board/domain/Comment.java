@@ -1,5 +1,6 @@
 package com.kalgooksoo.board.domain;
 
+import com.kalgooksoo.hierarchy.Hierarchical;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "tb_comment")
 @DynamicInsert
-public class Comment {
+public class Comment implements Hierarchical<Comment, String> {
 
     /**
      * 식별자
@@ -96,13 +97,15 @@ public class Comment {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    /**
-     * 최상위 메뉴 여부를 반환합니다.
-     *
-     * @return 최상위 메뉴 여부
-     */
+    @Override
     public boolean isRoot() {
         return parentId == null;
+    }
+
+    @Override
+    public void moveTo(String parentId) {
+        this.parentId = parentId;
+        this.modifiedAt = LocalDateTime.now();
     }
 
 }

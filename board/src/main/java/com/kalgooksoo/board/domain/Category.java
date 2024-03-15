@@ -1,5 +1,6 @@
 package com.kalgooksoo.board.domain;
 
+import com.kalgooksoo.hierarchy.Hierarchical;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,7 +24,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "tb_category")
 @DynamicInsert
-public class Category {
+public class Category implements Hierarchical<Category, String> {
 
     /**
      * 식별자
@@ -80,18 +81,15 @@ public class Category {
         this.modifiedAt = LocalDateTime.now();
     }
 
+    @Override
+    public boolean isRoot() {
+        return parentId == null;
+    }
+
+    @Override
     public void moveTo(String parentId) {
         this.parentId = parentId;
         this.modifiedAt = LocalDateTime.now();
-    }
-
-    /**
-     * 최상위 메뉴 여부를 반환합니다.
-     *
-     * @return 최상위 메뉴 여부
-     */
-    public boolean isRoot() {
-        return parentId == null;
     }
 
 }
