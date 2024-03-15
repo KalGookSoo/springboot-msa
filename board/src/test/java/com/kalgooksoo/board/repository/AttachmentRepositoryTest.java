@@ -32,7 +32,7 @@ class AttachmentRepositoryTest {
 
     @Test
     @DisplayName("첨부파일을 저장합니다. 성공 시 첨부파일을 반환합니다.")
-    void saveTest() {
+    void saveShouldReturnAttachment() {
         // Given
         Attachment attachment = Attachment.create(UUID.randomUUID().toString(), "이미지", "/attachments/{categoryId}/image.png", "image/png", 100L);
 
@@ -45,7 +45,7 @@ class AttachmentRepositoryTest {
 
     @Test
     @DisplayName("첨부파일을 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveTestWithNull() {
+    void saveShouldThrowIllegalArgumentException() {
         // Given
         Attachment attachment = null;
 
@@ -55,7 +55,7 @@ class AttachmentRepositoryTest {
 
     @Test
     @DisplayName("모든 첨부파일을 조회합니다. 성공 시 첨부파일 목록을 반환합니다.")
-    void findAllTest() {
+    void findAllShouldReturnAttachments() {
         // Given
         Attachment attachment = Attachment.create(UUID.randomUUID().toString(), "이미지", "/attachments/{categoryId}/image.png", "image/png", 100L);
         Attachment savedAttachment = attachmentRepository.save(attachment);
@@ -70,7 +70,7 @@ class AttachmentRepositoryTest {
 
     @Test
     @DisplayName("모든 첨부파일을 조회합니다. 실패 시 빈 목록을 반환합니다.")
-    void findAllTestWithEmpty() {
+    void findAllShouldReturnEmptyList() {
         // When
         List<Attachment> attachments = attachmentRepository.findAll();
 
@@ -81,7 +81,7 @@ class AttachmentRepositoryTest {
 
     @Test
     @DisplayName("첨부파일을 조회합니다. 성공 시 첨부파일을 반환합니다.")
-    void findByIdTest() {
+    void findByIdShouldReturnAttachment() {
         // Given
         Attachment attachment = Attachment.create(UUID.randomUUID().toString(), "이미지", "/attachments/{categoryId}/image.png", "image/png", 100L);
         Attachment savedAttachment = attachmentRepository.save(attachment);
@@ -95,7 +95,7 @@ class AttachmentRepositoryTest {
 
     @Test
     @DisplayName("첨부파일을 조회합니다. 실패 시 빈 Optional을 반환합니다.")
-    void findByIdTestWithEmpty() {
+    void findByIdShouldReturnEmptyOptional() {
         // Given
         String id = UUID.randomUUID().toString();
 
@@ -123,7 +123,7 @@ class AttachmentRepositoryTest {
 
     @Test
     @DisplayName("첨부파일을 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteTestWithNull() {
+    void deleteShouldThrowIllegalArgumentException() {
         // Given
         String id = null;
 
@@ -133,7 +133,7 @@ class AttachmentRepositoryTest {
 
     @Test
     @DisplayName("첨부파일을 삭제합니다. 없는 첨부파일을 삭제 시 NoSuchElementException을 던집니다.")
-    void deleteTestWithEmpty() {
+    void deleteShouldThrowNoSuchElementException() {
         // Given
         String id = UUID.randomUUID().toString();
 

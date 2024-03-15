@@ -32,7 +32,7 @@ class CommentRepositoryTest {
 
     @Test
     @DisplayName("댓글을 저장합니다. 성공 시 댓글을 반환합니다.")
-    void saveTest() {
+    void saveShouldReturnComment() {
         // Given
         Comment comment = Comment.create(UUID.randomUUID().toString(), "content", "anonymous");
 
@@ -45,7 +45,7 @@ class CommentRepositoryTest {
 
     @Test
     @DisplayName("댓글을 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveTestWithNull() {
+    void saveShouldThrowIllegalArgumentException() {
         // Given
         Comment comment = null;
 
@@ -55,7 +55,7 @@ class CommentRepositoryTest {
 
     @Test
     @DisplayName("모든 댓글을 조회합니다. 성공 시 댓글 목록을 반환합니다.")
-    void findAllTest() {
+    void findAllShouldReturnComments() {
         // Given
         Comment comment = Comment.create(UUID.randomUUID().toString(), "content", "anonymous");
         Comment savedComment = commentRepository.save(comment);
@@ -70,7 +70,7 @@ class CommentRepositoryTest {
 
     @Test
     @DisplayName("모든 댓글을 조회합니다. 실패 시 빈 목록을 반환합니다.")
-    void findAllTestWithEmpty() {
+    void findAllShouldReturnEmptyList() {
         // When
         List<Comment> comments = commentRepository.findAll();
 
@@ -81,7 +81,7 @@ class CommentRepositoryTest {
 
     @Test
     @DisplayName("댓글을 조회합니다. 성공 시 댓글을 반환합니다.")
-    void findByIdTest() {
+    void findByIdShouldReturnComment() {
         // Given
         Comment comment = Comment.create(UUID.randomUUID().toString(), "content", "anonymous");
         Comment savedComment = commentRepository.save(comment);
@@ -95,7 +95,7 @@ class CommentRepositoryTest {
 
     @Test
     @DisplayName("댓글을 조회합니다. 실패 시 빈 Optional을 반환합니다.")
-    void findByIdTestWithEmpty() {
+    void findByIdShouldReturnEmptyOptional() {
         // Given
         String id = UUID.randomUUID().toString();
 
@@ -123,7 +123,7 @@ class CommentRepositoryTest {
 
     @Test
     @DisplayName("댓글을 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteTestWithNull() {
+    void deleteShouldThrowIllegalArgumentException() {
         // Given
         String id = null;
 
@@ -133,7 +133,7 @@ class CommentRepositoryTest {
 
     @Test
     @DisplayName("댓글을 삭제합니다. 없는 댓글을 삭제 시 NoSuchElementException을 던집니다.")
-    void deleteTestWithEmpty() {
+    void deleteShouldThrowNoSuchElementException() {
         // Given
         String id = UUID.randomUUID().toString();
 

@@ -33,7 +33,7 @@ class CategoryRepositoryTest {
 
     @Test
     @DisplayName("카테고리를 저장합니다. 성공 시 카테고리를 반환합니다.")
-    void saveTest() {
+    void saveShouldReturnCategory() {
         // Given
         Category category = Category.create(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
 
@@ -46,7 +46,7 @@ class CategoryRepositoryTest {
 
     @Test
     @DisplayName("카테고리를 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveTestWithNull() {
+    void saveShouldThrowIllegalArgumentException() {
         // Given
         Category category = null;
 
@@ -56,7 +56,7 @@ class CategoryRepositoryTest {
 
     @Test
     @DisplayName("모든 카테고리를 조회합니다. 성공 시 카테고리 목록을 반환합니다.")
-    void findAllTest() {
+    void findAllShouldReturnCategories() {
         // Given
         Category category = Category.create(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
         Category savedCategory = categoryRepository.save(category);
@@ -71,7 +71,7 @@ class CategoryRepositoryTest {
 
     @Test
     @DisplayName("모든 카테고리를 조회합니다. 실패 시 빈 목록을 반환합니다.")
-    void findAllTestWithEmpty() {
+    void findAllShouldReturnEmptyList() {
         // When
         List<Category> categories = categoryRepository.findAll();
 
@@ -82,7 +82,7 @@ class CategoryRepositoryTest {
 
     @Test
     @DisplayName("카테고리를 조회합니다. 성공 시 카테고리를 반환합니다.")
-    void findByIdTest() {
+    void findByIdShouldReturnCategory() {
         // Given
         Category category = Category.create(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
         Category savedCategory = categoryRepository.save(category);
@@ -96,7 +96,7 @@ class CategoryRepositoryTest {
 
     @Test
     @DisplayName("카테고리를 조회합니다. 실패 시 빈 Optional을 반환합니다.")
-    void findByIdTestWithEmpty() {
+    void findByIdShouldReturnEmptyOptional() {
         // Given
         String id = UUID.randomUUID().toString();
 
@@ -124,7 +124,7 @@ class CategoryRepositoryTest {
 
     @Test
     @DisplayName("카테고리를 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteTestWithNull() {
+    void deleteShouldThrowIllegalArgumentException() {
         // Given
         String id = null;
 
@@ -134,7 +134,7 @@ class CategoryRepositoryTest {
 
     @Test
     @DisplayName("카테고리를 삭제합니다. 없는 카테고리를 삭제 시 NoSuchElementException을 던집니다.")
-    void deleteTestWithEmpty() {
+    void deleteShouldThrowNoSuchElementException() {
         // Given
         String id = UUID.randomUUID().toString();
 

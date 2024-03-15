@@ -32,7 +32,7 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("게시글을 저장합니다. 성공 시 게시글을 반환합니다.")
-    void saveTest() {
+    void saveShouldReturnArticle() {
         // Given
         Article article = Article.create("title", "content", "categoryId", "createdBy");
 
@@ -45,7 +45,7 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("게시글을 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveTestWithNull() {
+    void saveShouldThrowIllegalArgumentException() {
         // Given
         Article article = null;
 
@@ -55,7 +55,7 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("모든 게시글을 조회합니다. 성공 시 게시글 목록을 반환합니다.")
-    void findAllTest() {
+    void findAllShouldReturnArticles() {
         // Given
         Article article = Article.create("title", "content", "categoryId", "createdBy");
         Article savedArticle = articleRepository.save(article);
@@ -70,7 +70,7 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("모든 게시글을 조회합니다. 실패 시 빈 목록을 반환합니다.")
-    void findAllTestWithEmpty() {
+    void findAllShouldReturnEmptyList() {
         // When
         List<Article> articles = articleRepository.findAll();
 
@@ -81,7 +81,7 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("게시글을 조회합니다. 성공 시 게시글을 반환합니다.")
-    void findByIdTest() {
+    void findByIdShouldReturnArticle() {
         // Given
         Article article = Article.create("title", "content", "categoryId", "createdBy");
         Article savedArticle = articleRepository.save(article);
@@ -95,7 +95,7 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("게시글을 조회합니다. 실패 시 빈 Optional을 반환합니다.")
-    void findByIdTestWithEmpty() {
+    void findByIdShouldReturnEmptyOptional() {
         // Given
         String id = UUID.randomUUID().toString();
 
@@ -123,7 +123,7 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("게시글을 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteTestWithNull() {
+    void deleteShouldThrowIllegalArgumentException() {
         // Given
         String id = null;
 
@@ -133,7 +133,7 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("게시글을 삭제합니다. 없는 게시글을 삭제 시 NoSuchElementException을 던집니다.")
-    void deleteTestWithEmpty() {
+    void deleteShouldThrowNoSuchElementException() {
         // Given
         String id = UUID.randomUUID().toString();
 
