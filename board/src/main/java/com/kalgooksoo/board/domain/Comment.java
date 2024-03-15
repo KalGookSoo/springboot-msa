@@ -66,16 +66,6 @@ public class Comment {
     private LocalDateTime modifiedAt;
 
     /**
-     * 좋아요
-     */
-    private int likes;
-
-    /**
-     * 싫어요
-     */
-    private int dislikes;
-
-    /**
      * 댓글을 생성합니다.
      *
      * @param articleId 게시글 식별자
@@ -107,40 +97,6 @@ public class Comment {
     }
 
     /**
-     * 좋아요를 증가시킵니다.
-     */
-    public void increaseLikes() {
-        this.likes++;
-    }
-
-    /**
-     * 좋아요를 감소시킵니다.
-     */
-    public void decreaseLikes() {
-        if (likes == 0) {
-            throw new IllegalStateException("좋아요가 0입니다");
-        }
-        this.likes--;
-    }
-
-    /**
-     * 싫어요를 증가시킵니다.
-     */
-    public void increaseDislikes() {
-        this.dislikes++;
-    }
-
-    /**
-     * 싫어요를 감소시킵니다.
-     */
-    public void decreaseDislikes() {
-        if (dislikes == 0) {
-            throw new IllegalStateException("싫어요가 0입니다");
-        }
-        this.dislikes--;
-    }
-
-    /**
      * 최상위 메뉴 여부를 반환합니다.
      *
      * @return 최상위 메뉴 여부
@@ -148,6 +104,5 @@ public class Comment {
     public boolean isRoot() {
         return parentId == null;
     }
-
 
 }
