@@ -63,8 +63,8 @@ public class Category {
     private LocalDateTime modifiedAt;
 
     public static Category create(String parentId, String name, String type, String createdBy) {
-        Category category = new Category();
         Assert.notNull(createdBy, "생성자는 필수입니다.");
+        Category category = new Category();
         category.id = UUID.randomUUID().toString();
         category.parentId = parentId;
         category.name = name;
