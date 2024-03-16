@@ -5,6 +5,9 @@ import com.kalgooksoo.board.domain.VoteId;
 
 import java.util.List;
 
+/**
+ * 투표 저장소
+ */
 public interface VoteRepository {
 
     Vote save(Vote vote);

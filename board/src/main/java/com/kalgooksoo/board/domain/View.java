@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import static lombok.AccessLevel.PROTECTED;
 
 /**
- * 조회
+ * 뷰
  */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
