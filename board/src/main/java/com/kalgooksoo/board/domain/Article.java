@@ -85,11 +85,18 @@ public class Article {
      *
      * @param title      제목
      * @param content    본문
-     * @param categoryId 카테고리 식별자
      */
-    public void update(String title, String content, String categoryId) {
+    public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    /**
+     * 게시글을 이동시킵니다.
+     *
+     * @param categoryId 카테고리 식별자
+     */
+    public void moveTo(String categoryId) {
         this.categoryId = categoryId;
     }
 
