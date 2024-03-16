@@ -54,14 +54,15 @@ class ArticleRepositoryTest {
     }
 
     @Test
-    @DisplayName("모든 게시글을 조회합니다. 성공 시 게시글 목록을 반환합니다.")
-    void findAllShouldReturnArticles() {
+    @DisplayName("특정 카테고리의 게시글을 조회합니다. 성공 시 게시글 목록을 반환합니다.")
+    void findAllByCategoryIdShouldReturnArticles() {
         // Given
-        Article article = Article.create("title", "content", "categoryId", "createdBy");
+        Article article = Article.create("title", "content", UUID.randomUUID().toString(), "createdBy");
         Article savedArticle = articleRepository.save(article);
+        String categoryId = savedArticle.getCategoryId();
 
         // When
-        List<Article> articles = articleRepository.findAll();
+        List<Article> articles = articleRepository.findAllByCategoryId(categoryId);
 
         // Then
         assertNotNull(articles);
@@ -69,10 +70,13 @@ class ArticleRepositoryTest {
     }
 
     @Test
-    @DisplayName("모든 게시글을 조회합니다. 실패 시 빈 목록을 반환합니다.")
-    void findAllShouldReturnEmptyList() {
+    @DisplayName("특정 카테고리의 게시글을 조회합니다. 실패 시 빈 목록을 반환합니다.")
+    void findAllByCategoryIdShouldReturnEmptyList() {
+        // Given
+        String categoryId = UUID.randomUUID().toString();
+
         // When
-        List<Article> articles = articleRepository.findAll();
+        List<Article> articles = articleRepository.findAllByCategoryId(categoryId);
 
         // Then
         assertNotNull(articles);

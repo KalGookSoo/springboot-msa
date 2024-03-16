@@ -31,8 +31,11 @@ public class ArticleMemoryRepository implements ArticleRepository {
     }
 
     @Override
-    public List<Article> findAll() {
-        return articles;
+    public List<Article> findAllByCategoryId(String categoryId) {
+        Assert.notNull(categoryId, "카테고리 식별자는 NULL이 될 수 없습니다");
+        return articles.stream()
+                .filter(article -> article.getCategoryId().equals(categoryId))
+                .toList();
     }
 
     @Override

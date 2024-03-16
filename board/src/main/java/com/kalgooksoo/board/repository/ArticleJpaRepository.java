@@ -28,8 +28,11 @@ public class ArticleJpaRepository implements ArticleRepository {
     }
 
     @Override
-    public List<Article> findAll() {
-        return em.createQuery("select article from Article article", Article.class).getResultList();
+    public List<Article> findAllByCategoryId(String categoryId) {
+        Assert.notNull(categoryId, "카테고리 식별자는 NULL이 될 수 없습니다");
+        return em.createQuery("select a from Article a where a.categoryId = :categoryId", Article.class)
+                .setParameter("categoryId", categoryId)
+                .getResultList();
     }
 
     @Override
