@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.kalgooksoo.exception.ExceptionHandlingController;
 import com.kalgooksoo.menu.command.CreateMenuCommand;
+import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.repository.MenuMemoryRepository;
@@ -81,8 +82,7 @@ class MenuRestControllerTest {
         mockMvc.perform(post("/menus")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(createMenuCommand)))
-                .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(status().isCreated());
 
         // When
         mockMvc.perform(get("/menus"))
@@ -99,7 +99,6 @@ class MenuRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse();
 
         EntityModel<Menu> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
@@ -132,7 +131,6 @@ class MenuRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn()
                 .getResponse();
 
@@ -159,7 +157,6 @@ class MenuRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn()
                 .getResponse();
 
@@ -200,7 +197,6 @@ class MenuRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(createMenuCommand)))
                 .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn()
                 .getResponse();
 
@@ -221,6 +217,46 @@ class MenuRestControllerTest {
 
         // When
         mockMvc.perform(delete("/menus/{id}", UUID.randomUUID()))
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 이동합니다. 성공 시 응답 코드 200을 반환합니다.")
+    void moveByIdShouldReturnOk() throws Exception {
+        // Given
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("오시는 길", "http://www.kalgooksoo.com/categories/2/articles", null, "anonymous");
+        MockHttpServletResponse response = mockMvc.perform(post("/menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(createMenuCommand)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse();
+
+        EntityModel<Menu> entityModel = mapper.readValue(response.getContentAsString(), new TypeReference<>() {});
+        Menu menu = entityModel.getContent();
+        Assertions.assertThat(menu).isNotNull();
+
+        MoveMenuCommand moveMenuCommand = new MoveMenuCommand(UUID.randomUUID().toString());
+
+        // When
+        mockMvc.perform(put("/menus/{id}/move", menu.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(moveMenuCommand)))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("메뉴를 이동합니다. 존재하지 않는 메뉴 이동 시 응답 코드 404를 반환합니다.")
+    void moveByIdShouldReturnNotFound() throws Exception {
+        // Given
+        MoveMenuCommand moveMenuCommand = new MoveMenuCommand(UUID.randomUUID().toString());
+
+        // When
+        mockMvc.perform(put("/menus/{id}/move", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(moveMenuCommand)))
                 .andExpect(status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
     }

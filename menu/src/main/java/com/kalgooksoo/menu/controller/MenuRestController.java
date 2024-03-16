@@ -1,6 +1,7 @@
 package com.kalgooksoo.menu.controller;
 
 import com.kalgooksoo.menu.command.CreateMenuCommand;
+import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.model.HierarchicalMenu;
@@ -19,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -112,6 +112,23 @@ public class MenuRestController {
     ) {
         menuService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/move")
+    public ResponseEntity<EntityModel<Menu>> moveById(
+            @Parameter(description = "메뉴 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
+            @Valid @RequestBody MoveMenuCommand command
+    ) {
+        Menu menu = menuService.move(id, command);
+
+        ResponseEntity<EntityModel<Menu>> invocationValue = methodOn(this.getClass())
+                .findById(menu.getId());
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<Menu> entityModel = EntityModel.of(menu, link);
+        return ResponseEntity.ok(entityModel);
     }
 
 }
