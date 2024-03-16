@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -89,24 +88,20 @@ class MenuServiceTest {
         Menu savedMenu = menuService.create(createMenuCommand);
 
         // When
-        Optional<Menu> foundMenu = menuService.findById(savedMenu.getId());
+        Menu foundMenu = menuService.findById(savedMenu.getId());
 
         // Then
-        assertTrue(foundMenu.isPresent());
-        assertEquals(savedMenu.getId(), foundMenu.get().getId());
+        assertNotNull(foundMenu);
     }
 
     @Test
-    @DisplayName("메뉴를 조회합니다. 존재하지 않는 메뉴에 대해 조회를 시도할 경우 빈 Optional을 반환합니다.")
-    void findByIdShouldReturnEmptyOptional() {
+    @DisplayName("메뉴를 조회합니다. 존재하지 않는 메뉴를 조회할 경우 NoSuchElementException을 던집니다.")
+    void findByIdShouldThrowNoSuchElementException() {
         // Given
         String invalidId = UUID.randomUUID().toString();
 
-        // When
-        Optional<Menu> foundMenu = menuService.findById(invalidId);
-
-        // Then
-        assertTrue(foundMenu.isEmpty());
+        // When & Then
+        assertThrows(NoSuchElementException.class, () -> menuService.findById(invalidId));
     }
 
     @Test
@@ -140,7 +135,7 @@ class MenuServiceTest {
 
 
     @Test
-    @DisplayName("메뉴를 삭제합니다. 성공 시 삭제된 메뉴를 조회할 수 없습니다.")
+    @DisplayName("메뉴를 삭제합니다. 성공 시 삭제된 메뉴를 조회할 경우 NoSuchElementException을 던집니다.")
     void deleteTest() {
         // Given
         CreateMenuCommand createMenuCommand = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
@@ -148,10 +143,9 @@ class MenuServiceTest {
 
         // When
         menuService.delete(savedMenu.getId());
-        Optional<Menu> foundMenu = menuService.findById(savedMenu.getId());
 
         // Then
-        assertTrue(foundMenu.isEmpty());
+        assertThrows(NoSuchElementException.class, () -> menuService.findById(savedMenu.getId()));
     }
 
     @Test

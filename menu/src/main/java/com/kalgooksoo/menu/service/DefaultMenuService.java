@@ -49,8 +49,9 @@ public class DefaultMenuService implements MenuService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Menu> findById(String id) {
-        return menuRepository.findById(id);
+    public Menu findById(String id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
     }
 
     @Override

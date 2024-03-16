@@ -7,7 +7,6 @@ import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.model.HierarchicalMenu;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 메뉴 서비스
@@ -18,7 +17,7 @@ public interface MenuService {
 
     List<HierarchicalMenu> findAll();
 
-    Optional<Menu> findById(String id);
+    Menu findById(String id);
 
     Menu update(String id, UpdateMenuCommand command);
 

@@ -77,7 +77,7 @@ public class MenuRestController {
     public ResponseEntity<EntityModel<Menu>> findById(
             @Parameter(description = "메뉴 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
-        Menu menu = menuService.findById(id).orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
+        Menu menu = menuService.findById(id);
 
         ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> invocationValue = methodOn(this.getClass())
                 .findAll();
