@@ -5,18 +5,23 @@ import com.kalgooksoo.board.command.MoveArticleCommand;
 import com.kalgooksoo.board.command.UpdateArticleCommand;
 import com.kalgooksoo.board.domain.Article;
 import com.kalgooksoo.board.repository.ArticleRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * @see ArticleService
+ */
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class DefaultArticleService implements ArticleService {
 
     private final ArticleRepository articleRepository;
-
-    public DefaultArticleService(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
-    }
 
     @Override
     public Article create(CreateArticleCommand command) {
