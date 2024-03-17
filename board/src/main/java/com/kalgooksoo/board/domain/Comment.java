@@ -52,9 +52,9 @@ public class Comment implements Hierarchical<Comment, String> {
     private String content;
 
     /**
-     * 생성자
+     * 작성자
      */
-    private String createdBy;
+    private String author;
 
     /**
      * 생성 일시
@@ -72,17 +72,17 @@ public class Comment implements Hierarchical<Comment, String> {
      * @param articleId 게시글 식별자
      * @param parentId  부모 댓글 식별자
      * @param content   본문
-     * @param createdBy 생성자
+     * @param author    작성자
      * @return 댓글
      */
-    public static Comment create(String articleId, String parentId, String content, String createdBy) {
-        Assert.notNull(createdBy, "생성자는 필수입니다.");
+    public static Comment create(String articleId, String parentId, String content, String author) {
+        Assert.notNull(author, "작성자는 필수입니다.");
         Comment comment = new Comment();
         comment.id = UUID.randomUUID().toString();
         comment.articleId = articleId;
         comment.parentId = parentId;
         comment.content = content;
-        comment.createdBy = createdBy;
+        comment.author = author;
         comment.createdAt = LocalDateTime.now();
         return comment;
     }
