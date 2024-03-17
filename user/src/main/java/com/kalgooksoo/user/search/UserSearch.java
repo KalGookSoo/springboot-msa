@@ -14,32 +14,20 @@ import lombok.Setter;
 @Schema(description = "계정 검색 조건")
 public class UserSearch extends PageVO {
 
-    @Parameter(
-            description = "계정명(대체키)",
-            example = "testuser1",
-            schema = @Schema(description = "계정명(대체키)", implementation = String.class)
-    )
+    @Parameter(description = "계정명(대체키)")
+    @Schema(description = "계정명(대체키)", example = "testuser1")
     private String username;
 
-    @Parameter(
-            description = "계정명(또는 별칭)",
-            example = "홍길동",
-            schema = @Schema(description = "계정명(또는 별칭)", implementation = String.class)
-    )
+    @Parameter(description = "계정명(또는 별칭)")
+    @Schema(description = "계정명(또는 별칭)", example = "홍길동")
     private String name;
 
-    @Parameter(
-            description = "이메일 ID",
-            example = "testuser",
-            schema = @Schema(description = "이메일 ID", implementation = String.class)
-    )
+    @Parameter(description = "이메일 ID")
+    @Schema(description = "이메일 ID", example = "testuser")
     private String emailId;
 
-    @Parameter(
-            description = "연락처",
-            example = "010-1234-5678",
-            schema = @Schema(description = "연락처", implementation = String.class)
-    )
+    @Parameter(description = "연락처")
+    @Schema(description = "연락처", example = "010-1234-5678")
     private String contactNumber;
 
     @JsonIgnore
