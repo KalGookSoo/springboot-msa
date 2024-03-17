@@ -32,17 +32,17 @@ public class ArticleSearch extends PageVO {
 
     @JsonIgnore
     public boolean isEmptyTitle() {
-        return title != null && !title.isEmpty();
+        return title == null || title.isEmpty();
     }
 
     @JsonIgnore
     public boolean isEmptyContent() {
-        return content != null && !content.isEmpty();
+        return content == null || content.isEmpty();
     }
 
     @JsonIgnore
     public boolean isEmptyAuthor() {
-        return author != null && !author.isEmpty();
+        return author == null || author.isEmpty();
     }
 
 }

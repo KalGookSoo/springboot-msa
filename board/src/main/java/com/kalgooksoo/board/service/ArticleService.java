@@ -4,14 +4,14 @@ import com.kalgooksoo.board.command.CreateArticleCommand;
 import com.kalgooksoo.board.command.MoveArticleCommand;
 import com.kalgooksoo.board.command.UpdateArticleCommand;
 import com.kalgooksoo.board.domain.Article;
-
-import java.util.List;
+import com.kalgooksoo.board.search.ArticleSearch;
+import org.springframework.data.domain.Page;
 
 public interface ArticleService {
 
     Article create(CreateArticleCommand command);
 
-    List<Article> findAllByCategoryId(String categoryId);
+    Page<Article> search(ArticleSearch search);
 
     Article findById(String id);
 

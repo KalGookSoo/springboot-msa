@@ -12,11 +12,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * 게시글 REST 컨트롤러
@@ -32,19 +39,53 @@ public class ArticleRestController {
     @Operation(summary = "게시글 생성", description = "게시글을 생성합니다")
     @PostMapping
     public ResponseEntity<EntityModel<Article>> create(
-            @Parameter(description = "게시글 생성 명령", schema = @Schema(implementation = CreateArticleCommand.class)) @Valid @RequestBody CreateArticleCommand command
+            @Parameter(schema = @Schema(implementation = CreateArticleCommand.class)) @Valid @RequestBody CreateArticleCommand command
     ) {
+        Article article = articleService.create(command);
+
+        ResponseEntity<EntityModel<Article>> invocationValue = methodOn(this.getClass())
+                .findById(article.getId());
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<Article> entityModel = EntityModel.of(article, link);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(null);
+                .body(entityModel);
     }
 
     @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다")
     @GetMapping
-    public ResponseEntity<CollectionModel<Article>> findAllByCategoryId(
-            @Parameter(description = "게시글 검색 조건", schema = @Schema(implementation = ArticleSearch.class)) ArticleSearch search
+    public ResponseEntity<PagedModel<EntityModel<Article>>> findAll(
+            @Parameter(schema = @Schema(implementation = ArticleSearch.class)) ArticleSearch search
     ) {
+        Page<Article> page = articleService.search(search);
+        List<EntityModel<Article>> entityModels = page.getContent()
+                .stream()
+                .map(article -> {
+                    ResponseEntity<EntityModel<Article>> invocationValue = methodOn(this.getClass())
+                            .findById(article.getId());
+
+                    Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                            .withRel("self");
+
+                    return EntityModel.of(article, link);
+                })
+                .toList();
+
+        PagedModel.PageMetadata metadata = new PagedModel.PageMetadata(page.getSize(), page.getNumber(), page.getTotalElements(), page.getTotalPages());
+
+        ResponseEntity<PagedModel<EntityModel<Article>>> invocationValue = methodOn(this.getClass())
+                .findAll(search);
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        PagedModel<EntityModel<Article>> pagedModel = PagedModel.of(entityModels, metadata, link);
+
         return ResponseEntity.ok()
-                .body(null);
+                .body(pagedModel);
     }
 
     @Operation(summary = "게시글 조회", description = "게시글을 조회합니다")
@@ -60,7 +101,7 @@ public class ArticleRestController {
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<Article>> update(
             @Parameter(description = "게시글 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
-            @Parameter(description = "게시글 수정 명령") @Valid @RequestBody UpdateArticleCommand command
+            @Parameter(schema = @Schema(implementation = UpdateArticleCommand.class)) @Valid @RequestBody UpdateArticleCommand command
     ) {
         return ResponseEntity.ok()
                 .body(null);
@@ -79,7 +120,7 @@ public class ArticleRestController {
     @PutMapping("/{id}/move")
     public ResponseEntity<EntityModel<Article>> move(
             @Parameter(description = "게시글 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
-            @Parameter(description = "게시글 이동 명령", schema = @Schema(implementation = MoveArticleCommand.class)) @Valid @RequestBody MoveArticleCommand command
+            @Parameter(schema = @Schema(implementation = MoveArticleCommand.class)) @Valid @RequestBody MoveArticleCommand command
     ) {
         return ResponseEntity.ok()
                 .body(null);

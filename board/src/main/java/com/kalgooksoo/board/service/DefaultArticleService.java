@@ -5,12 +5,13 @@ import com.kalgooksoo.board.command.MoveArticleCommand;
 import com.kalgooksoo.board.command.UpdateArticleCommand;
 import com.kalgooksoo.board.domain.Article;
 import com.kalgooksoo.board.repository.ArticleRepository;
+import com.kalgooksoo.board.search.ArticleSearch;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -31,8 +32,8 @@ public class DefaultArticleService implements ArticleService {
     }
 
     @Override
-    public List<Article> findAllByCategoryId(String categoryId) {
-        return articleRepository.findAllByCategoryId(categoryId);
+    public Page<Article> search(ArticleSearch search) {
+        return articleRepository.search(search);
     }
 
     @Override
