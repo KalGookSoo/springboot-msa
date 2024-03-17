@@ -6,11 +6,12 @@ import com.kalgooksoo.board.command.UpdateArticleCommand;
 import com.kalgooksoo.board.domain.Article;
 import com.kalgooksoo.board.repository.ArticleMemoryRepository;
 import com.kalgooksoo.board.repository.ArticleRepository;
+import com.kalgooksoo.board.search.ArticleSearch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -59,26 +60,30 @@ class ArticleServiceTest {
         CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString(), "작성자");
         Article createdArticle = articleService.create(createArticleCommand);
         String categoryId = createdArticle.getCategoryId();
+        ArticleSearch search = new ArticleSearch();
+        search.setCategoryId(categoryId);
 
         // When
-        List<Article> articles = articleService.findAllByCategoryId(categoryId);
+        Page<Article> page = articleService.search(search);
 
         // Then
-        assertNotNull(articles);
-        assertFalse(articles.isEmpty());
+        assertNotNull(page);
+        assertFalse(page.isEmpty());
     }
 
     @Test
     @DisplayName("카테고리 식별자로 게시글을 조회합니다. 실패 시 빈 목록을 반환합니다.")
     void findAllByCategoryIdShouldReturnEmptyList() {
         // Given
-        String categoryId = UUID.randomUUID().toString();
+        ArticleSearch search = new ArticleSearch();
+        search.setCategoryId(UUID.randomUUID().toString());
 
         // When
-        List<Article> articles = articleService.findAllByCategoryId(categoryId);
+        Page<Article> page = articleService.search(search);
 
         // Then
-        assertTrue(articles.isEmpty());
+        assertNotNull(page);
+        assertTrue(page.isEmpty());
     }
 
     @Test

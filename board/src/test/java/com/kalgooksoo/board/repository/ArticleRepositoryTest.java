@@ -1,15 +1,16 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Article;
+import com.kalgooksoo.board.search.ArticleSearch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,14 +56,16 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("특정 카테고리의 게시글을 조회합니다. 성공 시 게시글 목록을 반환합니다.")
-    void findAllByCategoryIdShouldReturnArticles() {
+    void searchShouldReturnArticles() {
         // Given
         Article article = Article.create("title", "content", UUID.randomUUID().toString(), "createdBy");
         Article savedArticle = articleRepository.save(article);
         String categoryId = savedArticle.getCategoryId();
+        ArticleSearch search = new ArticleSearch();
+        search.setCategoryId(categoryId);
 
         // When
-        List<Article> articles = articleRepository.findAllByCategoryId(categoryId);
+        Page<Article> articles = articleRepository.search(search);
 
         // Then
         assertNotNull(articles);
@@ -71,12 +74,13 @@ class ArticleRepositoryTest {
 
     @Test
     @DisplayName("특정 카테고리의 게시글을 조회합니다. 실패 시 빈 목록을 반환합니다.")
-    void findAllByCategoryIdShouldReturnEmptyList() {
+    void searchShouldReturnEmptyList() {
         // Given
-        String categoryId = UUID.randomUUID().toString();
+        ArticleSearch search = new ArticleSearch();
+        search.setCategoryId(UUID.randomUUID().toString());
 
         // When
-        List<Article> articles = articleRepository.findAllByCategoryId(categoryId);
+        Page<Article> articles = articleRepository.search(search);
 
         // Then
         assertNotNull(articles);

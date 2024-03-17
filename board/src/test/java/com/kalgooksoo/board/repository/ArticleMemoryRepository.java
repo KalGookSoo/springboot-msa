@@ -1,6 +1,10 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Article;
+import com.kalgooksoo.board.search.ArticleSearch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -31,11 +35,18 @@ public class ArticleMemoryRepository implements ArticleRepository {
     }
 
     @Override
-    public List<Article> findAllByCategoryId(String categoryId) {
-        Assert.notNull(categoryId, "카테고리 식별자는 NULL이 될 수 없습니다");
-        return articles.stream()
-                .filter(article -> article.getCategoryId().equals(categoryId))
+    public Page<Article> search(ArticleSearch search) {
+        Assert.notNull(search, "게시글 검색 조건은 NULL이 될 수 없습니다");
+        Pageable pageable = search.pageable();
+        List<Article> filteredArticles = articles.stream()
+                .filter(article -> search.getCategoryId() == null || search.getCategoryId().equals(article.getCategoryId()))
+                .filter(article -> search.getTitle() == null || article.getTitle().contains(search.getTitle()))
+                .filter(article -> search.getContent() == null || article.getContent().contains(search.getContent()))
                 .toList();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), filteredArticles.size());
+        return new PageImpl<>(filteredArticles.subList(start, end), pageable, filteredArticles.size());
     }
 
     @Override
