@@ -17,25 +17,25 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "카테고리 생성 커맨드")
 public record CreateCategoryCommand(
         
-        @Parameter(description = "상위 카테고리 식별자", example = "698506bb-152f-462d-9d36-456c75a7848d")
-        @Schema(description = "상위 카테고리 식별자", implementation = String.class, format = "uuid")
+        @Parameter(description = "상위 카테고리 식별자")
+        @Schema(description = "상위 카테고리 식별자", format = "uuid")
         String parentId,
 
-        @Parameter(description = "이름", example = "카테고리", required = true)
-        @Schema(description = "이름")
+        @Parameter(description = "이름", required = true)
+        @Schema(description = "이름", example = "카테고리")
         @NotBlank(message = "이름은 필수입니다")
         @NotNull(message = "이름은 NULL이 될 수 없습니다")
         String name,
 
-        @Parameter(description = "타입", example = "PUBLIC", required = true)
-        @Schema(description = "타입")
+        @Parameter(description = "타입", required = true)
+        @Schema(description = "타입", example = "PUBLIC")
         @NotBlank(message = "계정명은 필수입니다")
         @Size(min = 3, max = 20, message = "계정명은 3자 이상 20자 이하이어야 합니다")
         @NotNull(message = "계정명은 NULL이 될 수 없습니다")
         String type,
 
-        @Parameter(description = "작성자", example = "testuser", required = true)
-        @Schema(description = "작성자")
+        @Parameter(description = "작성자", required = true)
+        @Schema(description = "작성자", example = "testuser")
         @NotBlank(message = "작성자는 필수입니다")
         @NotNull(message = "작성자는 NULL이 될 수 없습니다")
         String author

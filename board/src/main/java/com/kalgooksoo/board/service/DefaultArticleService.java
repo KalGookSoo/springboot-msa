@@ -26,7 +26,7 @@ public class DefaultArticleService implements ArticleService {
     @Override
     public Article create(CreateArticleCommand command) {
         Assert.notNull(command, "게시글 생성 커맨드는 NULL이 될 수 없습니다.");
-        Article article = Article.create(command.title(), command.content(), command.categoryId(), command.createdBy());
+        Article article = Article.create(command.title(), command.content(), command.categoryId(), command.author());
         return articleRepository.save(article);
     }
 
