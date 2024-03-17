@@ -47,9 +47,9 @@ public class Article {
     private String content;
 
     /**
-     * 생성자
+     * 작성자
      */
-    private String createdBy;
+    private String author;
 
     /**
      * 생성 일시
@@ -67,16 +67,16 @@ public class Article {
      * @param title      제목
      * @param content    본문
      * @param categoryId 카테고리 식별자
-     * @param createdBy  생성자
+     * @param author     작성자
      * @return 게시글
      */
-    public static Article create(String title, String content, String categoryId, String createdBy) {
+    public static Article create(String title, String content, String categoryId, String author) {
         Article article = new Article();
         article.id = UUID.randomUUID().toString();
         article.title = title;
         article.content = content;
         article.categoryId = categoryId;
-        article.createdBy = createdBy;
+        article.author = author;
         return article;
     }
 
