@@ -10,6 +10,7 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -42,6 +43,18 @@ public class TokenValidationFilter extends AbstractGatewayFilterFactory<TokenVal
                         return Mono.error(new RuntimeException("HttpStatus code: " + clientResponse.statusCode()));
                     })
                     .bodyToMono(JsonNode.class)
+                    .doOnNext(jsonNode -> {
+                        // 검증 결과에서 보안 주체명을 추출하여 파라미터에 추가합니다.
+                        String username = jsonNode.get("principal").asText();
+
+                        // 헤더에 username을 추가합니다.
+                        ServerHttpRequest request = exchange.getRequest().mutate()
+                                .header("username", username)
+                                .build();
+
+                        // ServerWebExchange를 업데이트합니다.
+                        exchange.mutate().request(request).build();
+                    })
                     .doOnError(e -> {
                         ServerHttpResponse response = exchange.getResponse();
                         response.setStatusCode(HttpStatus.UNAUTHORIZED);
