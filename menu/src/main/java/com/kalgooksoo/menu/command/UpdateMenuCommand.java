@@ -14,12 +14,22 @@ import jakarta.validation.constraints.NotNull;
 @Schema(description = "메뉴 수정 커맨드")
 public record UpdateMenuCommand(
 
-        @Parameter(description = "메뉴명. 이 필드는 필수입니다.", schema = @Schema(description = "메뉴명. 이 필드는 필수입니다."), required = true)
+        @Parameter(
+                description = "메뉴명. 이 필드는 필수입니다.",
+                example = "메뉴명",
+                required = true,
+                schema = @Schema(description = "메뉴명. 이 필드는 필수입니다.")
+        )
         @NotBlank(message = "메뉴명은 필수입니다")
         @NotNull(message = "메뉴명은 null이 될 수 없습니다")
         String name,
 
-        @Parameter(description = "URL. 이 필드는 필수입니다.", schema = @Schema(description = "URL. 이 필드는 필수입니다."), required = true)
+        @Parameter(
+                description = "URL. 이 필드는 필수입니다.",
+                example = "http://example.com",
+                required = true,
+                schema = @Schema(description = "URL. 이 필드는 필수입니다.")
+        )
         @NotBlank(message = "URL은 필수입니다")
         @NotNull(message = "URL은 null이 될 수 없습니다")
         String url
