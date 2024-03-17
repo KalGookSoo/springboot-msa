@@ -48,8 +48,11 @@ public class UserRestController {
      * @param command 계정 생성 명령
      * @return 생성된 계정
      */
+    @Operation(summary = "계정 생성", description = "계정을 생성합니다")
     @PostMapping
-    public ResponseEntity<EntityModel<User>> create(@Valid @RequestBody CreateUserCommand command) throws UsernameAlreadyExistsException {
+    public ResponseEntity<EntityModel<User>> create(
+            @Parameter(schema = @Schema(implementation = CreateUserCommand.class)) @Valid @RequestBody CreateUserCommand command
+    ) throws UsernameAlreadyExistsException {
 
         User user = userService.createUser(command);
 
@@ -69,17 +72,11 @@ public class UserRestController {
      * @param search 검색 조건
      * @return 계정 목록
      */
-    @Operation(parameters = {
-            @Parameter(
-                    in = ParameterIn.HEADER,
-                    name = "Authorization",
-                    required = true,
-                    description = "Bearer ${token}",
-                    schema = @Schema(type = "string")
-            )
-    })
+    @Operation(summary = "계정 목록 조회", description = "계정 목록을 조회합니다")
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<User>>> findAll(UserSearch search) {
+    public ResponseEntity<PagedModel<EntityModel<User>>> findAll(
+            UserSearch search
+    ) {
         Page<User> page = userService.findAll(search, search.pageable());
 
         List<EntityModel<User>> entityModels = page.getContent()
@@ -113,6 +110,7 @@ public class UserRestController {
      * @param id 계정 식별자
      * @return 계정
      */
+    @Operation(summary = "계정 조회", description = "계정을 조회합니다")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<User>> findById(
             @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
@@ -136,10 +134,11 @@ public class UserRestController {
      * @param command 계정 수정 명령
      * @return 수정된 계정
      */
+    @Operation(summary = "계정 수정", description = "계정을 수정합니다")
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<User>> updateById(
-            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
-            @Valid @RequestBody UpdateUserCommand command
+            @Parameter(schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
+            @Parameter(schema = @Schema(implementation = UpdateUserCommand.class)) @Valid @RequestBody UpdateUserCommand command
     ) {
         User user = userService.update(id, command);
 
@@ -159,9 +158,10 @@ public class UserRestController {
      *
      * @param id 계정 식별자
      */
+    @Operation(summary = "계정 삭제", description = "계정을 삭제합니다")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(
-            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
+            @Parameter(schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
@@ -174,10 +174,11 @@ public class UserRestController {
      * @param command 패스워드 수정 명령
      * @return 수정된 계정
      */
+    @Operation(summary = "계정 패스워드 수정", description = "계정 패스워드를 수정합니다")
     @PutMapping("/{id}/password")
     public ResponseEntity<EntityModel<User>> updatePassword(
-            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
-            @Valid @RequestBody UpdateUserPasswordCommand command
+            @Parameter(schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
+            @Parameter(schema = @Schema(implementation = UpdateUserPasswordCommand.class)) @Valid @RequestBody UpdateUserPasswordCommand command
     ) {
         userService.updatePassword(id, command.originPassword(), command.newPassword());
         return findById(id);
@@ -189,8 +190,11 @@ public class UserRestController {
      * @param command 계정 검증 명령
      * @return 계정
      */
+    @Operation(summary = "계정 검증", description = "계정을 검증합니다")
     @PostMapping("/sign-in")
-    public ResponseEntity<EntityModel<UserSummary>> signIn(@Valid @RequestBody SignInCommand command) {
+    public ResponseEntity<EntityModel<UserSummary>> signIn(
+            @Parameter(schema = @Schema(implementation = SignInCommand.class)) @Valid @RequestBody SignInCommand command
+    ) {
         UserSummary userSummary = userService.verify(command.username(), command.password());
 
         ResponseEntity<EntityModel<UserSummary>> invocationValue = methodOn(this.getClass())
