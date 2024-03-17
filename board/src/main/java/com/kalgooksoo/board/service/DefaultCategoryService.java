@@ -30,7 +30,7 @@ public class DefaultCategoryService implements CategoryService {
     @Override
     public Category create(CreateCategoryCommand command) {
         Assert.notNull(command, "CreateCategoryCommand는 null이 될 수 없습니다.");
-        Category category = Category.create(command.parentId(), command.name(), command.type(), command.createdBy());
+        Category category = Category.create(command.parentId(), command.name(), command.type(), command.author());
         return categoryRepository.save(category);
     }
 
