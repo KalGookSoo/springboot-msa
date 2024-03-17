@@ -41,7 +41,7 @@ public class ArticleRestController {
     @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다")
     @GetMapping
     public ResponseEntity<CollectionModel<Article>> findAllByCategoryId(
-            @Parameter(description = "게시글 검색 조건", schema = @Schema(implementation = ArticleSearch.class)) @Valid ArticleSearch search
+            @Parameter(description = "게시글 검색 조건", schema = @Schema(implementation = ArticleSearch.class)) ArticleSearch search
     ) {
         return ResponseEntity.ok()
                 .body(null);
