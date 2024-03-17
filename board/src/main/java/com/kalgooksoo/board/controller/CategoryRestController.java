@@ -41,15 +41,15 @@ public class CategoryRestController {
     public ResponseEntity<EntityModel<Category>> create(
             @Parameter(description = "카테고리 생성 명령", schema = @Schema(implementation = CreateCategoryCommand.class)) @Valid @RequestBody CreateCategoryCommand command
     ) {
-        Category menu = categoryService.create(command);
+        Category category = categoryService.create(command);
 
         ResponseEntity<EntityModel<Category>> invocationValue = methodOn(this.getClass())
-                .findById(menu.getId());
+                .findById(category.getId());
 
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                 .withRel("self");
 
-        EntityModel<Category> entityModel = EntityModel.of(menu, link);
+        EntityModel<Category> entityModel = EntityModel.of(category, link);
         return ResponseEntity.status(HttpStatus.CREATED).body(entityModel);
     }
 
@@ -84,7 +84,7 @@ public class CategoryRestController {
     public ResponseEntity<EntityModel<Category>> findById(
             @Parameter(description = "카테고리 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
-        Category menu = categoryService.findById(id).orElseThrow(() -> new NoSuchElementException("카테고리가 존재하지 않습니다"));
+        Category category = categoryService.findById(id).orElseThrow(() -> new NoSuchElementException("카테고리가 존재하지 않습니다"));
 
         ResponseEntity<CollectionModel<EntityModel<HierarchicalCategory>>> invocationValue = methodOn(this.getClass())
                 .findAll();
@@ -92,7 +92,7 @@ public class CategoryRestController {
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                 .withRel("self");
 
-        EntityModel<Category> entityModel = EntityModel.of(menu, link);
+        EntityModel<Category> entityModel = EntityModel.of(category, link);
         return ResponseEntity.ok(entityModel);
     }
 
@@ -102,15 +102,15 @@ public class CategoryRestController {
             @Parameter(description = "카테고리 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
             @Parameter(description = "카테고리 수정 커맨드", schema = @Schema(implementation = UpdateCategoryCommand.class)) @Valid @RequestBody UpdateCategoryCommand command
     ) {
-        Category menu = categoryService.update(id, command);
+        Category category = categoryService.update(id, command);
 
         ResponseEntity<EntityModel<Category>> invocationValue = methodOn(this.getClass())
-                .findById(menu.getId());
+                .findById(category.getId());
 
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                 .withRel("self");
 
-        EntityModel<Category> entityModel = EntityModel.of(menu, link);
+        EntityModel<Category> entityModel = EntityModel.of(category, link);
         return ResponseEntity.ok(entityModel);
     }
 
