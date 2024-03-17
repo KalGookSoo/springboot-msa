@@ -11,7 +11,6 @@ import com.kalgooksoo.user.search.UserSearch;
 import com.kalgooksoo.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -75,7 +74,7 @@ public class UserRestController {
     @Operation(summary = "계정 목록 조회", description = "계정 목록을 조회합니다")
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<User>>> findAll(
-            UserSearch search
+            @Parameter(schema = @Schema(implementation = UserSearch.class)) UserSearch search
     ) {
         Page<User> page = userService.findAll(search, search.pageable());
 
