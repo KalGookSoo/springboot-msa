@@ -7,7 +7,7 @@ import com.kalgooksoo.board.command.CreateCategoryCommand;
 import com.kalgooksoo.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.domain.CategoryType;
-import com.kalgooksoo.board.repository.CategoryJpaRepository;
+import com.kalgooksoo.board.repository.CategoryMemoryRepository;
 import com.kalgooksoo.board.repository.CategoryRepository;
 import com.kalgooksoo.board.service.CategoryService;
 import com.kalgooksoo.board.service.DefaultCategoryService;
@@ -16,9 +16,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -41,14 +39,11 @@ class CategoryRestControllerTest {
 
     private MockMvc mockMvc;
 
-    @Autowired
-    private TestEntityManager entityManager;
-
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
     void setUp() {
-        CategoryRepository categoryRepository = new CategoryJpaRepository(entityManager.getEntityManager());
+        CategoryRepository categoryRepository = new CategoryMemoryRepository();
         CategoryService categoryService = new DefaultCategoryService(categoryRepository);
         CategoryRestController categoryRestController = new CategoryRestController(categoryService);
         ExceptionHandlingController exceptionHandlingController = new ExceptionHandlingController();
