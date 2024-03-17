@@ -31,8 +31,11 @@ public class CommentMemoryRepository implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findAll() {
-        return comments;
+    public List<Comment> findAllByArticleId(String articleId) {
+        Assert.notNull(articleId, "게시글 식별자는 NULL이 될 수 없습니다");
+        return comments.stream()
+                .filter(comment -> comment.getArticleId().equals(articleId))
+                .toList();
     }
 
     @Override

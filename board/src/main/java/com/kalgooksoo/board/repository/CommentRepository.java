@@ -9,7 +9,7 @@ public interface CommentRepository {
 
     Comment save(Comment comment);
 
-    List<Comment> findAll();
+    List<Comment> findAllByArticleId(String articleId);
 
     Optional<Comment> findById(String id);
 

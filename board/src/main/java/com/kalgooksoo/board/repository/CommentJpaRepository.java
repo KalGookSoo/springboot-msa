@@ -28,8 +28,11 @@ public class CommentJpaRepository implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findAll() {
-        return em.createQuery("select comment from Comment comment", Comment.class).getResultList();
+    public List<Comment> findAllByArticleId(String articleId) {
+        Assert.notNull(articleId, "게시글 식별자는 NULL이 될 수 없습니다");
+        return em.createQuery("select c from Comment c where c.articleId = :articleId", Comment.class)
+                .setParameter("articleId", articleId)
+                .getResultList();
     }
 
     @Override

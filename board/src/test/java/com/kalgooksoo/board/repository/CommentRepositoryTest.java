@@ -54,14 +54,15 @@ class CommentRepositoryTest {
     }
 
     @Test
-    @DisplayName("모든 댓글을 조회합니다. 성공 시 댓글 목록을 반환합니다.")
+    @DisplayName("특정 게시글의 댓글을 조회합니다. 성공 시 댓글 목록을 반환합니다.")
     void findAllShouldReturnComments() {
         // Given
         Comment comment = Comment.create(UUID.randomUUID().toString(), null, "content", "anonymous");
         Comment savedComment = commentRepository.save(comment);
+        String articleId = savedComment.getArticleId();
 
         // When
-        List<Comment> comments = commentRepository.findAll();
+        List<Comment> comments = commentRepository.findAllByArticleId(articleId);
 
         // Then
         assertNotNull(comments);
@@ -69,10 +70,10 @@ class CommentRepositoryTest {
     }
 
     @Test
-    @DisplayName("모든 댓글을 조회합니다. 실패 시 빈 목록을 반환합니다.")
+    @DisplayName("특정 게시글의 댓글을 조회합니다. 실패 시 빈 목록을 반환합니다.")
     void findAllShouldReturnEmptyList() {
         // When
-        List<Comment> comments = commentRepository.findAll();
+        List<Comment> comments = commentRepository.findAllByArticleId(UUID.randomUUID().toString());
 
         // Then
         assertNotNull(comments);
