@@ -27,7 +27,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "tb_comment")
 @DynamicInsert
-public class Comment implements Hierarchical<Comment, String> {
+public class Comment extends Hierarchical<Comment, String> {
 
     /**
      * 식별자

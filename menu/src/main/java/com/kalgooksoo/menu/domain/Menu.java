@@ -26,7 +26,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "tb_menu")
 @DynamicInsert
-public class Menu implements Hierarchical<Menu, String> {
+public class Menu extends Hierarchical<Menu, String> {
 
     /**
      * 식별자

@@ -24,7 +24,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "tb_category")
 @DynamicInsert
-public class Category implements Hierarchical<Category, String> {
+public class Category extends Hierarchical<Category, String> {
 
     /**
      * 식별자
