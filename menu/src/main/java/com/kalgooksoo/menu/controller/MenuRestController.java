@@ -4,7 +4,6 @@ import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
-import com.kalgooksoo.menu.model.HierarchicalMenu;
 import com.kalgooksoo.menu.service.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,27 +53,27 @@ public class MenuRestController {
 
     @Operation(summary = "메뉴 목록 조회", description = "메뉴 목록을 조회합니다")
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> findAll() {
-        List<EntityModel<HierarchicalMenu>> entityModels = menuService.findAll()
+    public ResponseEntity<CollectionModel<EntityModel<Menu>>> findAll() {
+        List<EntityModel<Menu>> entityModels = menuService.findAll()
                 .stream()
-                .map(hierarchicalMenu -> {
+                .map(menu -> {
                     ResponseEntity<EntityModel<Menu>> invocationValue = methodOn(this.getClass())
-                            .findById(hierarchicalMenu.id());
+                            .findById(menu.getId());
 
                     Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                             .withRel("self");
 
-                    return EntityModel.of(hierarchicalMenu, link);
+                    return EntityModel.of(menu, link);
                 })
                 .toList();
 
-        ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> invocationValue = methodOn(this.getClass())
+        ResponseEntity<CollectionModel<EntityModel<Menu>>> invocationValue = methodOn(this.getClass())
                 .findAll();
 
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                 .withRel("self");
 
-        CollectionModel<EntityModel<HierarchicalMenu>> collectionModel = CollectionModel.of(entityModels, link);
+        CollectionModel<EntityModel<Menu>> collectionModel = CollectionModel.of(entityModels, link);
         return ResponseEntity.ok(collectionModel);
     }
 
@@ -85,8 +84,8 @@ public class MenuRestController {
     ) {
         Menu menu = menuService.findById(id);
 
-        ResponseEntity<CollectionModel<EntityModel<HierarchicalMenu>>> invocationValue = methodOn(this.getClass())
-                .findAll();
+        ResponseEntity<EntityModel<Menu>> invocationValue = methodOn(this.getClass())
+                .findById(id);
 
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                 .withRel("self");

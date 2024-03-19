@@ -4,8 +4,6 @@ import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
-import com.kalgooksoo.menu.model.HierarchicalMenu;
-import com.kalgooksoo.menu.model.HierarchicalMenuFactory;
 import com.kalgooksoo.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class DefaultMenuService implements MenuService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<HierarchicalMenu> findAll() {
+    public List<Menu> findAll() {
         List<Menu> menus = menuRepository.findAll();
 
         Map<String, List<Menu>> menuMap = menus.stream()
@@ -43,7 +41,7 @@ public class DefaultMenuService implements MenuService {
 
         return menus.stream()
                 .filter(Menu::isRoot)
-                .map(menu -> HierarchicalMenuFactory.toHierarchical(menu, menuMap))
+                .map(menu -> menu.mapChildren(menu, menuMap))
                 .toList();
     }
 

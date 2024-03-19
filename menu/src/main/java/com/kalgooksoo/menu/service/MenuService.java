@@ -4,7 +4,6 @@ import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
-import com.kalgooksoo.menu.model.HierarchicalMenu;
 
 import java.util.List;
 
@@ -15,7 +14,7 @@ public interface MenuService {
 
     Menu create(CreateMenuCommand menu);
 
-    List<HierarchicalMenu> findAll();
+    List<Menu> findAll();
 
     Menu findById(String id);
 

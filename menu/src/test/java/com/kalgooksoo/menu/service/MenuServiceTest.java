@@ -4,7 +4,6 @@ import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
-import com.kalgooksoo.menu.model.HierarchicalMenu;
 import com.kalgooksoo.menu.repository.MenuMemoryRepository;
 import com.kalgooksoo.menu.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,14 +57,14 @@ class MenuServiceTest {
         });
 
         // When
-        List<HierarchicalMenu> menus = menuService.findAll();
+        List<Menu> menus = menuService.findAll();
 
         // Then
         assertEquals(5, menus.size());
         menus.forEach(hierarchicalMenu -> {
-            assertEquals(1, hierarchicalMenu.children().size());
-            hierarchicalMenu.children().forEach(child -> {
-                assertEquals(1, child.children().size());
+            assertEquals(1, hierarchicalMenu.getChildren().size());
+            hierarchicalMenu.getChildren().forEach(child -> {
+                assertEquals(1, child.getChildren().size());
             });
         });
     }
@@ -74,7 +73,7 @@ class MenuServiceTest {
     @DisplayName("모든 계층형 메뉴를 조회합니다. 메뉴가 없을 경우 빈 리스트를 반환합니다.")
     void findAllShouldReturnEmptyList() {
         // When
-        List<HierarchicalMenu> menus = menuService.findAll();
+        List<Menu> menus = menuService.findAll();
 
         // Then
         assertTrue(menus.isEmpty());

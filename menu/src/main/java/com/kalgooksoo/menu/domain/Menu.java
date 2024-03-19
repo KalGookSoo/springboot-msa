@@ -20,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
  */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
@@ -65,7 +65,7 @@ public class Menu extends Hierarchical<Menu, String> {
     private LocalDateTime modifiedAt;
 
     public static Menu create(String name, String url, String parentId, String createdBy) {
-        Assert.notNull(createdBy, "생성자는 null이 될 수 없습니다");
+        Assert.notNull(createdBy, "생성자는 NULL이 될 수 없습니다");
         Menu menu = new Menu();
         menu.id = UUID.randomUUID().toString();
         menu.name = name;
