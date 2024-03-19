@@ -27,55 +27,33 @@
 title: Board Service Domain
 ---
 classDiagram
-    class HierarchicalCategoryFactory {
-        <<interface>>
-        +toHierarchical(): HierarchicalCategory
+    direction TB
+    class Article
+    class Attachment
+    class Category 
+    class CategoryType 
+    class Comment 
+    class Hierarchical {
+        <<abstract>>
     }
-    class HierarchicalCategory {
-        -String id
-        -List<HierarchicalCategory> children
-        +of(): HierarchicalCategory
-    }
-    class Category {
-        -String id
-        -String parentId
-        +create(): Category
-        +update(): void
-        +moveTo(): void
-    }
-    class Article {
-        -String id
-        -String categoryId
-        +create(): Article
-        +update(): void
-        +increaseViews()
-        +increaseLikes()
-        +decreaseLikes()
-        +increaseDislikes()
-        +decreaseDislikes()
-    }
-    class Attachment {
-        -String id
-        -String articleId
-        +create(): Attachment
-        +update(): void
-    }
-    class Comment {
-        -String id
-        -String articleId
-        +create(): Comment
-        +update(): void
-        +increaseLikes()
-        +decreaseLikes()
-        +increaseDislikes()
-        +decreaseDislikes()
-    }
-    HierarchicalCategoryFactory ..> HierarchicalCategory: creates
-    HierarchicalCategoryFactory ..> Category: uses
-    HierarchicalCategory o-- HierarchicalCategory: children
-    Category "1" -- "N" Article: has
-    Article "1" -- "N" Attachment: has
-    Article "1" -- "N" Comment: has
+    class View
+    class Vote
+    class VoteType
+    
+    Hierarchical "1" -- "1" Category
+    Hierarchical "1" -- "1" Comment
+    Category "1" --> "N" Category
+    Category "1" --> "N" Article
+    Category "1" --> "1" CategoryType
+    Article "1" --> "N" Comment
+    Article "1" --> "N" Vote
+    Article "1" --> "N" View
+    Article "1" --> "N" Attachment
+    Comment "1" --> "N" Comment
+    Comment "1" --> "N" Vote
+    Comment "1" --> "N" Attachment
+    Vote "1" --> "1" VoteType
+
 ```
 
 ---
@@ -88,6 +66,7 @@ title: Board Service ERD
 erDiagram
     tb_category {
         string(36) id PK
+        String(36) parent_id
         string name
         string type
         string created_by
@@ -99,38 +78,51 @@ erDiagram
         string(36) category_id FK
         string title
         text content
-        integer views
-        integer likes
-        integer dislikes
-        string created_by
+        string author
         timestamp created_at
         timestamp modified_at
     }
     tb_attachment {
         string(36) id PK
-        string(36) article_id FK
+        string(36) reference_id
         string name
         string path_name
         string mime_type
         bigint size
-        string created_by
         timestamp created_at
-        timestamp modified_at
     }
     tb_comment {
         string(36) id PK
         string(36) article_id FK
+        String(36) parent_id
         text content
-        integer likes
-        integer dislikes
-        string created_by
+        string author
         timestamp created_at
         timestamp modified_at
     }
+    tb_vote {
+        string(36) reference_id PK
+        string voter PK
+        string type
+        string author
+        timestamp voted_at
+    }
+    tb_view {
+        string(36) reference_id PK
+        string viewer PK
+        timestamp viewed_at
+    }
     tb_category ||--o{ tb_category : parent_id
     tb_category ||--o{ tb_article : category_id
-    tb_article ||--o{ tb_attachment : article_id
+    tb_article ||--o{ tb_attachment : reference_id
     tb_article ||--o{ tb_comment : article_id
+    tb_article ||--o{ tb_vote : reference_id
+    tb_article ||--o{ tb_view : reference_id
+    tb_comment ||--o{ tb_comment : parent_id
+    tb_comment ||--o{ tb_attachment : reference_id
+    tb_comment ||--o{ tb_vote : reference_id
+    tb_comment ||--o{ tb_view : reference_id
+    
 ```
 
 ---

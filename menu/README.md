@@ -28,25 +28,14 @@
 title: Menu Service Domain
 ---
 classDiagram
-    class HierarchicalMenu {
-        -String id
-        -List<HierarchicalMenu> children
-        +of(): HierarchicalMenu
+    direction TB
+    class Menu
+    class Hierarchical {
+        <<abstract>>
     }
-    class HierarchicalMenuFactory {
-        <<interface>>
-        +toHierarchical(): HierarchicalMenu
-    }
-    class Menu {
-        -String id
-        -String parentId
-        +create(): Menu
-        +update(): void
-        +isRoot(): boolean
-    }
-    HierarchicalMenuFactory ..> HierarchicalMenu: creates
-    HierarchicalMenuFactory ..> Menu: uses
-    HierarchicalMenu o-- HierarchicalMenu: children
+    Hierarchical "1" -- "1" Menu
+    Menu "1" --> "N" Menu
+
 ```
 
 ---
