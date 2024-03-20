@@ -1,4 +1,4 @@
-package com.kalgooksoo.hierarchy;
+package com.kalgooksoo.core.hierarchy;
 
 import lombok.Getter;
 

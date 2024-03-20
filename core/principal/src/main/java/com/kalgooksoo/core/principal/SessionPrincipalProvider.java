@@ -1,4 +1,4 @@
-package com.kalgooksoo.principal;
+package com.kalgooksoo.core.principal;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.context.request.RequestContextHolder;

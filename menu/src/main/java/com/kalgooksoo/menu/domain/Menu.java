@@ -1,6 +1,6 @@
 package com.kalgooksoo.menu.domain;
 
-import com.kalgooksoo.hierarchy.Hierarchical;
+import com.kalgooksoo.core.hierarchy.Hierarchical;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;

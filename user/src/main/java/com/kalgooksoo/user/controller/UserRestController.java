@@ -1,6 +1,6 @@
 package com.kalgooksoo.user.controller;
 
-import com.kalgooksoo.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.core.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;

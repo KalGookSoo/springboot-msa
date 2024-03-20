@@ -1,6 +1,6 @@
 package com.kalgooksoo.user.service;
 
-import com.kalgooksoo.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.core.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
 import com.kalgooksoo.user.domain.Authority;

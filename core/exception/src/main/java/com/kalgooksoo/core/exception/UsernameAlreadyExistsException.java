@@ -1,4 +1,4 @@
-package com.kalgooksoo.exception;
+package com.kalgooksoo.core.exception;
 
 import lombok.Getter;
 

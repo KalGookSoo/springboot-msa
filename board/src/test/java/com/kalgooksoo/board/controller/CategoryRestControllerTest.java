@@ -11,7 +11,7 @@ import com.kalgooksoo.board.repository.CategoryMemoryRepository;
 import com.kalgooksoo.board.repository.CategoryRepository;
 import com.kalgooksoo.board.service.CategoryService;
 import com.kalgooksoo.board.service.DefaultCategoryService;
-import com.kalgooksoo.exception.ExceptionHandlingController;
+import com.kalgooksoo.core.exception.ExceptionHandlingController;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package com.kalgooksoo.oas;
+package com.kalgooksoo.core.oas;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

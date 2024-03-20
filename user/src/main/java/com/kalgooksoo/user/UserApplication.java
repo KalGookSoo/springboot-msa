@@ -1,6 +1,6 @@
 package com.kalgooksoo.user;
 
-import com.kalgooksoo.exception.ExceptionHandlingController;
+import com.kalgooksoo.core.exception.ExceptionHandlingController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;

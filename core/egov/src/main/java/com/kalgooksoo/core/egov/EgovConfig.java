@@ -1,4 +1,4 @@
-package com.kalgooksoo.egov;
+package com.kalgooksoo.core.egov;
 
 import org.springframework.context.annotation.Configuration;
 

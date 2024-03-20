@@ -1,6 +1,6 @@
 package com.kalgooksoo.user.config;
 
-import com.kalgooksoo.exception.UsernameAlreadyExistsException;
+import com.kalgooksoo.core.exception.UsernameAlreadyExistsException;
 import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.service.UserService;
 import org.slf4j.Logger;

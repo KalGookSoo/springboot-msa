@@ -1,4 +1,4 @@
-package com.kalgooksoo.principal;
+package com.kalgooksoo.core.principal;
 
 public class AnonymousPrincipalProvider implements PrincipalProvider {
     @Override

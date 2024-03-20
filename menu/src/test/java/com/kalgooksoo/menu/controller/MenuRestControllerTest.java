@@ -3,7 +3,7 @@ package com.kalgooksoo.menu.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.kalgooksoo.exception.ExceptionHandlingController;
+import com.kalgooksoo.core.exception.ExceptionHandlingController;
 import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;

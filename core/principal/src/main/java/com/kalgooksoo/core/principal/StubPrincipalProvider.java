@@ -1,4 +1,4 @@
-package com.kalgooksoo.principal;
+package com.kalgooksoo.core.principal;
 
 public class StubPrincipalProvider implements PrincipalProvider {
     @Override

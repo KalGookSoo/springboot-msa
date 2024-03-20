@@ -3,7 +3,7 @@ package com.kalgooksoo.user.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.kalgooksoo.exception.ExceptionHandlingController;
+import com.kalgooksoo.core.exception.ExceptionHandlingController;
 import com.kalgooksoo.user.command.CreateUserCommand;
 import com.kalgooksoo.user.command.SignInCommand;
 import com.kalgooksoo.user.command.UpdateUserCommand;
