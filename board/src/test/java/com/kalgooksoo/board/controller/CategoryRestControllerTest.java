@@ -1,6 +1,5 @@
 package com.kalgooksoo.board.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.kalgooksoo.board.command.CreateCategoryCommand;
@@ -12,15 +11,12 @@ import com.kalgooksoo.board.repository.CategoryRepository;
 import com.kalgooksoo.board.service.CategoryService;
 import com.kalgooksoo.board.service.DefaultCategoryService;
 import com.kalgooksoo.core.exception.ExceptionHandlingController;
-import org.assertj.core.api.Assertions;
+import com.kalgooksoo.core.principal.PrincipalProvider;
+import com.kalgooksoo.core.principal.StubPrincipalProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -33,9 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 카테고리 REST 컨트롤러 테스트
  */
-@DataJpaTest
-@ActiveProfiles("test")
 class CategoryRestControllerTest {
+
+    private CategoryRestController categoryRestController;
 
     private MockMvc mockMvc;
 
@@ -44,8 +40,9 @@ class CategoryRestControllerTest {
     @BeforeEach
     void setUp() {
         CategoryRepository categoryRepository = new CategoryMemoryRepository();
-        CategoryService categoryService = new DefaultCategoryService(categoryRepository);
-        CategoryRestController categoryRestController = new CategoryRestController(categoryService);
+        PrincipalProvider principalProvider = new StubPrincipalProvider();
+        CategoryService categoryService = new DefaultCategoryService(categoryRepository, principalProvider);
+        categoryRestController = new CategoryRestController(categoryService);
         ExceptionHandlingController exceptionHandlingController = new ExceptionHandlingController();
         mockMvc = MockMvcBuilders.standaloneSetup(categoryRestController, exceptionHandlingController).build();
     }
@@ -54,7 +51,7 @@ class CategoryRestControllerTest {
     @DisplayName("카테고리를 생성합니다. 성공 시 응답 코드 201을 반환합니다.")
     void createShouldReturnCreated() throws Exception {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
 
         // When
         mockMvc.perform(post("/categories")
@@ -68,7 +65,7 @@ class CategoryRestControllerTest {
     @DisplayName("카테고리를 생성합니다. 실패 시 응답 코드 400을 반환합니다.")
     void createShouldReturnBadRequest() throws Exception {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, null, CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, null, CategoryType.PUBLIC.name());
 
         // When
         mockMvc.perform(post("/categories")
@@ -82,12 +79,8 @@ class CategoryRestControllerTest {
     @DisplayName("카테고리 목록을 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
     void findAllShouldReturnOk() throws Exception {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        mockMvc.perform(post("/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(createCategoryCommand)))
-                .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
+        categoryRestController.create(createCategoryCommand);
 
         // When
         mockMvc.perform(get("/categories"))
@@ -99,20 +92,14 @@ class CategoryRestControllerTest {
     @DisplayName("카테고리를 조회합니다. 성공 시 응답 코드 200을 반환합니다.")
     void findByIdShouldReturnOk() throws Exception {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        MockHttpServletResponse httpServletResponse = mockMvc.perform(post("/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(createCategoryCommand)))
-                .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn().getResponse();
-
-        EntityModel<Category> entityModel = mapper.readValue(httpServletResponse.getContentAsString(), new TypeReference<>() {});
-        Category menu = entityModel.getContent();
-        Assertions.assertThat(menu).isNotNull();
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
+        @SuppressWarnings("DataFlowIssue") Category category = categoryRestController.create(createCategoryCommand)
+                .getBody()
+                .getContent();
 
         // When
-        mockMvc.perform(get("/categories/{id}", menu.getId()))
+        assert category != null;
+        mockMvc.perform(get("/categories/{id}", category.getId()))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -132,22 +119,16 @@ class CategoryRestControllerTest {
     @DisplayName("카테고리를 수정합니다. 성공 시 응답 코드 200을 반환합니다.")
     void updateShouldReturnOk() throws Exception {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        MockHttpServletResponse response = mockMvc.perform(post("/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(createCategoryCommand)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse();
-
-        EntityModel<Category> entityModel = mapper.readValue(response.getContentAsString(), new TypeReference<>() {});
-        Category menu = entityModel.getContent();
-        Assertions.assertThat(menu).isNotNull();
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
+        @SuppressWarnings("DataFlowIssue") Category category = categoryRestController.create(createCategoryCommand)
+                .getBody()
+                .getContent();
 
         UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand("공지사항 수정", CategoryType.PUBLIC.name());
 
         // When
-        mockMvc.perform(put("/categories/{id}", menu.getId())
+        assert category != null;
+        mockMvc.perform(put("/categories/{id}", category.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(updateCategoryCommand)))
                 .andExpect(status().isOk())
@@ -158,22 +139,16 @@ class CategoryRestControllerTest {
     @DisplayName("카테고리를 수정합니다. 실패 시 응답 코드 400을 반환합니다.")
     void updateShouldReturnBadRequest() throws Exception {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        MockHttpServletResponse response = mockMvc.perform(post("/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(createCategoryCommand)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse();
-
-        EntityModel<Category> entityModel = mapper.readValue(response.getContentAsString(), new TypeReference<>() {});
-        Category menu = entityModel.getContent();
-        Assertions.assertThat(menu).isNotNull();
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
+        @SuppressWarnings("DataFlowIssue") Category category = categoryRestController.create(createCategoryCommand)
+                .getBody()
+                .getContent();
 
         UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand(null, CategoryType.PUBLIC.name());
 
         // When
-        mockMvc.perform(put("/categories/{id}", menu.getId())
+        assert category != null;
+        mockMvc.perform(put("/categories/{id}", category.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(updateCategoryCommand)))
                 .andExpect(status().isBadRequest())
@@ -198,21 +173,14 @@ class CategoryRestControllerTest {
     @DisplayName("카테고리를 삭제합니다. 성공 시 응답 코드 204를 반환합니다.")
     void deleteShouldReturnNoContent() throws Exception {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
-        MockHttpServletResponse response = mockMvc.perform(post("/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(createCategoryCommand)))
-                .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn()
-                .getResponse();
-
-        EntityModel<Category> entityModel = mapper.readValue(response.getContentAsString(), new TypeReference<>() {});
-        Category menu = entityModel.getContent();
-        Assertions.assertThat(menu).isNotNull();
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
+        @SuppressWarnings("DataFlowIssue") Category category = categoryRestController.create(createCategoryCommand)
+                .getBody()
+                .getContent();
 
         // When
-        mockMvc.perform(delete("/categories/{id}", menu.getId()))
+        assert category != null;
+        mockMvc.perform(delete("/categories/{id}", category.getId()))
                 .andExpect(status().isNoContent())
                 .andDo(MockMvcResultHandlers.print());
     }

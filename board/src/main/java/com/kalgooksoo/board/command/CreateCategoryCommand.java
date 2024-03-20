@@ -12,7 +12,6 @@ import jakarta.validation.constraints.Size;
  * @param parentId  상위 카테고리 식별자
  * @param name      이름
  * @param type      타입
- * @param author    작성자
  */
 @Schema(description = "카테고리 생성 커맨드")
 public record CreateCategoryCommand(
@@ -32,14 +31,8 @@ public record CreateCategoryCommand(
         @NotBlank(message = "계정명은 필수입니다")
         @Size(min = 3, max = 20, message = "계정명은 3자 이상 20자 이하이어야 합니다")
         @NotNull(message = "계정명은 NULL이 될 수 없습니다")
-        String type,
+        String type
 
-        @Parameter(description = "작성자", required = true)
-        @Schema(description = "작성자", example = "testuser")
-        @NotBlank(message = "작성자는 필수입니다")
-        @NotNull(message = "작성자는 NULL이 될 수 없습니다")
-        String author
-        
 ) {
 
 }

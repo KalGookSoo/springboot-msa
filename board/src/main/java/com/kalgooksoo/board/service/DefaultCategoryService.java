@@ -4,8 +4,10 @@ import com.kalgooksoo.board.command.CreateCategoryCommand;
 import com.kalgooksoo.board.command.MoveCategoryCommand;
 import com.kalgooksoo.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.board.domain.Category;
-import com.kalgooksoo.board.model.*;
+import com.kalgooksoo.board.model.HierarchicalCategory;
+import com.kalgooksoo.board.model.HierarchicalCategoryFactory;
 import com.kalgooksoo.board.repository.CategoryRepository;
+import com.kalgooksoo.core.principal.PrincipalProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +29,13 @@ public class DefaultCategoryService implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    private final PrincipalProvider principalProvider;
+
     @Override
     public Category create(CreateCategoryCommand command) {
-        Assert.notNull(command, "CreateCategoryCommand는 null이 될 수 없습니다.");
-        Category category = Category.create(command.parentId(), command.name(), command.type(), command.author());
+        Assert.notNull(command, "카테고리 생성 커맨드는 NULL이 될 수 없습니다.");
+        String author = principalProvider.getUsername();
+        Category category = Category.create(command.parentId(), command.name(), command.type(), author);
         return categoryRepository.save(category);
     }
 

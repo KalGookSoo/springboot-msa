@@ -1,20 +1,18 @@
 package com.kalgooksoo.board.service;
 
-import com.kalgooksoo.board.domain.Category;
-import com.kalgooksoo.board.domain.CategoryType;
 import com.kalgooksoo.board.command.CreateCategoryCommand;
-import com.kalgooksoo.board.model.HierarchicalCategory;
 import com.kalgooksoo.board.command.MoveCategoryCommand;
 import com.kalgooksoo.board.command.UpdateCategoryCommand;
-import com.kalgooksoo.board.repository.CategoryJpaRepository;
+import com.kalgooksoo.board.domain.Category;
+import com.kalgooksoo.board.domain.CategoryType;
+import com.kalgooksoo.board.model.HierarchicalCategory;
+import com.kalgooksoo.board.repository.CategoryMemoryRepository;
 import com.kalgooksoo.board.repository.CategoryRepository;
+import com.kalgooksoo.core.principal.PrincipalProvider;
+import com.kalgooksoo.core.principal.StubPrincipalProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -26,26 +24,22 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 메뉴 서비스 테스트
  */
-@DataJpaTest
-@ActiveProfiles("test")
 class CategoryServiceTest {
 
     private CategoryService categoryService;
 
-    @Autowired
-    private TestEntityManager entityManager;
-
     @BeforeEach
     void setup() {
-        CategoryRepository categoryRepository = new CategoryJpaRepository(entityManager.getEntityManager());
-        categoryService = new DefaultCategoryService(categoryRepository);
+        CategoryRepository categoryRepository = new CategoryMemoryRepository();
+        PrincipalProvider principalProvider = new StubPrincipalProvider();
+        categoryService = new DefaultCategoryService(categoryRepository, principalProvider);
     }
 
     @Test
     @DisplayName("카테고리를 생성합니다. 성공 시 카테고리를 반환합니다.")
     void createTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
 
         // When
         Category savedCategory = categoryService.create(createCategoryCommand);
@@ -68,7 +62,7 @@ class CategoryServiceTest {
     @DisplayName("모든 카테고리를 조회합니다. 성공 시 카테고리 목록을 반환합니다.")
     void findAllTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
         categoryService.create(createCategoryCommand);
 
         // When
@@ -92,7 +86,7 @@ class CategoryServiceTest {
     @DisplayName("카테고리를 조회합니다.")
     void findByIdTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
         Category savedCategory = categoryService.create(createCategoryCommand);
 
         // When
@@ -119,7 +113,7 @@ class CategoryServiceTest {
     @DisplayName("카테고리를 수정합니다. 성공 시 수정된 카테고리를 반환합니다.")
     void updateTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
         Category savedCategory = categoryService.create(createCategoryCommand);
         UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand("공지사항 수정", CategoryType.PUBLIC.name());
 
@@ -145,7 +139,7 @@ class CategoryServiceTest {
     @DisplayName("카테고리를 삭제합니다. 성공 시 삭제된 카테고리를 조회할 수 없습니다.")
     void deleteTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
         Category savedCategory = categoryService.create(createCategoryCommand);
 
         // When
@@ -180,9 +174,9 @@ class CategoryServiceTest {
     @DisplayName("카테고리를 이동합니다. 성공 시 이동된 카테고리를 반환합니다.")
     void moveToTest() {
         // Given
-        CreateCategoryCommand createCategoryCommand1 = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand1 = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
         Category savedCategory1 = categoryService.create(createCategoryCommand1);
-        CreateCategoryCommand createCategoryCommand2 = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name(), "admin");
+        CreateCategoryCommand createCategoryCommand2 = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
         Category savedCategory2 = categoryService.create(createCategoryCommand2);
         MoveCategoryCommand moveCategoryCommand = new MoveCategoryCommand(savedCategory1.getId());
 
