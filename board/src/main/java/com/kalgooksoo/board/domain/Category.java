@@ -18,7 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
  */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
