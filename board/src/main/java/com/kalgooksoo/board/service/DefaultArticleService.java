@@ -6,6 +6,7 @@ import com.kalgooksoo.board.command.UpdateArticleCommand;
 import com.kalgooksoo.board.domain.Article;
 import com.kalgooksoo.board.repository.ArticleRepository;
 import com.kalgooksoo.board.search.ArticleSearch;
+import com.kalgooksoo.core.principal.PrincipalProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,13 @@ public class DefaultArticleService implements ArticleService {
 
     private final ArticleRepository articleRepository;
 
+    private final PrincipalProvider principalProvider;
+
     @Override
     public Article create(CreateArticleCommand command) {
         Assert.notNull(command, "게시글 생성 커맨드는 NULL이 될 수 없습니다.");
-        Article article = Article.create(command.title(), command.content(), command.categoryId(), command.author());
+        String author = principalProvider.getUsername();
+        Article article = Article.create(command.title(), command.content(), command.categoryId(), author);
         return articleRepository.save(article);
     }
 

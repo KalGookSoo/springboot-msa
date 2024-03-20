@@ -25,13 +25,7 @@ public record CreateCommentCommand(
         @Schema(description = "본문", example = "본문")
         @NotBlank(message = "본문은 필수입니다")
         @NotNull(message = "본문은 NULL이 될 수 없습니다")
-        String content,
-
-        @Parameter(description = "작성자", required = true)
-        @Schema(description = "작성자", example = "testuser")
-        @NotBlank(message = "작성자는 필수입니다")
-        @NotNull(message = "작성자는 NULL이 될 수 없습니다")
-        String author
+        String content
 
 ) {
 }

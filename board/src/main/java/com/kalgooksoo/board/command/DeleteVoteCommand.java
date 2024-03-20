@@ -15,13 +15,7 @@ public record DeleteVoteCommand(
         @Schema(description = "참조 식별자", format = "uuid")
         @NotBlank(message = "참조 식별자는 필수입니다")
         @NotNull(message = "참조 식별자는 NULL이 될 수 없습니다")
-        String referenceId,
-
-        @Parameter(description = "투표자", required = true)
-        @Schema(description = "투표자", example = "testuser")
-        @NotBlank(message = "투표자는 필수입니다")
-        @NotNull(message = "투표자는 NULL이 될 수 없습니다")
-        String voter
+        String referenceId
 
 ) {
 }

@@ -7,6 +7,8 @@ import com.kalgooksoo.board.domain.Article;
 import com.kalgooksoo.board.repository.ArticleMemoryRepository;
 import com.kalgooksoo.board.repository.ArticleRepository;
 import com.kalgooksoo.board.search.ArticleSearch;
+import com.kalgooksoo.core.principal.PrincipalProvider;
+import com.kalgooksoo.core.principal.StubPrincipalProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,14 +29,15 @@ class ArticleServiceTest {
     @BeforeEach
     void setup() {
         ArticleRepository articleRepository = new ArticleMemoryRepository();
-        articleService = new DefaultArticleService(articleRepository);
+        PrincipalProvider principalProvider = new StubPrincipalProvider();
+        articleService = new DefaultArticleService(articleRepository, principalProvider);
     }
 
     @Test
     @DisplayName("게시글을 생성합니다. 성공 시 게시글을 반환합니다.")
     void createShouldReturnArticle() {
         // Given
-        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString(), "작성자");
+        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString());
 
         // When
         Article article = articleService.create(createArticleCommand);
@@ -57,7 +60,7 @@ class ArticleServiceTest {
     @DisplayName("카테고리 식별자로 게시글을 조회합니다. 성공 시 게시글 목록을 반환합니다.")
     void findAllByCategoryIdShouldReturnArticles() {
         // Given
-        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString(), "작성자");
+        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString());
         Article createdArticle = articleService.create(createArticleCommand);
         String categoryId = createdArticle.getCategoryId();
         ArticleSearch search = new ArticleSearch();
@@ -90,7 +93,7 @@ class ArticleServiceTest {
     @DisplayName("게시글 식별자로 게시글을 조회합니다. 성공 시 게시글을 반환합니다.")
     void findByIdShouldReturnArticle() {
         // Given
-        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString(), "작성자");
+        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString());
         Article createdArticle = articleService.create(createArticleCommand);
         String id = createdArticle.getId();
 
@@ -115,7 +118,7 @@ class ArticleServiceTest {
     @DisplayName("게시글을 수정합니다. 성공 시 수정된 게시글을 반환합니다.")
     void updateShouldUpdateArticle() {
         // Given
-        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString(), "작성자");
+        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString());
         Article createdArticle = articleService.create(createArticleCommand);
         String id = createdArticle.getId();
         UpdateArticleCommand updateArticleCommand = new UpdateArticleCommand("Updated title", "Updated content");
@@ -143,7 +146,7 @@ class ArticleServiceTest {
     @DisplayName("게시글을 삭제합니다. 성공 시 삭제된 게시글을 조회할 경우 NoSuchElementException을 던집니다.")
     void deleteShouldDeleteArticle() {
         // Given
-        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString(), "작성자");
+        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString());
         Article createdArticle = articleService.create(createArticleCommand);
         String id = createdArticle.getId();
 
@@ -158,7 +161,7 @@ class ArticleServiceTest {
     @DisplayName("게시글을 이동합니다. 성공 시 이동된 게시글을 반환합니다.")
     void moveShouldReturnMovedArticle() {
         // Given
-        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString(), "작성자");
+        CreateArticleCommand createArticleCommand = new CreateArticleCommand("제목", "내용", UUID.randomUUID().toString());
         Article createdArticle = articleService.create(createArticleCommand);
         String id = createdArticle.getId();
         MoveArticleCommand moveArticleCommand = new MoveArticleCommand(UUID.randomUUID().toString());
