@@ -29,10 +29,22 @@
 
 ## Domain
 ```mermaid
+---
+title: Acl Service Domain
+---
+classDiagram
+  direction TB
+  class AclSid
+  class AclClass
+  class AclObjectIdentity
+  class AclEntry
+
+  AclSid "1" <-- "N" AclObjectIdentity
+  AclSid "1" <-- "N" AclEntry
+  AclClass "1" <-- "N" AclObjectIdentity
+  AclObjectIdentity "1" <-- "N" AclEntry
 
 ```
-
----
 
 ## Entity Relationship Diagram
 ```mermaid
