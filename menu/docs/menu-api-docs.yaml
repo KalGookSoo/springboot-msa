@@ -13,6 +13,8 @@ paths:
     get:
       tags:
       - MenuRestController
+      summary: 메뉴 조회
+      description: 메뉴를 조회합니다
       operationId: findById
       parameters:
       - name: id
@@ -32,7 +34,23 @@ paths:
     put:
       tags:
       - MenuRestController
+      summary: 메뉴 수정
+      description: 메뉴를 수정합니다
       operationId: updateById
+      parameters:
+      - name: id
+        in: path
+        description: 메뉴 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMenuCommand'
+        required: true
       responses:
         "200":
           description: OK
@@ -43,14 +61,54 @@ paths:
     delete:
       tags:
       - MenuRestController
+      summary: 메뉴 삭제
+      description: 메뉴를 삭제합니다
       operationId: deleteById
+      parameters:
+      - name: id
+        in: path
+        description: 메뉴 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
       responses:
         "200":
           description: OK
+  /menus/{id}/move:
+    put:
+      tags:
+      - MenuRestController
+      summary: 메뉴 이동
+      description: 메뉴를 이동합니다
+      operationId: moveById
+      parameters:
+      - name: id
+        in: path
+        description: 메뉴 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveMenuCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelMenu'
   /menus:
     get:
       tags:
       - MenuRestController
+      summary: 메뉴 목록 조회
+      description: 메뉴 목록을 조회합니다
       operationId: findAll
       responses:
         "200":
@@ -62,12 +120,14 @@ paths:
     post:
       tags:
       - MenuRestController
+      summary: 메뉴 생성
+      description: 메뉴를 생성합니다
       operationId: create
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MenuCommand'
+              $ref: '#/components/schemas/CreateMenuCommand'
         required: true
       responses:
         "200":
@@ -78,9 +138,28 @@ paths:
                 $ref: '#/components/schemas/EntityModelMenu'
 components:
   schemas:
+    UpdateMenuCommand:
+      required:
+      - name
+      - url
+      type: object
+      properties:
+        name:
+          type: string
+          description: 메뉴명. 이 필드는 필수입니다.
+          example: 메뉴명
+        url:
+          type: string
+          description: URL. 이 필드는 필수입니다.
+          example: http://example.com
+      description: 메뉴 수정 커맨드
     EntityModelMenu:
       type: object
       properties:
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Menu'
         id:
           type: string
         name:
@@ -105,13 +184,15 @@ components:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/Link'
-    MenuCommand:
-      required:
-      - createdBy
-      - name
-      - url
+    Menu:
       type: object
       properties:
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Menu'
+        id:
+          type: string
         name:
           type: string
         url:
@@ -120,7 +201,46 @@ components:
           type: string
         createdBy:
           type: string
-      description: 메뉴 커맨드
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        root:
+          type: boolean
+    MoveMenuCommand:
+      type: object
+      properties:
+        parentId:
+          type: string
+          description: 상위 메뉴 식별자
+          format: uuid
+      description: 메뉴 이동 커맨드
+    CreateMenuCommand:
+      required:
+      - createdBy
+      - name
+      - url
+      type: object
+      properties:
+        name:
+          type: string
+          description: 메뉴명. 이 필드는 필수입니다.
+          example: 메뉴명
+        url:
+          type: string
+          description: URL. 이 필드는 필수입니다.
+          example: http://example.com
+        parentId:
+          type: string
+          description: 부모 식별자
+          format: uuid
+        createdBy:
+          type: string
+          description: 생성자. 이 필드는 필수입니다.
+          example: testuser
+      description: 메뉴 생성 명령
     CollectionModelEntityModelMenu:
       type: object
       properties:
