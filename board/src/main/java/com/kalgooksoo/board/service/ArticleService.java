@@ -19,6 +19,6 @@ public interface ArticleService {
 
     void delete(String id);
 
-    void move(String id, MoveArticleCommand command);
+    Article move(String id, MoveArticleCommand command);
 
 }

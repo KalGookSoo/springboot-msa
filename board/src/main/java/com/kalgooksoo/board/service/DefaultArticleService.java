@@ -61,12 +61,12 @@ public class DefaultArticleService implements ArticleService {
     }
 
     @Override
-    public void move(String id, MoveArticleCommand command) {
+    public Article move(String id, MoveArticleCommand command) {
         Assert.notNull(command, "게시글 이동 커맨드는 NULL이 될 수 없습니다.");
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
         article.moveTo(command.categoryId());
-        articleRepository.save(article);
+        return articleRepository.save(article);
     }
 
 }
