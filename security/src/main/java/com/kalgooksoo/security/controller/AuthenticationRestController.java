@@ -30,45 +30,22 @@ public class AuthenticationRestController {
 
     private final AuthenticationService authenticationService;
 
-    /**
-     * 토큰 생성
-     *
-     * @param command 인증 명령
-     * @return 토큰 정보
-     */
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "인증 성공"),
-            @ApiResponse(responseCode = "401", description = "잘못된 자격 증명")
-    })
+    @Operation(summary = "토큰 생성", description = "토큰을 생성합니다")
     @PostMapping("/token")
-    public ResponseEntity<TokenModel> generateToken(@Valid @RequestBody SignInCommand command) {
+    public ResponseEntity<TokenModel> generateToken(
+            @Parameter(schema = @Schema(implementation = SignInCommand.class)) @Valid @RequestBody SignInCommand command
+    ) {
         Authentication authentication = authenticationService.authenticate(command);
         String jwt = authenticationService.generateToken(authentication);
         return ResponseEntity.status(HttpStatus.OK).body(TokenModel.success(jwt));
     }
 
-
-    /**
-     * 사용자 인증 주체 조회
-     *
-     * @param bearerToken 헤더에 포함된 토큰
-     * @return 토큰에 해당하는 사용자 정보
-     */
-    @Operation(parameters = {
-            @Parameter(
-                    in = ParameterIn.HEADER,
-                    name = "Authorization",
-                    required = true,
-                    description = "Bearer ${token}",
-                    schema = @Schema(type = "string")
-            )
-    })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
-            @ApiResponse(responseCode = "401", description = "잘못된 자격 증명")
-    })
+    @Operation(summary = "토큰 조회", description = "토큰을 조회합니다")
     @GetMapping("/token")
-    public ResponseEntity<Authentication> findToken(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String bearerToken) {
+    public ResponseEntity<Authentication> findToken(
+            @Parameter(in = ParameterIn.HEADER, description = "Bearer 토큰", required = true, schema = @Schema(type = "string", example = "Bearer {token}"))
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String bearerToken
+    ) {
         String token;
         try {
             token = bearerToken.substring(7);
@@ -79,27 +56,11 @@ public class AuthenticationRestController {
         return ResponseEntity.ok(authentication);
     }
 
-    /**
-     * 토큰 갱신
-     *
-     * @param bearerToken 헤더에 포함된 토큰
-     * @return 갱신된 토큰 정보
-     */
-    @Operation(parameters = {
-            @Parameter(
-                    in = ParameterIn.HEADER,
-                    name = "Authorization",
-                    required = true,
-                    description = "Bearer ${token}",
-                    schema = @Schema(type = "string")
-            )
-    })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
-            @ApiResponse(responseCode = "401", description = "잘못된 자격 증명")
-    })
     @PostMapping("/token-refresh")
-    public ResponseEntity<TokenModel> refreshToken(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String bearerToken) {
+    public ResponseEntity<TokenModel> refreshToken(
+            @Parameter(in = ParameterIn.HEADER, description = "Bearer 토큰", required = true, schema = @Schema(type = "string", example = "Bearer {token}"))
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String bearerToken
+    ) {
         String token;
         try {
             token = bearerToken.substring(7);
