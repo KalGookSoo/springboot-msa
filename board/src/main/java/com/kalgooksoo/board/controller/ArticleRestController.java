@@ -93,8 +93,16 @@ public class ArticleRestController {
     public ResponseEntity<EntityModel<Article>> findById(
             @Parameter(description = "게시글 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
-        return ResponseEntity.ok()
-                .body(null);
+        Article article = articleService.findById(id);
+
+        ResponseEntity<EntityModel<Article>> invocationValue = methodOn(this.getClass())
+                .findById(article.getId());
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<Article> entityModel = EntityModel.of(article, link);
+        return ResponseEntity.ok(entityModel);
     }
 
     @Operation(summary = "게시글 수정", description = "게시글을 수정합니다")
@@ -103,8 +111,16 @@ public class ArticleRestController {
             @Parameter(description = "게시글 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
             @Parameter(schema = @Schema(implementation = UpdateArticleCommand.class)) @Valid @RequestBody UpdateArticleCommand command
     ) {
-        return ResponseEntity.ok()
-                .body(null);
+        Article article = articleService.update(id, command);
+
+        ResponseEntity<EntityModel<Article>> invocationValue = methodOn(this.getClass())
+                .findById(article.getId());
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<Article> entityModel = EntityModel.of(article, link);
+        return ResponseEntity.ok().body(entityModel);
     }
 
     @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다")
@@ -112,8 +128,8 @@ public class ArticleRestController {
     public ResponseEntity<Void> delete(
             @Parameter(description = "게시글 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
-        return ResponseEntity.noContent()
-                .build();
+        articleService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "게시글 이동", description = "게시글을 이동합니다")
@@ -122,8 +138,16 @@ public class ArticleRestController {
             @Parameter(description = "게시글 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
             @Parameter(schema = @Schema(implementation = MoveArticleCommand.class)) @Valid @RequestBody MoveArticleCommand command
     ) {
-        return ResponseEntity.ok()
-                .body(null);
+        Article article = articleService.move(id, command);
+
+        ResponseEntity<EntityModel<Article>> invocationValue = methodOn(this.getClass())
+                .findById(article.getId());
+
+        Link link = WebMvcLinkBuilder.linkTo(invocationValue)
+                .withRel("self");
+
+        EntityModel<Article> entityModel = EntityModel.of(article, link);
+        return ResponseEntity.ok().body(entityModel);
     }
 
 }
