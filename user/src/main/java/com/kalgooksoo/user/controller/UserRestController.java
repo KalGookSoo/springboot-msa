@@ -136,7 +136,7 @@ public class UserRestController {
     @Operation(summary = "계정 수정", description = "계정을 수정합니다")
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<User>> updateById(
-            @Parameter(schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
+            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
             @Parameter(schema = @Schema(implementation = UpdateUserCommand.class)) @Valid @RequestBody UpdateUserCommand command
     ) {
         User user = userService.update(id, command);
@@ -160,7 +160,7 @@ public class UserRestController {
     @Operation(summary = "계정 삭제", description = "계정을 삭제합니다")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(
-            @Parameter(schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
+            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
@@ -176,7 +176,7 @@ public class UserRestController {
     @Operation(summary = "계정 패스워드 수정", description = "계정 패스워드를 수정합니다")
     @PutMapping("/{id}/password")
     public ResponseEntity<EntityModel<User>> updatePassword(
-            @Parameter(schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
+            @Parameter(description = "계정 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
             @Parameter(schema = @Schema(implementation = UpdateUserPasswordCommand.class)) @Valid @RequestBody UpdateUserPasswordCommand command
     ) {
         userService.updatePassword(id, command.originPassword(), command.newPassword());

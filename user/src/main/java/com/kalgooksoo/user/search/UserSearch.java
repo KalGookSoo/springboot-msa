@@ -32,22 +32,22 @@ public class UserSearch extends PageVO {
 
     @JsonIgnore
     public boolean isEmptyUsername() {
-        return username == null || username.isEmpty();
+        return username != null && !username.isEmpty();
     }
 
     @JsonIgnore
     public boolean isEmptyName() {
-        return name == null || name.isEmpty();
+        return name != null && !name.isEmpty();
     }
 
     @JsonIgnore
     public boolean isEmptyEmailId() {
-        return emailId == null || emailId.isEmpty();
+        return emailId != null && !emailId.isEmpty();
     }
 
     @JsonIgnore
     public boolean isEmptyContactNumber() {
-        return contactNumber == null || contactNumber.isEmpty();
+        return contactNumber != null && !contactNumber.isEmpty();
     }
 
 }

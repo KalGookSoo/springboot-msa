@@ -21,6 +21,8 @@ paths:
     get:
       tags:
       - UserRestController
+      summary: 계정 조회
+      description: 계정을 조회합니다
       operationId: findById
       parameters:
       - name: id
@@ -34,12 +36,14 @@ paths:
         "200":
           description: OK
           content:
-            application/hal+json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/EntityModelUser'
     put:
       tags:
       - UserRestController
+      summary: 계정 수정
+      description: 계정을 수정합니다
       operationId: updateById
       parameters:
       - name: id
@@ -59,12 +63,14 @@ paths:
         "200":
           description: OK
           content:
-            application/hal+json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/EntityModelUser'
     delete:
       tags:
       - UserRestController
+      summary: 계정 삭제
+      description: 계정을 삭제합니다
       operationId: deleteById
       parameters:
       - name: id
@@ -81,6 +87,8 @@ paths:
     put:
       tags:
       - UserRestController
+      summary: 계정 패스워드 수정
+      description: 계정 패스워드를 수정합니다
       operationId: updatePassword
       parameters:
       - name: id
@@ -100,21 +108,17 @@ paths:
         "200":
           description: OK
           content:
-            application/hal+json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/EntityModelUser'
   /users:
     get:
       tags:
       - UserRestController
+      summary: 계정 목록 조회
+      description: 계정 목록을 조회합니다
       operationId: findAll
       parameters:
-      - name: Authorization
-        in: header
-        description: "Bearer ${token}"
-        required: true
-        schema:
-          type: string
       - name: search
         in: query
         required: true
@@ -124,12 +128,14 @@ paths:
         "200":
           description: OK
           content:
-            application/hal+json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/PagedModelEntityModelUser'
     post:
       tags:
       - UserRestController
+      summary: 계정 생성
+      description: 계정을 생성합니다
       operationId: create
       requestBody:
         content:
@@ -141,13 +147,15 @@ paths:
         "200":
           description: OK
           content:
-            application/hal+json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/EntityModelUser'
   /users/sign-in:
     post:
       tags:
       - UserRestController
+      summary: 계정 검증
+      description: 계정을 검증합니다
       operationId: signIn
       requestBody:
         content:
@@ -159,7 +167,7 @@ paths:
         "200":
           description: OK
           content:
-            application/hal+json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/EntityModelUserSummary'
 components:
@@ -173,17 +181,29 @@ components:
           maxLength: 20
           minLength: 2
           type: string
+          description: 이름
+          example: 홍길동
         emailId:
           type: string
+          description: 이메일 ID
+          example: testuser
         emailDomain:
           type: string
+          description: 이메일 도메인
+          example: kalgooksoo.com
         firstContactNumber:
           type: string
+          description: 첫 번째 연락처 번호
+          example: "010"
         middleContactNumber:
           type: string
+          description: 두 번째 연락처 번호
+          example: "1234"
         lastContactNumber:
           type: string
-      description: 계정 정보를 업데이트하는 데 사용되는 명령
+          description: 마지막 연락처 번호
+          example: "5678"
+      description: 계정 수정 명령
     ContactNumber:
       type: object
       properties:
@@ -193,16 +213,12 @@ components:
           type: string
         last:
           type: string
-        value:
-          type: string
     Email:
       type: object
       properties:
         id:
           type: string
         domain:
-          type: string
-        value:
           type: string
     EntityModelUser:
       type: object
@@ -232,13 +248,13 @@ components:
         credentialsExpiredAt:
           type: string
           format: date-time
-        accountNonLocked:
+        enabled:
           type: boolean
         accountNonExpired:
           type: boolean
         credentialsNonExpired:
           type: boolean
-        enabled:
+        accountNonLocked:
           type: boolean
         _links:
           $ref: '#/components/schemas/Links'
@@ -274,13 +290,13 @@ components:
         credentialsExpiredAt:
           type: string
           format: date-time
-        accountNonLocked:
+        enabled:
           type: boolean
         accountNonExpired:
           type: boolean
         credentialsNonExpired:
           type: boolean
-        enabled:
+        accountNonLocked:
           type: boolean
     UpdateUserPasswordCommand:
       required:
@@ -290,9 +306,13 @@ components:
       properties:
         originPassword:
           type: string
+          description: 현재 패스워드
+          example: password
         newPassword:
           type: string
-      description: 계정 패스워드 업데이트 명령
+          description: 변경할 패스워드
+          example: newpassword
+      description: 계정 패스워드 수정 명령
     CreateUserCommand:
       required:
       - name
@@ -304,25 +324,41 @@ components:
           maxLength: 20
           minLength: 3
           type: string
+          description: 계정명
+          example: testuser
         password:
           maxLength: 2147483647
           minLength: 8
           type: string
+          description: 패스워드
+          example: password
         name:
           maxLength: 20
           minLength: 2
           type: string
+          description: 이름
+          example: 홍길동
         emailId:
           type: string
+          description: 이메일 ID
+          example: testuser
         emailDomain:
           type: string
+          description: 이메일 도메인
+          example: kalgooksoo.com
         firstContactNumber:
           type: string
+          description: 첫 번째 연락처 번호
+          example: "010"
         middleContactNumber:
           type: string
+          description: 두 번째 연락처 번호
+          example: "1234"
         lastContactNumber:
           type: string
-      description: 계정을 생성하는 데 사용되는 명령
+          description: 마지막 연락처 번호
+          example: "5678"
+      description: 계정 생성 명령
     SignInCommand:
       required:
       - password
@@ -333,10 +369,14 @@ components:
           maxLength: 20
           minLength: 3
           type: string
+          description: 계정명
+          example: testuser
         password:
           maxLength: 2147483647
           minLength: 8
           type: string
+          description: 패스워드
+          example: "12341234"
       description: 로그인 명령
     Authority:
       type: object
@@ -382,15 +422,20 @@ components:
         username:
           type: string
           description: 계정명(대체키)
+          example: testuser1
         name:
           type: string
           description: 계정명(또는 별칭)
+          example: 홍길동
         emailId:
           type: string
           description: 이메일 ID
+          example: testuser
         contactNumber:
           type: string
           description: 연락처
+          example: 010-1234-5678
+      description: 계정 검색 조건
     PageMetadata:
       type: object
       properties:
@@ -412,7 +457,7 @@ components:
         _embedded:
           type: object
           properties:
-            users:
+            userList:
               type: array
               items:
                 $ref: '#/components/schemas/EntityModelUser'
