@@ -13,25 +13,27 @@ paths:
     get:
       tags:
       - AuthenticationRestController
+      summary: 토큰 조회
+      description: 토큰을 조회합니다
       operationId: findToken
       parameters:
       - name: Authorization
         in: header
-        description: "Bearer ${token}"
+        description: Bearer 토큰
         required: true
         schema:
           type: string
+          example: "Bearer {token}"
       responses:
-        "401":
-          description: 잘못된 자격 증명
-          content: {}
         "200":
-          description: 토큰 갱신 성공
+          description: OK
           content: {}
     post:
       tags:
       - AuthenticationRestController
-      operationId: createToken
+      summary: 토큰 생성
+      description: 토큰을 생성합니다
+      operationId: generateToken
       requestBody:
         content:
           application/json:
@@ -39,14 +41,8 @@ paths:
               $ref: '#/components/schemas/SignInCommand'
         required: true
       responses:
-        "401":
-          description: 잘못된 자격 증명
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/TokenModel'
         "200":
-          description: 인증 성공
+          description: OK
           content:
             '*/*':
               schema:
@@ -59,19 +55,14 @@ paths:
       parameters:
       - name: Authorization
         in: header
-        description: "Bearer ${token}"
+        description: Bearer 토큰
         required: true
         schema:
           type: string
+          example: "Bearer {token}"
       responses:
-        "401":
-          description: 잘못된 자격 증명
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/TokenModel'
         "200":
-          description: 토큰 갱신 성공
+          description: OK
           content:
             '*/*':
               schema:
@@ -88,10 +79,15 @@ components:
           maxLength: 20
           minLength: 3
           type: string
+          description: 계정명. 이 필드는 필수입니다.
+          example: kalgooksoo
         password:
           maxLength: 2147483647
           minLength: 8
           type: string
+          description: 패스워드. 이 필드는 필수입니다.
+          format: password
+          example: password
       description: 로그인 명령
     TokenModel:
       type: object
