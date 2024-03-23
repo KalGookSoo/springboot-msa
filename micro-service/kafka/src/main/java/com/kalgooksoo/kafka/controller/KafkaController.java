@@ -1,4 +1,4 @@
-package com.kalgooksoo.kafka;
+package com.kalgooksoo.kafka.controller;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
