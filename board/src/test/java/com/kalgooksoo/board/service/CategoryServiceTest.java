@@ -86,7 +86,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리를 조회합니다. 존재하지 않는 카테고리에 대해 조회를 시도할 경우 빈 Optional을 반환합니다.")
+    @DisplayName("카테고리를 조회합니다. 존재하지 않는 카테고리에 대해 조회를 시도할 경우 NoSuchElementException을 던집니다.")
     void findByIdShouldThrowNoSuchElementException() {
         // Given
         String invalidId = UUID.randomUUID().toString();
@@ -111,7 +111,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리를 수정합니다. 존재하지 않는 카테고리에 대해 수정을 시도할 경우 NoSuchElementException이 발생합니다.")
+    @DisplayName("카테고리를 수정합니다. 존재하지 않는 카테고리에 대해 수정을 시도할 경우 NoSuchElementException을 던집니다.")
     void updateShouldThrowNoSuchElementException() {
         // Given
         String invalidId = UUID.randomUUID().toString();
@@ -122,7 +122,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리를 삭제합니다. 성공 시 삭제된 카테고리를 조회할 수 없습니다.")
+    @DisplayName("카테고리를 삭제합니다. 성공 시 삭제된 카테고리를 조회할 경우 NoSuchElementException을 던집니다.")
     void deleteTest() {
         // Given
         CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "공지사항", CategoryType.PUBLIC.name());
@@ -136,7 +136,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리를 삭제합니다. 존재하지 않는 카테고리에 대해 삭제를 시도할 경우 NoSuchElementException이 발생합니다.")
+    @DisplayName("카테고리를 삭제합니다. 존재하지 않는 카테고리에 대해 삭제를 시도할 경우 NoSuchElementException을 던집니다.")
     void deleteShouldThrowNoSuchElementException() {
         // Given
         String invalidId = UUID.randomUUID().toString();
@@ -163,7 +163,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리를 이동합니다. 존재하지 않는 카테고리에 대해 이동을 시도할 경우 NoSuchElementException이 발생합니다.")
+    @DisplayName("카테고리를 이동합니다. 존재하지 않는 카테고리에 대해 이동을 시도할 경우 NoSuchElementException을 던집니다.")
     void moveToShouldThrowNoSuchElementException() {
         // Given
         String invalidId = UUID.randomUUID().toString();
