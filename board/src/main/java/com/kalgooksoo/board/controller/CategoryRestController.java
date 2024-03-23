@@ -1,10 +1,10 @@
 package com.kalgooksoo.board.controller;
 
-import com.kalgooksoo.board.command.MoveCategoryCommand;
-import com.kalgooksoo.board.domain.Category;
 import com.kalgooksoo.board.command.CreateCategoryCommand;
-import com.kalgooksoo.board.model.HierarchicalCategory;
+import com.kalgooksoo.board.command.MoveCategoryCommand;
 import com.kalgooksoo.board.command.UpdateCategoryCommand;
+import com.kalgooksoo.board.domain.Category;
+import com.kalgooksoo.board.model.HierarchicalCategory;
 import com.kalgooksoo.board.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -84,7 +83,7 @@ public class CategoryRestController {
     public ResponseEntity<EntityModel<Category>> findById(
             @Parameter(description = "카테고리 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id
     ) {
-        Category category = categoryService.findById(id).orElseThrow(() -> new NoSuchElementException("카테고리가 존재하지 않습니다"));
+        Category category = categoryService.findById(id);
 
         ResponseEntity<CollectionModel<EntityModel<HierarchicalCategory>>> invocationValue = methodOn(this.getClass())
                 .findAll();

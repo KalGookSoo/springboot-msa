@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,10 +79,10 @@ class CategoryServiceTest {
         Category savedCategory = categoryService.create(createCategoryCommand);
 
         // When
-        Optional<Category> foundCategory = categoryService.findById(savedCategory.getId());
+        Category foundCategory = categoryService.findById(savedCategory.getId());
 
         // Then
-        assertTrue(foundCategory.isPresent());
+        assertNotNull(foundCategory);
     }
 
     @Test
@@ -92,11 +91,8 @@ class CategoryServiceTest {
         // Given
         String invalidId = UUID.randomUUID().toString();
 
-        // When
-        Optional<Category> foundCategory = categoryService.findById(invalidId);
-
-        // Then
-        assertTrue(foundCategory.isEmpty());
+        // When & Then
+        assertThrows(NoSuchElementException.class, () -> categoryService.findById(invalidId));
     }
 
     @Test
@@ -136,8 +132,7 @@ class CategoryServiceTest {
         categoryService.delete(savedCategory.getId());
 
         // Then
-        Optional<Category> deletedCategory = categoryService.findById(savedCategory.getId());
-        assertTrue(deletedCategory.isEmpty());
+        assertThrows(NoSuchElementException.class, () -> categoryService.findById(savedCategory.getId()));
     }
 
     @Test

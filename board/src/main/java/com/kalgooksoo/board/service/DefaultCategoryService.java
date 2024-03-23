@@ -53,8 +53,9 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public Optional<Category> findById(String id) {
-        return categoryRepository.findById(id);
+    public Category findById(String id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("카테고리가 존재하지 않습니다."));
     }
 
     @Override
