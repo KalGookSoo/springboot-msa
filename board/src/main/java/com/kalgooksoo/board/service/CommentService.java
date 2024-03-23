@@ -16,6 +16,8 @@ public interface CommentService {
 
     List<Comment> findAllByArticleId(@Nonnull String articleId);
 
+    Comment findById(@Nonnull String id);
+
     Comment update(@Nonnull String id, @Nonnull UpdateCommentCommand command);
 
     void delete(@Nonnull String id);
