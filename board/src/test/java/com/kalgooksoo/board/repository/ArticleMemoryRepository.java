@@ -2,10 +2,10 @@ package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Article;
 import com.kalgooksoo.board.search.ArticleSearch;
+import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +17,7 @@ public class ArticleMemoryRepository implements ArticleRepository {
     private final List<Article> articles = new ArrayList<>();
 
     @Override
-    public Article save(Article article) {
-        Assert.notNull(article, "게시글은 NULL이 될 수 없습니다");
+    public Article save(@Nonnull Article article) {
         if (article.getId() == null) {
             articles.add(article);
         } else {
@@ -35,8 +34,7 @@ public class ArticleMemoryRepository implements ArticleRepository {
     }
 
     @Override
-    public Page<Article> search(ArticleSearch search) {
-        Assert.notNull(search, "게시글 검색 조건은 NULL이 될 수 없습니다");
+    public Page<Article> search(@Nonnull ArticleSearch search) {
         Pageable pageable = search.pageable();
         List<Article> filteredArticles = articles.stream()
                 .filter(article -> search.getCategoryId() == null || search.getCategoryId().equals(article.getCategoryId()))
@@ -50,16 +48,14 @@ public class ArticleMemoryRepository implements ArticleRepository {
     }
 
     @Override
-    public Optional<Article> findById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public Optional<Article> findById(@Nonnull String id) {
         return articles.stream()
                 .filter(article -> article.getId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public void deleteById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public void deleteById(@Nonnull String id) {
         articles.stream()
                 .filter(article -> article.getId().equals(id))
                 .findFirst()

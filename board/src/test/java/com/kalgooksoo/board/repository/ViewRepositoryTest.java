@@ -45,16 +45,6 @@ class ViewRepositoryTest {
     }
 
     @Test
-    @DisplayName("뷰를 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveShouldThrowIllegalArgumentException() {
-        // Given
-        View view = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> viewRepository.save(view));
-    }
-
-    @Test
     @DisplayName("참조 식별자로 모든 뷰를 조회합니다. 성공 시 뷰 목록을 반환합니다.")
     void findAllByReferenceIdShouldReturnViews() {
         // Given
@@ -95,16 +85,6 @@ class ViewRepositoryTest {
         // Then
         List<View> views = viewRepository.findAllByReferenceId(referenceId);
         assertTrue(views.isEmpty());
-    }
-
-    @Test
-    @DisplayName("참조 식별자로 모든 뷰를 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteAllByReferenceIdShouldThrowIllegalArgumentException() {
-        // Given
-        String referenceId = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> viewRepository.deleteAllByReferenceId(referenceId));
     }
 
 }

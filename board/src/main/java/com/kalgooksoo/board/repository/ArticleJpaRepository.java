@@ -2,6 +2,7 @@ package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Article;
 import com.kalgooksoo.board.search.ArticleSearch;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,8 +22,7 @@ public class ArticleJpaRepository implements ArticleRepository {
     private final EntityManager em;
 
     @Override
-    public Article save(Article article) {
-        Assert.notNull(article, "게시글은 NULL이 될 수 없습니다");
+    public Article save(@Nonnull Article article) {
         if (article.getId() == null) {
             em.persist(article);
         } else {
@@ -33,8 +32,7 @@ public class ArticleJpaRepository implements ArticleRepository {
     }
 
     @Override
-    public Page<Article> search(ArticleSearch search) {
-        Assert.notNull(search, "게시글 검색 조건은 NULL이 될 수 없습니다");
+    public Page<Article> search(@Nonnull ArticleSearch search) {
         Pageable pageable = search.pageable();
         String jpql = "select article from Article article where 1=1";
         jpql += generateJpql(search);
@@ -59,14 +57,12 @@ public class ArticleJpaRepository implements ArticleRepository {
     }
 
     @Override
-    public Optional<Article> findById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public Optional<Article> findById(@Nonnull String id) {
         return Optional.ofNullable(em.find(Article.class, id));
     }
 
     @Override
-    public void deleteById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public void deleteById(@Nonnull String id) {
         Article article = em.find(Article.class, id);
         if (article != null) {
             em.remove(article);
@@ -75,7 +71,7 @@ public class ArticleJpaRepository implements ArticleRepository {
         }
     }
 
-    private String generateJpql(ArticleSearch search) {
+    private String generateJpql(@Nonnull ArticleSearch search) {
         StringBuilder jpql = new StringBuilder();
         jpql.append(" and article.categoryId = :categoryId");
         if (!search.isEmptyTitle()) {
@@ -90,7 +86,7 @@ public class ArticleJpaRepository implements ArticleRepository {
         return jpql.toString();
     }
 
-    private void setParameters(TypedQuery<?> query, ArticleSearch search) {
+    private void setParameters(@Nonnull TypedQuery<?> query,@Nonnull ArticleSearch search) {
         query.setParameter("categoryId", search.getCategoryId());
         if (!search.isEmptyTitle()) {
             query.setParameter("title", "%" + search.getTitle() + "%");

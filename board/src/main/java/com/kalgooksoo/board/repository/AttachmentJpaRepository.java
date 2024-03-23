@@ -1,6 +1,7 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Attachment;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,7 +18,7 @@ public class AttachmentJpaRepository implements AttachmentRepository {
     private final EntityManager em;
 
     @Override
-    public Attachment save(Attachment attachment) {
+    public Attachment save(@Nonnull Attachment attachment) {
         Assert.notNull(attachment, "첨부파일는 NULL이 될 수 없습니다");
         if (attachment.getId() == null) {
             em.persist(attachment);
@@ -33,13 +34,13 @@ public class AttachmentJpaRepository implements AttachmentRepository {
     }
 
     @Override
-    public Optional<Attachment> findById(String id) {
+    public Optional<Attachment> findById(@Nonnull String id) {
         Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         return Optional.ofNullable(em.find(Attachment.class, id));
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteById(@Nonnull String id) {
         Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         Attachment attachment = em.find(Attachment.class, id);
         if (attachment != null) {

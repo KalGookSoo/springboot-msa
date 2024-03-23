@@ -2,6 +2,7 @@ package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Vote;
 import com.kalgooksoo.board.domain.VoteId;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -10,12 +11,12 @@ import java.util.List;
  */
 public interface VoteRepository {
 
-    Vote save(Vote vote);
+    Vote save(@Nonnull Vote vote);
 
-    List<Vote> findAllByReferenceId(String referenceId);
+    List<Vote> findAllByReferenceId(@Nonnull String referenceId);
 
-    void deleteAllByReferenceId(String referenceId);
+    void deleteAllByReferenceId(@Nonnull String referenceId);
 
-    void deleteById(VoteId id);
+    void deleteById(@Nonnull VoteId id);
 
 }

@@ -1,7 +1,7 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.View;
-import org.springframework.util.Assert;
+import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,7 @@ public class ViewMemoryRepository implements ViewRepository {
     private final List<View> views = new ArrayList<>();
 
     @Override
-    public View save(View view) {
-        Assert.notNull(view, "투표는 NULL이 될 수 없습니다");
+    public View save(@Nonnull View view) {
         if (view.getId() == null) {
             views.add(view);
         } else {
@@ -30,16 +29,14 @@ public class ViewMemoryRepository implements ViewRepository {
     }
 
     @Override
-    public List<View> findAllByReferenceId(String referenceId) {
-        Assert.notNull(referenceId, "참조 식별자는 NULL이 될 수 없습니다");
+    public List<View> findAllByReferenceId(@Nonnull String referenceId) {
         return views.stream()
                 .filter(view -> view.getId().getReferenceId().equals(referenceId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteAllByReferenceId(String referenceId) {
-        Assert.notNull(referenceId, "참조 식별자는 NULL이 될 수 없습니다");
+    public void deleteAllByReferenceId(@Nonnull String referenceId) {
         views.removeIf(view -> view.getId().getReferenceId().equals(referenceId));
     }
 

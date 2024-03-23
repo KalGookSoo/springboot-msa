@@ -44,16 +44,6 @@ class CommentRepositoryTest {
     }
 
     @Test
-    @DisplayName("댓글을 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveShouldThrowIllegalArgumentException() {
-        // Given
-        Comment comment = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> commentRepository.save(comment));
-    }
-
-    @Test
     @DisplayName("특정 게시글의 댓글을 조회합니다. 성공 시 댓글 목록을 반환합니다.")
     void findAllShouldReturnComments() {
         // Given
@@ -120,16 +110,6 @@ class CommentRepositoryTest {
         // Then
         Optional<Comment> deletedComment = commentRepository.findById(savedComment.getId());
         assertTrue(deletedComment.isEmpty());
-    }
-
-    @Test
-    @DisplayName("댓글을 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteShouldThrowIllegalArgumentException() {
-        // Given
-        String id = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> commentRepository.deleteById(id));
     }
 
     @Test

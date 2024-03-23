@@ -49,16 +49,6 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("카테고리를 생성합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void createTestWithNull() {
-        // Given
-        CreateCategoryCommand createCategoryCommand = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> categoryService.create(createCategoryCommand));
-    }
-
-    @Test
     @DisplayName("모든 카테고리를 조회합니다. 성공 시 카테고리 목록을 반환합니다.")
     void findAllTest() {
         // Given
@@ -148,16 +138,6 @@ class CategoryServiceTest {
         // Then
         Optional<Category> deletedCategory = categoryService.findById(savedCategory.getId());
         assertTrue(deletedCategory.isEmpty());
-    }
-
-    @Test
-    @DisplayName("카테고리를 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteTestWithNull() {
-        // Given
-        String id = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> categoryService.delete(id));
     }
 
     @Test

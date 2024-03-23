@@ -44,16 +44,6 @@ class VoteRepositoryTest {
     }
 
     @Test
-    @DisplayName("투표를 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveShouldThrowIllegalArgumentException() {
-        // Given
-        Vote vote = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> voteRepository.save(vote));
-    }
-
-    @Test
     @DisplayName("참조 식별자로 모든 투표를 조회합니다. 성공 시 투표 목록을 반환합니다.")
     void findAllByReferenceIdShouldReturnVotes() {
         // Given
@@ -97,16 +87,6 @@ class VoteRepositoryTest {
     }
 
     @Test
-    @DisplayName("참조 식별자로 모든 투표를 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteAllByReferenceIdShouldThrowIllegalArgumentException() {
-        // Given
-        String referenceId = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> voteRepository.deleteAllByReferenceId(referenceId));
-    }
-
-    @Test
     @DisplayName("투표를 삭제합니다. 성공 시 삭제된 투표를 조회할 수 없습니다.")
     void deleteAllById() {
         // Given
@@ -119,16 +99,6 @@ class VoteRepositoryTest {
         // Then
         List<Vote> votes = voteRepository.findAllByReferenceId(savedVote.getId().getReferenceId());
         assertTrue(votes.isEmpty());
-    }
-
-    @Test
-    @DisplayName("투표를 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteAllByIdShouldThrowIllegalArgumentException() {
-        // Given
-        VoteId id = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> voteRepository.deleteById(id));
     }
 
 }

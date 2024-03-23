@@ -1,10 +1,10 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.View;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -15,8 +15,7 @@ public class ViewJpaRepository implements ViewRepository {
     private final EntityManager em;
 
     @Override
-    public View save(View view) {
-        Assert.notNull(view, "뷰는 NULL이 될 수 없습니다");
+    public View save(@Nonnull View view) {
         if (view.getId() == null) {
             em.persist(view);
         } else {
@@ -26,8 +25,7 @@ public class ViewJpaRepository implements ViewRepository {
     }
 
     @Override
-    public List<View> findAllByReferenceId(String referenceId) {
-        Assert.notNull(referenceId, "참조 식별자는 NULL이 될 수 없습니다");
+    public List<View> findAllByReferenceId(@Nonnull String referenceId) {
         String jpql = "select view from View view where view.id.referenceId = :referenceId";
         return em.createQuery(jpql, View.class)
                 .setParameter("referenceId", referenceId)
@@ -35,8 +33,7 @@ public class ViewJpaRepository implements ViewRepository {
     }
 
     @Override
-    public void deleteAllByReferenceId(String referenceId) {
-        Assert.notNull(referenceId, "참조 식별자는 NULL이 될 수 없습니다");
+    public void deleteAllByReferenceId(@Nonnull String referenceId) {
         String jpql = "delete from View view where view.id.referenceId = :referenceId";
         em.createQuery(jpql)
                 .setParameter("referenceId", referenceId)

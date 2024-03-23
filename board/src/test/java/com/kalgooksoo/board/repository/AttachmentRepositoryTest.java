@@ -44,16 +44,6 @@ class AttachmentRepositoryTest {
     }
 
     @Test
-    @DisplayName("첨부파일을 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveShouldThrowIllegalArgumentException() {
-        // Given
-        Attachment attachment = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> attachmentRepository.save(attachment));
-    }
-
-    @Test
     @DisplayName("모든 첨부파일을 조회합니다. 성공 시 첨부파일 목록을 반환합니다.")
     void findAllShouldReturnAttachments() {
         // Given
@@ -119,16 +109,6 @@ class AttachmentRepositoryTest {
         // Then
         Optional<Attachment> deletedAttachment = attachmentRepository.findById(savedAttachment.getId());
         assertTrue(deletedAttachment.isEmpty());
-    }
-
-    @Test
-    @DisplayName("첨부파일을 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteShouldThrowIllegalArgumentException() {
-        // Given
-        String id = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> attachmentRepository.deleteById(id));
     }
 
     @Test

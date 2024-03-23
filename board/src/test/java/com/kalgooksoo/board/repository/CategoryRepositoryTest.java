@@ -45,16 +45,6 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    @DisplayName("카테고리를 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveShouldThrowIllegalArgumentException() {
-        // Given
-        Category category = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> categoryRepository.save(category));
-    }
-
-    @Test
     @DisplayName("모든 카테고리를 조회합니다. 성공 시 카테고리 목록을 반환합니다.")
     void findAllShouldReturnCategories() {
         // Given
@@ -120,16 +110,6 @@ class CategoryRepositoryTest {
         // Then
         Optional<Category> deletedCategory = categoryRepository.findById(savedCategory.getId());
         assertTrue(deletedCategory.isEmpty());
-    }
-
-    @Test
-    @DisplayName("카테고리를 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteShouldThrowIllegalArgumentException() {
-        // Given
-        String id = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> categoryRepository.deleteById(id));
     }
 
     @Test

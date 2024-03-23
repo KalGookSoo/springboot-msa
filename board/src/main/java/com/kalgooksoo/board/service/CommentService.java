@@ -3,17 +3,21 @@ package com.kalgooksoo.board.service;
 import com.kalgooksoo.board.command.CreateCommentCommand;
 import com.kalgooksoo.board.command.UpdateCommentCommand;
 import com.kalgooksoo.board.domain.Comment;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
+/**
+ * 댓글 서비스
+ */
 public interface CommentService {
 
-    Comment create(CreateCommentCommand command);
+    Comment create(@Nonnull CreateCommentCommand command);
 
-    List<Comment> findAllByArticleId(String articleId);
+    List<Comment> findAllByArticleId(@Nonnull String articleId);
 
-    Comment update(String id, UpdateCommentCommand command);
+    Comment update(@Nonnull String id, @Nonnull UpdateCommentCommand command);
 
-    void delete(String id);
+    void delete(@Nonnull String id);
 
 }

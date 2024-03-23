@@ -2,10 +2,10 @@ package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Vote;
 import com.kalgooksoo.board.domain.VoteId;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -16,8 +16,7 @@ public class VoteJpaRepository implements VoteRepository {
     private final EntityManager em;
 
     @Override
-    public Vote save(Vote vote) {
-        Assert.notNull(vote, "투표는 NULL이 될 수 없습니다");
+    public Vote save(@Nonnull Vote vote) {
         if (vote.getId() == null) {
             em.persist(vote);
         } else {
@@ -27,8 +26,7 @@ public class VoteJpaRepository implements VoteRepository {
     }
 
     @Override
-    public List<Vote> findAllByReferenceId(String referenceId) {
-        Assert.notNull(referenceId, "참조 식별자는 NULL이 될 수 없습니다");
+    public List<Vote> findAllByReferenceId(@Nonnull String referenceId) {
         String jpql = "select vote from Vote vote where vote.id.referenceId = :referenceId";
         return em.createQuery(jpql, Vote.class)
                 .setParameter("referenceId", referenceId)
@@ -36,8 +34,7 @@ public class VoteJpaRepository implements VoteRepository {
     }
 
     @Override
-    public void deleteAllByReferenceId(String referenceId) {
-        Assert.notNull(referenceId, "참조 식별자는 NULL이 될 수 없습니다");
+    public void deleteAllByReferenceId(@Nonnull String referenceId) {
         String jpql = "delete from Vote vote where vote.id.referenceId = :referenceId";
         em.createQuery(jpql)
                 .setParameter("referenceId", referenceId)
@@ -45,8 +42,7 @@ public class VoteJpaRepository implements VoteRepository {
     }
 
     @Override
-    public void deleteById(VoteId id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public void deleteById(@Nonnull VoteId id) {
         String jpql = "delete from Vote vote where vote.id = :id";
         em.createQuery(jpql)
                 .setParameter("id", id)

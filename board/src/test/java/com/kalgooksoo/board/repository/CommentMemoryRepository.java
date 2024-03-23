@@ -1,7 +1,7 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Comment;
-import org.springframework.util.Assert;
+import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,7 @@ public class CommentMemoryRepository implements CommentRepository {
     private final List<Comment> comments = new ArrayList<>();
 
     @Override
-    public Comment save(Comment comment) {
-        Assert.notNull(comment, "댓글은 NULL이 될 수 없습니다");
+    public Comment save(@Nonnull Comment comment) {
         if (comment.getId() == null) {
             comments.add(comment);
         } else {
@@ -31,24 +30,21 @@ public class CommentMemoryRepository implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findAllByArticleId(String articleId) {
-        Assert.notNull(articleId, "게시글 식별자는 NULL이 될 수 없습니다");
+    public List<Comment> findAllByArticleId(@Nonnull String articleId) {
         return comments.stream()
                 .filter(comment -> comment.getArticleId().equals(articleId))
                 .toList();
     }
 
     @Override
-    public Optional<Comment> findById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public Optional<Comment> findById(@Nonnull String id) {
         return comments.stream()
                 .filter(comment -> comment.getId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public void deleteById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public void deleteById(@Nonnull String id) {
         comments.stream()
                 .filter(comment -> comment.getId().equals(id))
                 .findFirst()

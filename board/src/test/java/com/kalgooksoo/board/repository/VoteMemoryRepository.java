@@ -2,7 +2,7 @@ package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Vote;
 import com.kalgooksoo.board.domain.VoteId;
-import org.springframework.util.Assert;
+import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,7 @@ public class VoteMemoryRepository implements VoteRepository {
     private final List<Vote> votes = new ArrayList<>();
 
     @Override
-    public Vote save(Vote vote) {
-        Assert.notNull(vote, "투표는 NULL이 될 수 없습니다");
+    public Vote save(@Nonnull Vote vote) {
         if (vote.getId() == null) {
             votes.add(vote);
         } else {
@@ -31,22 +30,19 @@ public class VoteMemoryRepository implements VoteRepository {
     }
 
     @Override
-    public List<Vote> findAllByReferenceId(String referenceId) {
-        Assert.notNull(referenceId, "참조 식별자는 NULL이 될 수 없습니다");
+    public List<Vote> findAllByReferenceId(@Nonnull String referenceId) {
         return votes.stream()
                 .filter(vote -> vote.getId().getReferenceId().equals(referenceId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteAllByReferenceId(String referenceId) {
-        Assert.notNull(referenceId, "참조 식별자는 NULL이 될 수 없습니다");
+    public void deleteAllByReferenceId(@Nonnull String referenceId) {
         votes.removeIf(vote -> vote.getId().getReferenceId().equals(referenceId));
     }
 
     @Override
-    public void deleteById(VoteId id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public void deleteById(@Nonnull VoteId id) {
         votes.removeIf(vote -> vote.getId().equals(id));
     }
 

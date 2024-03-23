@@ -1,7 +1,7 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Category;
-import org.springframework.util.Assert;
+import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,7 @@ public class CategoryMemoryRepository implements CategoryRepository {
     private final List<Category> categories = new ArrayList<>();
 
     @Override
-    public Category save(Category category) {
-        Assert.notNull(category, "카테고리는 NULL이 될 수 없습니다");
+    public Category save(@Nonnull Category category) {
         if (category.getId() == null) {
             categories.add(category);
         } else {
@@ -36,16 +35,14 @@ public class CategoryMemoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Optional<Category> findById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public Optional<Category> findById(@Nonnull String id) {
         return categories.stream()
                 .filter(category -> category.getId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public void deleteById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public void deleteById(@Nonnull String id) {
         categories.stream()
                 .filter(category -> category.getId().equals(id))
                 .findFirst()

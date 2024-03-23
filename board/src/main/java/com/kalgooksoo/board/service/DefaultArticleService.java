@@ -7,11 +7,11 @@ import com.kalgooksoo.board.domain.Article;
 import com.kalgooksoo.board.repository.ArticleRepository;
 import com.kalgooksoo.board.search.ArticleSearch;
 import com.kalgooksoo.core.principal.PrincipalProvider;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.NoSuchElementException;
 
@@ -28,27 +28,25 @@ public class DefaultArticleService implements ArticleService {
     private final PrincipalProvider principalProvider;
 
     @Override
-    public Article create(CreateArticleCommand command) {
-        Assert.notNull(command, "게시글 생성 커맨드는 NULL이 될 수 없습니다.");
+    public Article create(@Nonnull CreateArticleCommand command) {
         String author = principalProvider.getUsername();
         Article article = Article.create(command.title(), command.content(), command.categoryId(), author);
         return articleRepository.save(article);
     }
 
     @Override
-    public Page<Article> search(ArticleSearch search) {
+    public Page<Article> search(@Nonnull ArticleSearch search) {
         return articleRepository.search(search);
     }
 
     @Override
-    public Article findById(String id) {
+    public Article findById(@Nonnull String id) {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
     }
 
     @Override
-    public Article update(String id, UpdateArticleCommand command) {
-        Assert.notNull(command, "게시글 수정 커맨드는 NULL이 될 수 없습니다.");
+    public Article update(@Nonnull String id, @Nonnull UpdateArticleCommand command) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
         article.update(command.title(), command.content());
@@ -56,13 +54,12 @@ public class DefaultArticleService implements ArticleService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(@Nonnull String id) {
         articleRepository.deleteById(id);
     }
 
     @Override
-    public Article move(String id, MoveArticleCommand command) {
-        Assert.notNull(command, "게시글 이동 커맨드는 NULL이 될 수 없습니다.");
+    public Article move(@Nonnull String id, @Nonnull MoveArticleCommand command) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
         article.moveTo(command.categoryId());

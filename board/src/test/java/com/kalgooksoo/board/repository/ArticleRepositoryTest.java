@@ -45,16 +45,6 @@ class ArticleRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시글을 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveShouldThrowIllegalArgumentException() {
-        // Given
-        Article article = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> articleRepository.save(article));
-    }
-
-    @Test
     @DisplayName("특정 카테고리의 게시글을 조회합니다. 성공 시 게시글 목록을 반환합니다.")
     void searchShouldReturnArticles() {
         // Given
@@ -127,16 +117,6 @@ class ArticleRepositoryTest {
         // Then
         Optional<Article> deletedArticle = articleRepository.findById(savedArticle.getId());
         assertTrue(deletedArticle.isEmpty());
-    }
-
-    @Test
-    @DisplayName("게시글을 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteShouldThrowIllegalArgumentException() {
-        // Given
-        String id = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> articleRepository.deleteById(id));
     }
 
     @Test

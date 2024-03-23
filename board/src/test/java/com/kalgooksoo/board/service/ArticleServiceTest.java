@@ -47,16 +47,6 @@ class ArticleServiceTest {
     }
 
     @Test
-    @DisplayName("게시글을 생성합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void createShouldThrowIllegalArgumentException() {
-        // Given
-        CreateArticleCommand createArticleCommand = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> articleService.create(createArticleCommand));
-    }
-
-    @Test
     @DisplayName("카테고리 식별자로 게시글을 조회합니다. 성공 시 게시글 목록을 반환합니다.")
     void findAllByCategoryIdShouldReturnArticles() {
         // Given

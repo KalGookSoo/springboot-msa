@@ -1,6 +1,7 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.View;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -9,10 +10,10 @@ import java.util.List;
  */
 public interface ViewRepository {
 
-    View save(View view);
+    View save(@Nonnull View view);
 
-    List<View> findAllByReferenceId(String referenceId);
+    List<View> findAllByReferenceId(@Nonnull String referenceId);
 
-    void deleteAllByReferenceId(String referenceId);
+    void deleteAllByReferenceId(@Nonnull String referenceId);
 
 }

@@ -1,7 +1,7 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Attachment;
-import org.springframework.util.Assert;
+import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,7 @@ public class AttachmentMemoryRepository implements AttachmentRepository {
     private final List<Attachment> attachments = new ArrayList<>();
 
     @Override
-    public Attachment save(Attachment attachment) {
-        Assert.notNull(attachment, "첨부파일은 NULL이 될 수 없습니다");
+    public Attachment save(@Nonnull Attachment attachment) {
         if (attachment.getId() == null) {
             attachments.add(attachment);
         } else {
@@ -36,16 +35,14 @@ public class AttachmentMemoryRepository implements AttachmentRepository {
     }
 
     @Override
-    public Optional<Attachment> findById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public Optional<Attachment> findById(@Nonnull String id) {
         return attachments.stream()
                 .filter(attachment -> attachment.getId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public void deleteById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public void deleteById(@Nonnull String id) {
         attachments.stream()
                 .filter(attachment -> attachment.getId().equals(id))
                 .findFirst()
