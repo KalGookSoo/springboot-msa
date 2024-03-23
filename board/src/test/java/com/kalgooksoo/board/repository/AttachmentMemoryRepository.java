@@ -30,8 +30,10 @@ public class AttachmentMemoryRepository implements AttachmentRepository {
     }
 
     @Override
-    public List<Attachment> findAll() {
-        return attachments;
+    public List<Attachment> findAllByReferenceId(@Nonnull String referenceId) {
+        return attachments.stream()
+                .filter(attachment -> attachment.getReferenceId().equals(referenceId))
+                .toList();
     }
 
     @Override

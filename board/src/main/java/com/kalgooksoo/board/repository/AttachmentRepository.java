@@ -10,10 +10,9 @@ public interface AttachmentRepository {
 
     Attachment save(@Nonnull Attachment attachment);
 
-    List<Attachment> findAll();
+    List<Attachment> findAllByReferenceId(@Nonnull String referenceId);
 
     Optional<Attachment> findById(@Nonnull String id);
 
     void deleteById(@Nonnull String id);
-
 }

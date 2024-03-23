@@ -1,6 +1,7 @@
 package com.kalgooksoo.board.repository;
 
 import com.kalgooksoo.board.domain.Attachment;
+import com.kalgooksoo.board.domain.View;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,11 @@ public class AttachmentJpaRepository implements AttachmentRepository {
     }
 
     @Override
-    public List<Attachment> findAll() {
-        return em.createQuery("select attachment from Attachment attachment", Attachment.class).getResultList();
+    public List<Attachment> findAllByReferenceId(@Nonnull String referenceId) {
+        String jpql = "select attachment from Attachment attachment where attachment.referenceId = :referenceId";
+        return em.createQuery(jpql, Attachment.class)
+                .setParameter("referenceId", referenceId)
+                .getResultList();
     }
 
     @Override

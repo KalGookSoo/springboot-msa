@@ -44,14 +44,14 @@ class AttachmentRepositoryTest {
     }
 
     @Test
-    @DisplayName("모든 첨부파일을 조회합니다. 성공 시 첨부파일 목록을 반환합니다.")
-    void findAllShouldReturnAttachments() {
+    @DisplayName("참조 식별자로 모든 첨부파일을 조회합니다. 성공 시 뷰 목록을 반환합니다.")
+    void findAllByReferenceIdShouldReturnAttachments() {
         // Given
         Attachment attachment = Attachment.create(UUID.randomUUID().toString(), "이미지", "/attachments/{categoryId}/image.png", "image/png", 100L);
         Attachment savedAttachment = attachmentRepository.save(attachment);
 
         // When
-        List<Attachment> attachments = attachmentRepository.findAll();
+        List<Attachment> attachments = attachmentRepository.findAllByReferenceId(savedAttachment.getReferenceId());
 
         // Then
         assertNotNull(attachments);
@@ -59,10 +59,10 @@ class AttachmentRepositoryTest {
     }
 
     @Test
-    @DisplayName("모든 첨부파일을 조회합니다. 실패 시 빈 목록을 반환합니다.")
-    void findAllShouldReturnEmptyList() {
+    @DisplayName("참조 식별자로 모든 첨부파일을 조회합니다. 실패 시 빈 목록을 반환합니다.")
+    void findAllByReferenceIdShouldReturnEmptyList() {
         // When
-        List<Attachment> attachments = attachmentRepository.findAll();
+        List<Attachment> attachments = attachmentRepository.findAllByReferenceId(UUID.randomUUID().toString());
 
         // Then
         assertNotNull(attachments);
