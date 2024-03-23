@@ -4,7 +4,6 @@ import com.kalgooksoo.board.command.CreateCategoryCommand;
 import com.kalgooksoo.board.command.MoveCategoryCommand;
 import com.kalgooksoo.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.board.domain.Category;
-import com.kalgooksoo.board.model.HierarchicalCategory;
 import com.kalgooksoo.board.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,27 +53,27 @@ public class CategoryRestController {
 
     @Operation(summary = "카테고리 목록 조회", description = "카테고리 목록을 조회합니다")
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<HierarchicalCategory>>> findAll() {
-        List<EntityModel<HierarchicalCategory>> entityModels = categoryService.findAll()
+    public ResponseEntity<CollectionModel<EntityModel<Category>>> findAll() {
+        List<EntityModel<Category>> entityModels = categoryService.findAll()
                 .stream()
-                .map(hierarchicalCategory -> {
+                .map(category -> {
                     ResponseEntity<EntityModel<Category>> invocationValue = methodOn(this.getClass())
-                            .findById(hierarchicalCategory.id());
+                            .findById(category.getId());
 
                     Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                             .withRel("self");
 
-                    return EntityModel.of(hierarchicalCategory, link);
+                    return EntityModel.of(category, link);
                 })
                 .toList();
 
-        ResponseEntity<CollectionModel<EntityModel<HierarchicalCategory>>> invocationValue = methodOn(this.getClass())
+        ResponseEntity<CollectionModel<EntityModel<Category>>> invocationValue = methodOn(this.getClass())
                 .findAll();
 
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                 .withRel("self");
 
-        CollectionModel<EntityModel<HierarchicalCategory>> collectionModel = CollectionModel.of(entityModels, link);
+        CollectionModel<EntityModel<Category>> collectionModel = CollectionModel.of(entityModels, link);
         return ResponseEntity.ok(collectionModel);
     }
 
@@ -85,7 +84,7 @@ public class CategoryRestController {
     ) {
         Category category = categoryService.findById(id);
 
-        ResponseEntity<CollectionModel<EntityModel<HierarchicalCategory>>> invocationValue = methodOn(this.getClass())
+        ResponseEntity<CollectionModel<EntityModel<Category>>> invocationValue = methodOn(this.getClass())
                 .findAll();
 
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)

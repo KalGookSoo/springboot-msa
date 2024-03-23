@@ -4,7 +4,7 @@ import com.kalgooksoo.board.command.CreateCategoryCommand;
 import com.kalgooksoo.board.command.MoveCategoryCommand;
 import com.kalgooksoo.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.board.domain.Category;
-import com.kalgooksoo.board.model.HierarchicalCategory;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -13,16 +13,16 @@ import java.util.List;
  */
 public interface CategoryService {
 
-    Category create(CreateCategoryCommand command);
+    Category create(@Nonnull CreateCategoryCommand command);
 
-    List<HierarchicalCategory> findAll();
+    List<Category> findAll();
 
-    Category findById(String id);
+    Category findById(@Nonnull String id);
 
-    Category update(String id, UpdateCategoryCommand command);
+    Category update(@Nonnull String id, @Nonnull UpdateCategoryCommand command);
 
-    void delete(String id);
+    void delete(@Nonnull String id);
 
-    Category move(String id, MoveCategoryCommand command);
+    Category move(@Nonnull String id, @Nonnull MoveCategoryCommand command);
 
 }
