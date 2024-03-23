@@ -1,10 +1,10 @@
 package com.kalgooksoo.menu.repository;
 
 import com.kalgooksoo.menu.domain.Menu;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,8 +17,7 @@ public class MenuJpaRepository implements MenuRepository {
     private final EntityManager em;
 
     @Override
-    public Menu save(Menu menu) {
-        Assert.notNull(menu, "메뉴는 NULL이 될 수 없습니다");
+    public Menu save(@Nonnull Menu menu) {
         if (menu.getId() == null) {
             em.persist(menu);
         } else {
@@ -33,14 +32,12 @@ public class MenuJpaRepository implements MenuRepository {
     }
 
     @Override
-    public Optional<Menu> findById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public Optional<Menu> findById(@Nonnull String id) {
         return Optional.ofNullable(em.find(Menu.class, id));
     }
 
     @Override
-    public void deleteById(String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
+    public void deleteById(@Nonnull String id) {
         Menu menu = em.find(Menu.class, id);
         if (menu != null) {
             em.remove(menu);

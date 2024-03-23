@@ -1,6 +1,7 @@
 package com.kalgooksoo.menu.repository;
 
 import com.kalgooksoo.menu.domain.Menu;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,12 +11,12 @@ import java.util.Optional;
  */
 public interface MenuRepository {
 
-    Menu save(Menu menu);
+    Menu save(@Nonnull Menu menu);
 
     List<Menu> findAll();
 
-    Optional<Menu> findById(String id);
+    Optional<Menu> findById(@Nonnull String id);
 
-    void deleteById(String id);
+    void deleteById(@Nonnull String id);
 
 }

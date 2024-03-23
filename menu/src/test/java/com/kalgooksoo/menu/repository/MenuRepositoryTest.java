@@ -44,16 +44,6 @@ class MenuRepositoryTest {
     }
 
     @Test
-    @DisplayName("메뉴를 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveTestWithNull() {
-        // Given
-        Menu menu = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> menuRepository.save(menu));
-    }
-
-    @Test
     @DisplayName("모든 메뉴를 조회합니다. 성공 시 메뉴 목록을 반환합니다.")
     void findAllTest() {
         // Given
@@ -128,16 +118,6 @@ class MenuRepositoryTest {
         // Then
         Optional<Menu> deletedMenu = menuRepository.findById(savedMenu.getId());
         assertTrue(deletedMenu.isEmpty());
-    }
-
-    @Test
-    @DisplayName("메뉴를 삭제합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void deleteTestWithEmpty() {
-        // Given
-        Menu menu = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> menuRepository.save(menu));
     }
 
     @Test

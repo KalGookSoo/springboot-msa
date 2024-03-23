@@ -4,6 +4,7 @@ import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -12,16 +13,16 @@ import java.util.List;
  */
 public interface MenuService {
 
-    Menu create(CreateMenuCommand menu);
+    Menu create(@Nonnull CreateMenuCommand menu);
 
     List<Menu> findAll();
 
-    Menu findById(String id);
+    Menu findById(@Nonnull String id);
 
-    Menu update(String id, UpdateMenuCommand command);
+    Menu update(@Nonnull String id, @Nonnull UpdateMenuCommand command);
 
-    void delete(String id);
+    void delete(@Nonnull String id);
 
-    Menu move(String id, MoveMenuCommand command);
+    Menu move(@Nonnull String id, @Nonnull MoveMenuCommand command);
 
 }
