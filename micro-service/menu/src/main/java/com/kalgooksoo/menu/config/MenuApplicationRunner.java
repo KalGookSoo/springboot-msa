@@ -1,8 +1,10 @@
 package com.kalgooksoo.menu.config;
 
+import com.kalgooksoo.core.oas.OpenApiDocsWriter;
 import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
 import com.kalgooksoo.menu.service.MenuService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -12,14 +14,38 @@ import java.util.stream.IntStream;
 @Configuration
 public class MenuApplicationRunner implements CommandLineRunner {
 
+    private final String profiles;
+
+    private final String applicationName;
+
+    private final String rootUri;
+
     private final MenuService menuService;
 
-    public MenuApplicationRunner(@Lazy MenuService menuService) {
+    public MenuApplicationRunner(
+            @Value("${spring.profiles.active:default}") String profiles,
+            @Value("${spring.application.name}") String applicationName,
+            @Value("${server.address:127.0.0.1}") String domain,
+            @Value("${server.port}") int port,
+            @Lazy MenuService menuService
+    ) {
+        this.profiles = profiles;
+        this.applicationName = applicationName;
+        this.rootUri = String.format("http://%s:%d", domain, port);
         this.menuService = menuService;
     }
 
     @Override
     public void run(String... args) {
+        if (profiles.contains("prod")) {
+            return;
+        }
+        OpenApiDocsWriter openApiDocsWriter = new OpenApiDocsWriter(rootUri, applicationName);
+        openApiDocsWriter.write();
+        generateTestMenus();
+    }
+
+    private void generateTestMenus() {
         IntStream.rangeClosed(1, 5).forEach(i -> {
             CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
             Menu savedParent = menuService.create(createMenuCommand1);

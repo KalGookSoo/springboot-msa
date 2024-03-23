@@ -18,6 +18,7 @@ include ':config-server'
 
 include ':core:egov'
 include ':core:exception'
+include ':core:file'
 include ':core:hierarchy'
 include ':core:jwt'
 include ':core:oas'

@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(':core:file')
     implementation 'org.springframework:spring-web'
     implementation 'org.springframework:spring-context'
 

@@ -9,29 +9,33 @@ import io.swagger.v3.oas.models.info.License;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.properties.SwaggerUiConfigParameters;
 import org.springdoc.core.properties.SwaggerUiConfigProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.HandlerMethod;
 
 /**
  * OpenAPI 설정을 위한 클래스입니다.
  */
-@Configuration
-public class OpenApiConfig {
+public class OpenApiFactory {
 
-    @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI()
-                .components(new Components())
-                .info(apiInfo());
+    private final String title;
+
+    private final String version;
+
+    public OpenApiFactory(String title, String version) {
+        this.title = title;
+        this.version = version;
     }
 
-    @Bean
+    public OpenAPI openAPI() {
+        Info info = apiInfo();
+        return new OpenAPI()
+                .components(new Components())
+                .info(info);
+    }
+
     public SwaggerUiConfigProperties swaggerUiConfigProperties() {
         return new SwaggerUiConfigProperties();
     }
 
-    @Bean
     public SwaggerUiConfigParameters swaggerUiConfigParameters(SwaggerUiConfigProperties swaggerUiConfigProperties) {
         SwaggerUiConfigParameters parameters = new SwaggerUiConfigParameters(swaggerUiConfigProperties);
         parameters.setPath("/swagger");
@@ -46,7 +50,6 @@ public class OpenApiConfig {
      *
      * @return OperationCustomizer 빈
      */
-    @Bean
     public OperationCustomizer removePageableOperationCustomizer() {
         return (Operation operation, HandlerMethod handlerMethod) -> {
             if (operation.getParameters() != null) {
@@ -57,14 +60,21 @@ public class OpenApiConfig {
     }
 
     private Info apiInfo() {
-        String title = "Spring Boot OpenAPI";
-        String version = "1.0.0";
+        Contact contact = new Contact()
+                .name("kimdoyeob")
+                .email("look3915@naver.com")
+                .url("https://github.com/KalGookSoo/springboot-msa");
+
+        License license = new License()
+                .name("Apache 2.0")
+                .url("http://springdoc.org");
+
         return new Info()
-                .title(title)
+                .title(this.title)
                 .description("API 명세")
-                .version(version)
-                .contact(new Contact().name("kimdoyeob").email("look3915@naver.com").url("https://github.com/KalGookSoo/springboot-msa"))
-                .license(new License().name("Apache 2.0").url("http://springdoc.org"));
+                .version(this.version)
+                .contact(contact)
+                .license(license);
     }
 
 }
