@@ -3,3 +3,64 @@ spring.application.name: api-gateway
 spring.config.import: 'optional:configserver:http://localhost:8888'
 
 spring.main.web-application-type: reactive
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service-sign-up
+          uri: lb://user-service
+          predicates:
+            - Path=/users
+            - Method=POST
+        - id: user-service-sign-in
+          uri: lb://user-service
+          predicates:
+            - Path=/users/sign-in
+            - Method=POST
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - TokenValidationFilter
+        - id: security-service
+          uri: lb://security-service
+          predicates:
+            - Path=/auth/**
+        - id: acl-service
+          uri: lb://acl-service
+          predicates:
+            - Path=/acl/**
+        - id: article-service
+          uri: lb://article-service
+          predicates:
+            - Path=/articles/**
+        - id: attachment-service
+          uri: lb://attachment-service
+          predicates:
+            - Path=/attachments/**
+        - id: category-service
+          uri: lb://category-service
+          predicates:
+            - Path=/categories/**
+        - id: comment-service
+          uri: lb://comment-service
+          predicates:
+            - Path=/comments/**
+        - id: kafka-service
+          uri: lb://kafka-service
+          predicates:
+            - Path=/kafka/**
+        - id: view-service
+          uri: lb://view-service
+          predicates:
+            - Path=/views/**
+        - id: vote-service
+          uri: lb://vote-service
+          predicates:
+            - Path=/votes/**
+        - id: menu-service
+          uri: lb://menu-service
+          predicates:
+            - Path=/menus/**
