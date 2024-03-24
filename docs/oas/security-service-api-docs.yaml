@@ -59,6 +59,8 @@ paths:
     post:
       tags:
       - AuthenticationRestController
+      summary: 토큰 갱신
+      description: 토큰을 갱신합니다
       operationId: refreshToken
       parameters:
       - name: Authorization

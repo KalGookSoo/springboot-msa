@@ -56,6 +56,7 @@ public class AuthenticationRestController {
         return ResponseEntity.ok(authentication);
     }
 
+    @Operation(summary = "토큰 갱신", description = "토큰을 갱신합니다")
     @PostMapping("/token-refresh")
     public ResponseEntity<TokenModel> refreshToken(
             @Parameter(in = ParameterIn.HEADER, description = "Bearer 토큰", required = true, schema = @Schema(type = "string", example = "Bearer {token}"))
