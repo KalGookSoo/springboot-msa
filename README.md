@@ -9,6 +9,7 @@
 1. [프로젝트 정보](#프로젝트-정보)
 2. [서비스 구성](#서비스-구성)
 3. [구동 절차](#구동-절차)
+4. [OpenAPI 명세](#openapi-명세)
 
 ---
 
@@ -19,6 +20,8 @@
 ![Spring Boot Version](https://img.shields.io/badge/Spring%20Boot-3.2.2-green)
 ![Spring Cloud Version](https://img.shields.io/badge/Spring%20Cloud-2023.0.0-green)
 ![License](https://img.shields.io/badge/license-Apache%202.0-brightgreen)
+
+`micro-service`는 해당 버전과 언어를 준수하지 않더라도 OpenAPI 3.x.x 버전에 맞게 API를 제공한다면 자유롭게 구현해도 좋습니다.
 
 ---
 
@@ -36,7 +39,6 @@ graph LR
     E -->|Imports config from| F
     B -->|Imports config from| F
 ```
-_`분산 추적 모니터링`, `message-queue`, `event-sourcing`은 추후 구현할 예정._
 
 ### 서비스 목록
 - [config-server](./config-server/README.md)
@@ -54,7 +56,17 @@ _`분산 추적 모니터링`, `message-queue`, `event-sourcing`은 추후 구�
 - [view-service](./micro-service/view/README.md)
 - [vote-service](./micro-service/vote/README.md)
 
-### OpenAPI Specification
+---
+
+## 구동 절차
+1. `ConfigServerApplication` 실행
+2. `ServiceRegistryApplication` 실행
+3. `GatewayApplication` 실행
+4. 그 외 `MicroserviceApplication` 실행
+
+---
+
+## OpenAPI 명세
 - [acl-service](./docs/oas/acl-service-api-docs.yaml)
 - [article-service](./docs/oas/article-service-api-docs.yaml)
 - [attachment-service](./docs/oas/attachment-service-api-docs.yaml)
@@ -66,13 +78,3 @@ _`분산 추적 모니터링`, `message-queue`, `event-sourcing`은 추후 구�
 - [user-service](./docs/oas/user-service-api-docs.yaml)
 - [view-service](./docs/oas/view-service-api-docs.yaml)
 - [vote-service](./docs/oas/vote-service-api-docs.yaml)
-
----
-
-### 구동 절차
-1. `ConfigServerApplication` 실행
-2. `ServiceRegistryApplication` 실행
-3. `GatewayApplication` 실행
-4. 그 외 `MicroserviceApplication` 실행
-
----
