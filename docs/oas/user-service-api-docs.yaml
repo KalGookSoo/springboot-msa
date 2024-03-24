@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: Spring Boot OpenAPI
+  title: user-service
   description: API 명세
   contact:
     name: kimdoyeob
@@ -11,7 +11,7 @@ info:
     url: http://springdoc.org
   version: 1.0.0
 servers:
-- url: http://localhost:8080
+- url: http://127.0.0.1:8080
   description: Generated server url
 tags:
 - name: UserRestController
@@ -250,11 +250,11 @@ components:
           format: date-time
         enabled:
           type: boolean
+        accountNonLocked:
+          type: boolean
         accountNonExpired:
           type: boolean
         credentialsNonExpired:
-          type: boolean
-        accountNonLocked:
           type: boolean
         _links:
           $ref: '#/components/schemas/Links'
@@ -292,11 +292,11 @@ components:
           format: date-time
         enabled:
           type: boolean
+        accountNonLocked:
+          type: boolean
         accountNonExpired:
           type: boolean
         credentialsNonExpired:
-          type: boolean
-        accountNonLocked:
           type: boolean
     UpdateUserPasswordCommand:
       required:

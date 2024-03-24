@@ -1,4 +1,4 @@
-package com.kalgooksoo.user.config;
+package com.kalgooksoo.attachment.config;
 
 import com.kalgooksoo.core.oas.OpenApiFactory;
 import io.swagger.v3.oas.models.OpenAPI;

@@ -10,6 +10,7 @@ ext {
 }
 
 dependencies {
+    implementation project(':core:oas')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

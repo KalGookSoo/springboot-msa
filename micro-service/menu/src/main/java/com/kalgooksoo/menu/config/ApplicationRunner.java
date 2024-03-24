@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 
 import java.util.stream.IntStream;
 
+@Profile("!prod")
 @Configuration
-public class MenuApplicationRunner implements CommandLineRunner {
-
-    private final String profiles;
+public class ApplicationRunner implements CommandLineRunner {
 
     private final String applicationName;
 
@@ -22,14 +22,12 @@ public class MenuApplicationRunner implements CommandLineRunner {
 
     private final MenuService menuService;
 
-    public MenuApplicationRunner(
-            @Value("${spring.profiles.active:default}") String profiles,
+    public ApplicationRunner(
             @Value("${spring.application.name}") String applicationName,
             @Value("${server.address:127.0.0.1}") String domain,
             @Value("${server.port}") int port,
             @Lazy MenuService menuService
     ) {
-        this.profiles = profiles;
         this.applicationName = applicationName;
         this.rootUri = String.format("http://%s:%d", domain, port);
         this.menuService = menuService;
@@ -37,9 +35,6 @@ public class MenuApplicationRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (profiles.contains("prod")) {
-            return;
-        }
         OpenApiDocsWriter openApiDocsWriter = new OpenApiDocsWriter(rootUri, applicationName);
         openApiDocsWriter.write();
         generateTestMenus();

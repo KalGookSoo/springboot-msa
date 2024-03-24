@@ -1,0 +1,314 @@
+openapi: 3.0.1
+info:
+  title: article-service
+  description: API 명세
+  contact:
+    name: kimdoyeob
+    url: https://github.com/KalGookSoo/springboot-msa
+    email: look3915@naver.com
+  license:
+    name: Apache 2.0
+    url: http://springdoc.org
+  version: 1.0.0
+servers:
+- url: http://127.0.0.1:8084
+  description: Generated server url
+tags:
+- name: ArticleRestController
+  description: 게시글 API
+paths:
+  /articles/{id}:
+    get:
+      tags:
+      - ArticleRestController
+      summary: 게시글 조회
+      description: 게시글을 조회합니다
+      operationId: findById
+      parameters:
+      - name: id
+        in: path
+        description: 게시글 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelArticle'
+    put:
+      tags:
+      - ArticleRestController
+      summary: 게시글 수정
+      description: 게시글을 수정합니다
+      operationId: update
+      parameters:
+      - name: id
+        in: path
+        description: 게시글 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateArticleCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelArticle'
+    delete:
+      tags:
+      - ArticleRestController
+      summary: 게시글 삭제
+      description: 게시글을 삭제합니다
+      operationId: delete
+      parameters:
+      - name: id
+        in: path
+        description: 게시글 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+  /articles/{id}/move:
+    put:
+      tags:
+      - ArticleRestController
+      summary: 게시글 이동
+      description: 게시글을 이동합니다
+      operationId: move
+      parameters:
+      - name: id
+        in: path
+        description: 게시글 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveArticleCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelArticle'
+  /articles:
+    get:
+      tags:
+      - ArticleRestController
+      summary: 게시글 목록 조회
+      description: 게시글 목록을 조회합니다
+      operationId: findAll
+      parameters:
+      - name: search
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/ArticleSearch'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PagedModelEntityModelArticle'
+    post:
+      tags:
+      - ArticleRestController
+      summary: 게시글 생성
+      description: 게시글을 생성합니다
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateArticleCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelArticle'
+components:
+  schemas:
+    UpdateArticleCommand:
+      required:
+      - content
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          description: 제목
+          example: 제목
+        content:
+          type: string
+          description: 제목
+          example: 본문
+      description: 게시글 수정 커맨드
+    EntityModelArticle:
+      type: object
+      properties:
+        id:
+          type: string
+        categoryId:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        author:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Link'
+    MoveArticleCommand:
+      required:
+      - categoryId
+      type: object
+      properties:
+        categoryId:
+          type: string
+          description: 카테고리 식별자. 이 필드는 필수입니다.
+          format: uuid
+      description: 게시글 이동 커맨드
+    CreateArticleCommand:
+      required:
+      - categoryId
+      - content
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          description: 제목. 이 필드는 필수입니다.
+          example: 제목
+        content:
+          type: string
+          description: 본문. 이 필드는 필수입니다.
+          example: 본문
+        categoryId:
+          type: string
+          description: 카테고리 식별자. 이 필드는 필수입니다.
+          format: uuid
+      description: 게시글 생성 커맨드
+    ArticleSearch:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 페이지 인덱스
+          format: int32
+          example: 0
+          default: 0
+        size:
+          type: integer
+          description: 페이지 당 출력할 레코드 수
+          format: int32
+          example: 10
+          default: 10
+        sort:
+          type: string
+          description: 정렬할 필드
+          example: createdAt|updatedAt|id
+          default: createdAt
+        sortDirection:
+          type: string
+          description: 정렬 방향
+          example: asc|desc
+          default: desc
+        categoryId:
+          type: string
+          description: 카테고리 식별자
+          format: uuid
+        title:
+          type: string
+          description: 제목
+          example: 제목
+        content:
+          type: string
+          description: 내용
+          example: 내용
+        author:
+          type: string
+          description: 작성자
+          example: 작성자
+      description: 게시글 검색 조건
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedModelEntityModelArticle:
+      type: object
+      properties:
+        _embedded:
+          type: object
+          properties:
+            articleList:
+              type: array
+              items:
+                $ref: '#/components/schemas/EntityModelArticle'
+        _links:
+          $ref: '#/components/schemas/Links'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        hreflang:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+        templated:
+          type: boolean

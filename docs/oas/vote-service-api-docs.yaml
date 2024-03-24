@@ -1,0 +1,18 @@
+openapi: 3.0.1
+info:
+  title: vote-service
+  description: API 명세
+  contact:
+    name: kimdoyeob
+    url: https://github.com/KalGookSoo/springboot-msa
+    email: look3915@naver.com
+  license:
+    name: Apache 2.0
+    url: http://springdoc.org
+  version: 1.0.0
+servers:
+- url: http://127.0.0.1:8088
+  description: Generated server url
+paths: {}
+components:
+  schemas: {}

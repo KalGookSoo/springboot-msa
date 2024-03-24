@@ -1,0 +1,289 @@
+openapi: 3.0.1
+info:
+  title: category-service
+  description: API 명세
+  contact:
+    name: kimdoyeob
+    url: https://github.com/KalGookSoo/springboot-msa
+    email: look3915@naver.com
+  license:
+    name: Apache 2.0
+    url: http://springdoc.org
+  version: 1.0.0
+servers:
+- url: http://127.0.0.1:8083
+  description: Generated server url
+tags:
+- name: CategoryRestController
+  description: 카테고리 API
+paths:
+  /categories/{id}:
+    get:
+      tags:
+      - CategoryRestController
+      summary: 카테고리 조회
+      description: 카테고리를 조회합니다
+      operationId: findById
+      parameters:
+      - name: id
+        in: path
+        description: 카테고리 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelCategory'
+    put:
+      tags:
+      - CategoryRestController
+      summary: 카테고리 수정
+      description: 카테고리를 수정합니다
+      operationId: updateById
+      parameters:
+      - name: id
+        in: path
+        description: 카테고리 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCategoryCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelCategory'
+    delete:
+      tags:
+      - CategoryRestController
+      summary: 카테고리 삭제
+      description: 카테고리를 삭제합니다
+      operationId: deleteById
+      parameters:
+      - name: id
+        in: path
+        description: 카테고리 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+  /categories/{id}/move:
+    put:
+      tags:
+      - CategoryRestController
+      summary: 카테고리 이동
+      description: 카테고리를 이동합니다
+      operationId: move
+      parameters:
+      - name: id
+        in: path
+        description: 카테고리 식별자
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveCategoryCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelCategory'
+  /categories:
+    get:
+      tags:
+      - CategoryRestController
+      summary: 카테고리 목록 조회
+      description: 카테고리 목록을 조회합니다
+      operationId: findAll
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CollectionModelEntityModelCategory'
+    post:
+      tags:
+      - CategoryRestController
+      summary: 카테고리 생성
+      description: 카테고리를 생성합니다
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityModelCategory'
+components:
+  schemas:
+    UpdateCategoryCommand:
+      required:
+      - name
+      - type
+      type: object
+      properties:
+        name:
+          type: string
+          description: 이름
+          example: 카테고리명
+        type:
+          maxLength: 20
+          minLength: 3
+          type: string
+          description: 타입
+          example: PUBLIC
+      description: 카테고리 수정 커맨드
+    Category:
+      type: object
+      properties:
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        id:
+          type: string
+        parentId:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - PUBLIC
+          - PRIVATE
+        createdBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        root:
+          type: boolean
+    EntityModelCategory:
+      type: object
+      properties:
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        id:
+          type: string
+        parentId:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - PUBLIC
+          - PRIVATE
+        createdBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        root:
+          type: boolean
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Link'
+    MoveCategoryCommand:
+      required:
+      - parentId
+      type: object
+      properties:
+        parentId:
+          type: string
+          description: 상위 카테고리 식별자
+          format: uuid
+      description: 카테고리 이동 커맨드
+    CreateCategoryCommand:
+      required:
+      - name
+      - type
+      type: object
+      properties:
+        parentId:
+          type: string
+          description: 상위 카테고리 식별자
+          format: uuid
+        name:
+          type: string
+          description: 이름
+          example: 카테고리
+        type:
+          maxLength: 20
+          minLength: 3
+          type: string
+          description: 타입
+          example: PUBLIC
+      description: 카테고리 생성 명령
+    CollectionModelEntityModelCategory:
+      type: object
+      properties:
+        _embedded:
+          type: object
+          properties:
+            categoryList:
+              type: array
+              items:
+                $ref: '#/components/schemas/EntityModelCategory'
+        _links:
+          $ref: '#/components/schemas/Links'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        hreflang:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+        templated:
+          type: boolean

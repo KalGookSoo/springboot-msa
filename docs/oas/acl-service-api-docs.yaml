@@ -1,0 +1,59 @@
+openapi: 3.0.1
+info:
+  title: acl-service
+  description: API 명세
+  contact:
+    name: kimdoyeob
+    url: https://github.com/KalGookSoo/springboot-msa
+    email: look3915@naver.com
+  license:
+    name: Apache 2.0
+    url: http://springdoc.org
+  version: 1.0.0
+servers:
+- url: http://127.0.0.1:8089
+  description: Generated server url
+tags:
+- name: AclRestController
+  description: 접근제어목록 API
+paths:
+  /acl:
+    post:
+      tags:
+      - AclRestController
+      operationId: createAclEntry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAclEntryCommand'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    CreateAclEntryCommand:
+      required:
+      - className
+      - identifier
+      - mask
+      - principal
+      type: object
+      properties:
+        className:
+          type: string
+        identifier:
+          pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          type: string
+        principal:
+          type: string
+        mask:
+          maximum: 16
+          minimum: 1
+          type: integer
+          format: int32
