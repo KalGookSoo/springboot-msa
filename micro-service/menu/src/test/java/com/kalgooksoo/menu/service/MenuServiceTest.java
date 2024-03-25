@@ -1,5 +1,7 @@
 package com.kalgooksoo.menu.service;
 
+import com.kalgooksoo.core.principal.PrincipalProvider;
+import com.kalgooksoo.core.principal.StubPrincipalProvider;
 import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
@@ -27,14 +29,15 @@ class MenuServiceTest {
     @BeforeEach
     void setup() {
         MenuRepository menuRepository = new MenuMemoryRepository();
-        menuService = new DefaultMenuService(menuRepository);
+        PrincipalProvider principalProvider = new StubPrincipalProvider();
+        menuService = new DefaultMenuService(menuRepository, principalProvider);
     }
 
     @Test
     @DisplayName("메뉴를 생성합니다. 성공 시 생성된 메뉴를 반환합니다.")
     void createShouldReturnMenu() {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        CreateMenuCommand command = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null);
 
         // When
         Menu savedMenu = menuService.create(command);
@@ -48,11 +51,11 @@ class MenuServiceTest {
     void findAllShouldReturnMenus() {
         // Given
         IntStream.rangeClosed(1, 5).forEach(i -> {
-            CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+            CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null);
             Menu savedParent = menuService.create(createMenuCommand1);
-            CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedParent.getId(), "anonymous");
+            CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedParent.getId());
             Menu savedChild = menuService.create(createMenuCommand2);
-            CreateMenuCommand createMenuCommand3 = new CreateMenuCommand("하위하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedChild.getId(), "anonymous");
+            CreateMenuCommand createMenuCommand3 = new CreateMenuCommand("하위하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedChild.getId());
             menuService.create(createMenuCommand3);
         });
 
@@ -83,7 +86,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 조회합니다. 성공 시 조회된 메뉴를 반환합니다.")
     void findByIdShouldReturnMenu() {
         // Given
-        CreateMenuCommand createMenuCommand = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null);
         Menu savedMenu = menuService.create(createMenuCommand);
 
         // When
@@ -107,7 +110,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 수정합니다. 성공 시 수정된 메뉴를 반환합니다.")
     void updateShouldReturnMenu() {
         // Given
-        CreateMenuCommand command = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        CreateMenuCommand command = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null);
         Menu savedMenu = menuService.create(command);
 
         // When
@@ -137,7 +140,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 삭제합니다. 성공 시 삭제된 메뉴를 조회할 경우 NoSuchElementException을 던집니다.")
     void deleteTest() {
         // Given
-        CreateMenuCommand createMenuCommand = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null);
         Menu savedMenu = menuService.create(createMenuCommand);
 
         // When
@@ -161,9 +164,9 @@ class MenuServiceTest {
     @DisplayName("자식 메뉴를 추가합니다. 성공 시 자식 메뉴의 부모 식별자와 부모 메뉴의 식별자가 일치합니다.")
     void addChildShouldEquals() {
         // Given
-        CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null);
         Menu savedParent = menuService.create(createMenuCommand1);
-        CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedParent.getId(), "anonymous");
+        CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedParent.getId());
 
         // When
         Menu savedChild = menuService.create(createMenuCommand2);
@@ -176,9 +179,9 @@ class MenuServiceTest {
     @DisplayName("메뉴를 이동합니다. 성공 시 이동된 메뉴를 반환합니다.")
     void moveShouldReturnMenu() {
         // Given
-        CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, "anonymous");
+        CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null);
         Menu savedMenu1 = menuService.create(createMenuCommand1);
-        CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedMenu1.getId(), "anonymous");
+        CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("고객광장", "http://www.kalgooksoo.com/categories/4/articles", savedMenu1.getId());
         Menu savedMenu2 = menuService.create(createMenuCommand2);
         MoveMenuCommand moveMenuCommand = new MoveMenuCommand(savedMenu1.getId());
 

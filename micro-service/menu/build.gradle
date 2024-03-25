@@ -12,6 +12,7 @@ ext {
 dependencies {
     implementation project(':core:exception')
     implementation project(':core:hierarchy')
+    implementation project(':core:principal')
     implementation project(':core:oas')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -22,6 +23,8 @@ dependencies {
     implementation 'org.springframework.hateoas:spring-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:3.1.11'
+
 
     // OpenAPI UI
     // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui

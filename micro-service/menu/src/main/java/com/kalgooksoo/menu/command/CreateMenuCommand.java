@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
  * @param name      메뉴명
  * @param url       URL
  * @param parentId  부모 메뉴 ID
- * @param createdBy 생성자
  */
 @Schema(description = "메뉴 생성 커맨드")
 public record CreateMenuCommand(
@@ -30,12 +29,6 @@ public record CreateMenuCommand(
 
         @Parameter(description = "부모 식별자")
         @Schema(description = "부모 식별자", format = "uuid")
-        String parentId,
-
-        @Parameter(description = "생성자. 이 필드는 필수입니다.", required = true)
-        @Schema(description = "생성자. 이 필드는 필수입니다.", example = "testuser")
-        @NotBlank(message = "생성자는 필수입니다")
-        @NotNull(message = "생성자는 null이 될 수 없습니다")
-        String createdBy
+        String parentId
 
 ) {}

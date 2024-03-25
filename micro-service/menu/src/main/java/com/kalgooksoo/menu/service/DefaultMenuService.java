@@ -1,5 +1,6 @@
 package com.kalgooksoo.menu.service;
 
+import com.kalgooksoo.core.principal.PrincipalProvider;
 import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
@@ -26,9 +27,12 @@ public class DefaultMenuService implements MenuService {
 
     private final MenuRepository menuRepository;
 
+    private final PrincipalProvider principalProvider;
+
     @Override
     public Menu create(@Nonnull CreateMenuCommand command) {
-        Menu menu = Menu.create(command.name(), command.url(), command.parentId(), command.createdBy());
+        String createdBy = principalProvider.getUsername();
+        Menu menu = Menu.create(command.name(), command.url(), command.parentId(), createdBy);
         return menuRepository.save(menu);
     }
 
