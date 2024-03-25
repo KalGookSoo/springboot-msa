@@ -227,7 +227,6 @@ components:
       description: 메뉴 이동 커맨드
     CreateMenuCommand:
       required:
-      - createdBy
       - name
       - url
       type: object
@@ -244,10 +243,6 @@ components:
           type: string
           description: 부모 식별자
           format: uuid
-        createdBy:
-          type: string
-          description: 생성자. 이 필드는 필수입니다.
-          example: testuser
       description: 메뉴 생성 명령
     CollectionModelEntityModelMenu:
       type: object
