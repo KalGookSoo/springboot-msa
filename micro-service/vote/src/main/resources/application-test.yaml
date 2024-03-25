@@ -8,11 +8,21 @@ spring.datasource.url: jdbc:h2:mem:votedb
 spring.datasource.username: sa
 spring.datasource.password: password
 
-spring.jpa.show-sql: true
+# JPA
 spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 spring.jpa.hibernate.ddl-auto: update
 
-logging.level:
-  org.hibernate.type.descriptor.jdbc.BasicBinder: trace
+# h2
+spring.h2.console.enabled: true
 
+# Actuator
 management.endpoints.web.exposure.include: "*"
+
+# Logging
+logging.level:
+  org.hibernate.sql: DEBUG
+  org.hibernate.orm.jdbc.bind: trace
+
+# noinspection SpringBootApplicationYaml
+spring.jpa.properties.hibernate.highlight_sql: true
+spring.jpa.show-sql: true
