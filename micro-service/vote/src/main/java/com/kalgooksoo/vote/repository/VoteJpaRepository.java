@@ -4,6 +4,7 @@ import com.kalgooksoo.vote.domain.Vote;
 import com.kalgooksoo.vote.domain.VoteId;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +20,11 @@ public class VoteJpaRepository implements VoteRepository {
 
     @Override
     public Vote save(@Nonnull Vote vote) {
-        if (vote.getId() == null) {
+        try {
             em.persist(vote);
-        } else {
-            em.merge(vote);
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
+            return em.merge(vote);
         }
         return vote;
     }

@@ -3,6 +3,7 @@ package com.kalgooksoo.attachment.repository;
 import com.kalgooksoo.attachment.domain.Attachment;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +23,11 @@ public class AttachmentJpaRepository implements AttachmentRepository {
     @Override
     public Attachment save(@Nonnull Attachment attachment) {
         Assert.notNull(attachment, "첨부파일는 NULL이 될 수 없습니다");
-        if (attachment.getId() == null) {
+        try {
             em.persist(attachment);
-        } else {
-            em.merge(attachment);
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
+            return em.merge(attachment);
         }
         return attachment;
     }

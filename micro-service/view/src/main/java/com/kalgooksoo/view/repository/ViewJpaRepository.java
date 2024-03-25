@@ -3,6 +3,7 @@ package com.kalgooksoo.view.repository;
 import com.kalgooksoo.view.domain.View;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +19,11 @@ public class ViewJpaRepository implements ViewRepository {
 
     @Override
     public View save(@Nonnull View view) {
-        if (view.getId() == null) {
+        try {
             em.persist(view);
-        } else {
-            em.merge(view);
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
+            return em.merge(view);
         }
         return view;
     }

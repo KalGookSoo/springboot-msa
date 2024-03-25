@@ -3,6 +3,7 @@ package com.kalgooksoo.user.repository;
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.search.UserSearch;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,10 +28,11 @@ public class UserJpaRepository implements UserRepository {
     @Override
     public User save(User user) {
         Assert.notNull(user, "user must not be null");
-        if (user.getId() == null) {
+        try {
             em.persist(user);
-        } else {
-            user = em.merge(user);
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
+            return em.merge(user);
         }
         return user;
     }

@@ -3,6 +3,7 @@ package com.kalgooksoo.category.repository;
 import com.kalgooksoo.category.domain.Category;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +21,11 @@ public class CategoryJpaRepository implements CategoryRepository {
 
     @Override
     public Category save(@Nonnull Category category) {
-        if (category.getId() == null) {
+        try {
             em.persist(category);
-        } else {
-            em.merge(category);
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
+            return em.merge(category);
         }
         return category;
     }

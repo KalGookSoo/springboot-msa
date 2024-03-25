@@ -25,7 +25,7 @@ public class MenuJpaRepository implements MenuRepository {
             em.persist(menu);
         } catch (PersistenceException e) {
             System.err.println(e.getMessage());
-            em.merge(menu);
+            return em.merge(menu);
         }
         return menu;
     }

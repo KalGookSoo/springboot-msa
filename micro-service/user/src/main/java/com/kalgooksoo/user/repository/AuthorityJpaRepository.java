@@ -2,6 +2,7 @@ package com.kalgooksoo.user.repository;
 
 import com.kalgooksoo.user.domain.Authority;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +20,11 @@ public class AuthorityJpaRepository implements AuthorityRepository {
     @Override
     public Authority save(Authority authority) {
         Assert.notNull(authority, "authority must not be null");
-        if (authority.getId() == null) {
+        try {
             em.persist(authority);
-        } else {
-            em.merge(authority);
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
+            return em.merge(authority);
         }
         return authority;
     }

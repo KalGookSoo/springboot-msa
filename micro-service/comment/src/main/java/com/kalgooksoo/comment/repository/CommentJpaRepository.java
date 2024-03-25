@@ -3,6 +3,7 @@ package com.kalgooksoo.comment.repository;
 import com.kalgooksoo.comment.domain.Comment;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +21,11 @@ public class CommentJpaRepository implements CommentRepository {
 
     @Override
     public Comment save(@Nonnull Comment comment) {
-        if (comment.getId() == null) {
+        try {
             em.persist(comment);
-        } else {
-            em.merge(comment);
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
+            return em.merge(comment);
         }
         return comment;
     }

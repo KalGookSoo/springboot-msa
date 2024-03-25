@@ -4,6 +4,7 @@ import com.kalgooksoo.article.domain.Article;
 import com.kalgooksoo.article.search.ArticleSearch;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,10 +26,11 @@ public class ArticleJpaRepository implements ArticleRepository {
 
     @Override
     public Article save(@Nonnull Article article) {
-        if (article.getId() == null) {
+        try {
             em.persist(article);
-        } else {
-            em.merge(article);
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
+            return em.merge(article);
         }
         return article;
     }
