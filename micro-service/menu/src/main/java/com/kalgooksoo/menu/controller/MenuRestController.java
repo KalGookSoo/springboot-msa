@@ -15,11 +15,14 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -33,6 +36,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class MenuRestController {
 
     private final MenuService menuService;
+
+    @Operation(summary = "메뉴 API 옵션", description = "메뉴 API의 옵션을 제공합니다")
+    @RequestMapping(method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> options() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        Set<HttpMethod> httpMethods = Set.of(HttpMethod.GET, HttpMethod.POST);
+        httpHeaders.setAllow(httpMethods);
+        return ResponseEntity.ok().headers(httpHeaders).build();
+    }
 
     @Operation(summary = "메뉴 생성", description = "메뉴를 생성합니다")
     @PostMapping

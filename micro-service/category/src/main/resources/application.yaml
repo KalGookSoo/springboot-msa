@@ -1,3 +1,22 @@
 server.port: 8083
 spring.application.name: category-service
 spring.config.import: 'optional:configserver:http://localhost:8888'
+
+# JPA
+spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto: update
+
+# h2
+spring.h2.console.enabled: true
+
+# Actuator
+management.endpoints.web.exposure.include: "*"
+
+# Logging
+logging.level:
+  org.hibernate.sql: DEBUG
+  org.hibernate.orm.jdbc.bind: trace
+
+# noinspection SpringBootApplicationYaml
+spring.jpa.properties.hibernate.highlight_sql: true
+spring.jpa.show-sql: true
