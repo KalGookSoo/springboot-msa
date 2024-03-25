@@ -1,9 +1,9 @@
 package com.kalgooksoo.comment.domain;
 
 import com.kalgooksoo.core.hierarchy.Hierarchical;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -48,7 +48,7 @@ public class Comment extends Hierarchical<Comment, String> {
     /**
      * 본문
      */
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String content;
 
     /**

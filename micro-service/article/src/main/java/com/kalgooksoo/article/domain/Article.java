@@ -1,6 +1,9 @@
 package com.kalgooksoo.article.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,7 +46,7 @@ public class Article {
     /**
      * 본문
      */
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String content;
 
     /**
