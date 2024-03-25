@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.kalgooksoo.security.client.UserClient;
 import com.kalgooksoo.security.command.SignInCommand;
 import com.kalgooksoo.core.jwt.JwtProvider;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,8 +27,7 @@ public class DefaultAuthenticationService implements AuthenticationService {
     private final JwtProvider jwtProvider;
 
     @Override
-    public Authentication authenticate(SignInCommand command) {
-        // TODO UserApplication의 POST /users/sign-in 엔드포인트를 호출하여 사용자 인증을 수행한다.
+    public Authentication authenticate(@Nonnull SignInCommand command) {
         JsonNode jsonNode = userClient.signIn(command).block();
         if (jsonNode != null) {
             JsonNode authorityNodes = jsonNode.get("authorities");
@@ -42,7 +42,7 @@ public class DefaultAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public Authentication authenticate(String token) {
+    public Authentication authenticate(@Nonnull String token) {
         if (jwtProvider.validateToken(token)) {
             return jwtProvider.getAuthentication(token);
         } else {
@@ -51,12 +51,12 @@ public class DefaultAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public String generateToken(Authentication authentication) {
+    public String generateToken(@Nonnull Authentication authentication) {
         return jwtProvider.generateToken(authentication);
     }
 
     @Override
-    public String refreshToken(String token) {
+    public String refreshToken(@Nonnull String token) {
         if (jwtProvider.validateToken(token)) {
             return jwtProvider.generateToken(jwtProvider.getAuthentication(token));
         } else {
