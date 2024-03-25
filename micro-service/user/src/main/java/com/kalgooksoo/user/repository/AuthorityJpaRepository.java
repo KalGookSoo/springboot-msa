@@ -4,11 +4,13 @@ import com.kalgooksoo.user.domain.Authority;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class AuthorityJpaRepository implements AuthorityRepository {
 

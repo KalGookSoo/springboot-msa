@@ -5,10 +5,12 @@ import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class ViewJpaRepository implements ViewRepository {
 
