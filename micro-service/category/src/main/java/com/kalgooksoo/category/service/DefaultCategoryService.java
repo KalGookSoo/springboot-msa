@@ -10,7 +10,6 @@ import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ public class DefaultCategoryService implements CategoryService {
 
     @Override
     public Category create(@Nonnull CreateCategoryCommand command) {
-        Assert.notNull(command, "카테고리 생성 커맨드는 NULL이 될 수 없습니다.");
         String author = principalProvider.getUsername();
         Category category = Category.create(command.parentId(), command.name(), command.type(), author);
         return categoryRepository.save(category);
