@@ -3,6 +3,7 @@ package com.kalgooksoo.menu.repository;
 import com.kalgooksoo.menu.domain.Menu;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +21,10 @@ public class MenuJpaRepository implements MenuRepository {
 
     @Override
     public Menu save(@Nonnull Menu menu) {
-        if (menu.getId() == null) {
+        try {
             em.persist(menu);
-        } else {
+        } catch (PersistenceException e) {
+            System.err.println(e.getMessage());
             em.merge(menu);
         }
         return menu;
