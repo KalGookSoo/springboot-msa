@@ -7,7 +7,6 @@ import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,7 +21,6 @@ public class AttachmentJpaRepository implements AttachmentRepository {
 
     @Override
     public Attachment save(@Nonnull Attachment attachment) {
-        Assert.notNull(attachment, "첨부파일는 NULL이 될 수 없습니다");
         try {
             em.persist(attachment);
         } catch (PersistenceException e) {
@@ -42,13 +40,11 @@ public class AttachmentJpaRepository implements AttachmentRepository {
 
     @Override
     public Optional<Attachment> findById(@Nonnull String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         return Optional.ofNullable(em.find(Attachment.class, id));
     }
 
     @Override
     public void deleteById(@Nonnull String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         Attachment attachment = em.find(Attachment.class, id);
         if (attachment != null) {
             em.remove(attachment);

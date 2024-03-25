@@ -2,7 +2,6 @@ package com.kalgooksoo.menu.repository;
 
 import com.kalgooksoo.menu.domain.Menu;
 import jakarta.annotation.Nonnull;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,6 @@ public class MenuMemoryRepository implements MenuRepository {
 
     @Override
     public Menu save(@Nonnull Menu menu) {
-        Assert.notNull(menu, "메뉴는 NULL이 될 수 없습니다");
         if (menu.getId() == null) {
             menus.add(menu);
         } else {
@@ -38,7 +36,6 @@ public class MenuMemoryRepository implements MenuRepository {
 
     @Override
     public Optional<Menu> findById(@Nonnull String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         return menus.stream()
                 .filter(menu -> menu.getId().equals(id))
                 .findFirst();
@@ -46,7 +43,6 @@ public class MenuMemoryRepository implements MenuRepository {
 
     @Override
     public void deleteById(@Nonnull String id) {
-        Assert.notNull(id, "식별자는 NULL이 될 수 없습니다");
         menus.stream()
                 .filter(menu -> menu.getId().equals(id))
                 .findFirst()
