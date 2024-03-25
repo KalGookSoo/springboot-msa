@@ -2,10 +2,10 @@ package com.kalgooksoo.user.repository;
 
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.search.UserSearch;
+import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,7 @@ public class UserMemoryRepository implements UserRepository {
     private final List<User> users = new ArrayList<>();
 
     @Override
-    public User save(User user) {
-        Assert.notNull(user, "user must not be null");
+    public User save(@Nonnull User user) {
         if (user.getId() == null) {
             users.add(user);
         } else {
@@ -36,21 +35,21 @@ public class UserMemoryRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(String id) {
+    public Optional<User> findById(@Nonnull String id) {
         return users.stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
+    public Optional<User> findByUsername(@Nonnull String username) {
         return users.stream()
                 .filter(user -> user.getUsername().equals(username))
                 .findFirst();
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteById(@Nonnull String id) {
         users.stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst()
@@ -59,12 +58,12 @@ public class UserMemoryRepository implements UserRepository {
     }
 
     @Override
-    public Page<User> findAll(Pageable pageable) {
+    public Page<User> findAll(@Nonnull Pageable pageable) {
         return new PageImpl<>(users, pageable, users.size());
     }
 
     @Override
-    public Page<User> search(UserSearch search, Pageable pageable) {
+    public Page<User> search(@Nonnull UserSearch search, @Nonnull Pageable pageable) {
         List<User> filteredUsers = users.stream()
                 .filter(user -> search.getUsername() == null || user.getUsername().contains(search.getUsername()))
                 .filter(user -> search.getName() == null || user.getName().contains(search.getName()))

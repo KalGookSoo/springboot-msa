@@ -1,7 +1,7 @@
 package com.kalgooksoo.user.repository;
 
 import com.kalgooksoo.user.domain.Authority;
-import org.springframework.util.Assert;
+import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,7 @@ public class AuthorityMemoryRepository implements AuthorityRepository {
     private final List<Authority> authorities = new ArrayList<>();
 
     @Override
-    public Authority save(Authority authority) {
-        Assert.notNull(authority, "authority must not be null");
+    public void save(@Nonnull Authority authority) {
         if (authority.getId() == null) {
             authorities.add(authority);
         } else {
@@ -26,18 +25,17 @@ public class AuthorityMemoryRepository implements AuthorityRepository {
                         return authority;
                     });
         }
-        return authority;
     }
 
     @Override
-    public List<Authority> findByUserId(String userId) {
+    public List<Authority> findByUserId(@Nonnull String userId) {
         return authorities.stream()
                 .filter(user -> user.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteByUserId(String userId) {
+    public void deleteByUserId(@Nonnull String userId) {
         authorities.removeIf(authority -> authority.getUserId().equals(userId));
     }
 

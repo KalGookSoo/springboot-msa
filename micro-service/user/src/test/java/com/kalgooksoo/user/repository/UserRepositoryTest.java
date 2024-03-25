@@ -48,16 +48,6 @@ class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("계정을 저장합니다. 실패 시 IllegalArgumentException을 던집니다.")
-    void saveShouldThrowIllegalArgumentException() {
-        // Given
-        User user = null;
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> userRepository.save(user));
-    }
-
-    @Test
     @DisplayName("계정을 조회합니다. 성공 시 계정을 반환합니다.")
     void findByIdTest() {
         // Given

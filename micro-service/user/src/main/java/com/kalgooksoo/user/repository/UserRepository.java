@@ -2,6 +2,7 @@ package com.kalgooksoo.user.repository;
 
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.search.UserSearch;
+import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,16 +13,16 @@ import java.util.Optional;
  */
 public interface UserRepository {
 
-    User save(User user);
+    User save(@Nonnull User user);
 
-    Optional<User> findById(String id);
+    Optional<User> findById(@Nonnull String id);
 
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsername(@Nonnull String username);
 
-    void deleteById(String id);
+    void deleteById(@Nonnull String id);
 
-    Page<User> findAll(Pageable pageable);
+    Page<User> findAll(@Nonnull Pageable pageable);
 
-    Page<User> search(UserSearch search, Pageable pageable);
+    Page<User> search(@Nonnull UserSearch search, @Nonnull Pageable pageable);
 
 }

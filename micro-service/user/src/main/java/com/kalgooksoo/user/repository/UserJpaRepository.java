@@ -2,6 +2,7 @@ package com.kalgooksoo.user.repository;
 
 import com.kalgooksoo.user.domain.User;
 import com.kalgooksoo.user.search.UserSearch;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -26,8 +26,7 @@ public class UserJpaRepository implements UserRepository {
     private final EntityManager em;
 
     @Override
-    public User save(User user) {
-        Assert.notNull(user, "user must not be null");
+    public User save(@Nonnull User user) {
         try {
             em.persist(user);
         } catch (PersistenceException e) {
@@ -38,14 +37,12 @@ public class UserJpaRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(String id) {
-        Assert.notNull(id, "id must not be null");
+    public Optional<User> findById(@Nonnull String id) {
         return Optional.ofNullable(em.find(User.class, id));
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        Assert.notNull(username, "username must not be null");
+    public Optional<User> findByUsername(@Nonnull String username) {
         return em.createQuery("select user from User user where user.username = :username", User.class)
                 .setParameter("username", username)
                 .getResultList()
@@ -54,8 +51,7 @@ public class UserJpaRepository implements UserRepository {
     }
 
     @Override
-    public void deleteById(String id) {
-        Assert.notNull(id, "id must not be null");
+    public void deleteById(@Nonnull String id) {
         User user = em.find(User.class, id);
         if (user != null) {
             em.remove(user);
@@ -65,7 +61,7 @@ public class UserJpaRepository implements UserRepository {
     }
 
     @Override
-    public Page<User> findAll(Pageable pageable) {
+    public Page<User> findAll(@Nonnull Pageable pageable) {
         int totalRows = ((Number) em.createQuery("select count(user) from User user").getSingleResult()).intValue();
         List<User> users = em.createQuery("select user from User user", User.class)
                 .setFirstResult((int) pageable.getOffset())
@@ -82,7 +78,7 @@ public class UserJpaRepository implements UserRepository {
      * @return 계정 목록
      */
     @Override
-    public Page<User> search(UserSearch search, Pageable pageable) {
+    public Page<User> search(@Nonnull UserSearch search, @Nonnull Pageable pageable) {
         String jpql = "select user from User user where 1=1";
         jpql += generateJpql(search);
 
@@ -104,7 +100,7 @@ public class UserJpaRepository implements UserRepository {
         return new PageImpl<>(users, pageable, count);
     }
 
-    private String generateJpql(UserSearch search) {
+    private String generateJpql(@Nonnull UserSearch search) {
         StringBuilder jpql = new StringBuilder();
         if (search.isEmptyUsername()) {
             jpql.append(" and user.username like :username");
@@ -121,7 +117,7 @@ public class UserJpaRepository implements UserRepository {
         return jpql.toString();
     }
 
-    private void setParameters(TypedQuery<?> query, UserSearch search) {
+    private void setParameters(@Nonnull TypedQuery<?> query, @Nonnull UserSearch search) {
         if (search.isEmptyUsername()) {
             query.setParameter("username", "%" + search.getUsername() + "%");
         }

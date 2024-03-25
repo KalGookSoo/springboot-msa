@@ -1,6 +1,7 @@
 package com.kalgooksoo.user.repository;
 
 import com.kalgooksoo.user.domain.Authority;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -9,10 +10,10 @@ import java.util.List;
  */
 public interface AuthorityRepository  {
 
-    Authority save(Authority authority);
+    void save(@Nonnull Authority authority);
 
-    List<Authority> findByUserId(String userId);
+    List<Authority> findByUserId(@Nonnull String userId);
 
-    void deleteByUserId(String userId);
+    void deleteByUserId(@Nonnull String userId);
 
 }

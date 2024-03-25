@@ -1,12 +1,12 @@
 package com.kalgooksoo.user.repository;
 
 import com.kalgooksoo.user.domain.Authority;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -18,28 +18,24 @@ public class AuthorityJpaRepository implements AuthorityRepository {
     private final EntityManager em;
 
     @Override
-    public Authority save(Authority authority) {
-        Assert.notNull(authority, "authority must not be null");
+    public void save(@Nonnull Authority authority) {
         try {
             em.persist(authority);
         } catch (PersistenceException e) {
             System.err.println(e.getMessage());
-            return em.merge(authority);
+            em.merge(authority);
         }
-        return authority;
     }
 
     @Override
-    public List<Authority> findByUserId(String userId) {
-        Assert.notNull(userId, "userId must not be null");
+    public List<Authority> findByUserId(@Nonnull String userId) {
         return em.createQuery("select authority from Authority authority where authority.userId = :userId", Authority.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
 
     @Override
-    public void deleteByUserId(String userId) {
-        Assert.notNull(userId, "userId must not be null");
+    public void deleteByUserId(@Nonnull String userId) {
         em.createQuery("delete from Authority authority where authority.userId = :userId")
                 .setParameter("userId", userId)
                 .executeUpdate();
