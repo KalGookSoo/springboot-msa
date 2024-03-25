@@ -1,9 +1,8 @@
 package com.kalgooksoo.menu.config;
 
 import com.kalgooksoo.core.oas.OpenApiDocsWriter;
-import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
-import com.kalgooksoo.menu.service.MenuService;
+import com.kalgooksoo.menu.repository.MenuRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -20,17 +19,17 @@ public class ApplicationRunner implements CommandLineRunner {
 
     private final String rootUri;
 
-    private final MenuService menuService;
+    private final MenuRepository menuRepository;
 
     public ApplicationRunner(
             @Value("${spring.application.name}") String applicationName,
             @Value("${server.address:127.0.0.1}") String domain,
             @Value("${server.port}") int port,
-            @Lazy MenuService menuService
+            @Lazy MenuRepository menuRepository
     ) {
         this.applicationName = applicationName;
         this.rootUri = String.format("http://%s:%d", domain, port);
-        this.menuService = menuService;
+        this.menuRepository = menuRepository;
     }
 
     @Override
@@ -42,12 +41,13 @@ public class ApplicationRunner implements CommandLineRunner {
 
     private void generateTestMenus() {
         IntStream.rangeClosed(1, 5).forEach(i -> {
-            CreateMenuCommand createMenuCommand1 = new CreateMenuCommand("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null);
-            Menu savedParent = menuService.create(createMenuCommand1);
-            CreateMenuCommand createMenuCommand2 = new CreateMenuCommand("하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedParent.getId());
-            Menu savedChild = menuService.create(createMenuCommand2);
-            CreateMenuCommand createMenuCommand3 = new CreateMenuCommand("하위하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedChild.getId());
-            menuService.create(createMenuCommand3);
+            final String createdBy = "admin";
+            Menu createdMenu1 = Menu.create("공지사항", "http://www.kalgooksoo.com/categories/1/articles", null, createdBy);
+            Menu savedParent = menuRepository.save(createdMenu1);
+            Menu createMenu2 = Menu.create("하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedParent.getId(), createdBy);
+            Menu savedChild = menuRepository.save(createMenu2);
+            Menu createMenu3 = Menu.create("하위하위메뉴" + i, "http://www.kalgooksoo.com/categories/" + (i + 10) + "/articles", savedChild.getId(), createdBy);
+            menuRepository.save(createMenu3);
         });
     }
 }
