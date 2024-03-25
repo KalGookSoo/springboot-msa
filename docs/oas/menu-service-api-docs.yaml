@@ -144,6 +144,19 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/EntityModelMenu'
+    options:
+      tags:
+      - MenuRestController
+      summary: 메뉴 API 옵션
+      description: 메뉴 API의 옵션을 제공합니다
+      operationId: options
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
 components:
   schemas:
     UpdateMenuCommand:
