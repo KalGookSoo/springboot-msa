@@ -1,4 +1,4 @@
-package com.kalgooksoo.category.config;
+package com.kalgooksoo.vote.config;
 
 import com.kalgooksoo.core.principal.HeaderPrincipalProvider;
 import com.kalgooksoo.core.principal.PrincipalProvider;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class BoardConfig {
+public class PrincipalConfig {
 
     @Bean
     public PrincipalProvider principalProvider() {
