@@ -32,4 +32,8 @@ public class AclSid implements Sid {
 
     private String sid;
 
+    public AclSid(boolean principal, String sid) {
+        this.principal = principal;
+        this.sid = sid;
+    }
 }
