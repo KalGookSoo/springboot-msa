@@ -30,11 +30,13 @@ public class Category extends Hierarchical<Category, String> {
      * 식별자
      */
     @Id
+    @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
     /**
      * 상위 카테고리 식별자
      */
+    @Column(length = 36, nullable = false, updatable = false)
     private String parentId;
 
     /**

@@ -1,10 +1,7 @@
 package com.kalgooksoo.comment.domain;
 
 import com.kalgooksoo.core.hierarchy.Hierarchical;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,16 +30,19 @@ public class Comment extends Hierarchical<Comment, String> {
      * 식별자
      */
     @Id
+    @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
     /**
      * 게시글 식별자
      */
+    @Column(length = 36, nullable = false, updatable = false)
     private String articleId;
 
     /**
      * 부모 댓글 식별자
      */
+    @Column(length = 36, nullable = false, updatable = false)
     private String parentId;
 
     /**

@@ -34,6 +34,7 @@ public class AclObjectIdentity implements ObjectIdentity {
 
     private Long objectIdClass;
 
+    @Column(length = 36, nullable = false, updatable = false)
     private String objectIdIdentity;
 
     private Long parentObject;

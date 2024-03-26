@@ -1,9 +1,6 @@
 package com.kalgooksoo.article.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,11 +28,13 @@ public class Article {
      * 식별자
      */
     @Id
+    @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
     /**
      * 카테고리 식별자
      */
+    @Column(length = 36, nullable = false, updatable = false)
     private String categoryId;
 
     /**

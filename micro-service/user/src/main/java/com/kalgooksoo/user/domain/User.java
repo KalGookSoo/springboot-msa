@@ -32,6 +32,7 @@ public class User {
      * 계정 식별자
      */
     @Id
+    @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
     /**
