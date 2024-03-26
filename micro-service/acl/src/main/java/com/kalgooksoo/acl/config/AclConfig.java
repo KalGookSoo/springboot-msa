@@ -1,5 +1,6 @@
 package com.kalgooksoo.acl.config;
 
+import com.kalgooksoo.core.principal.PrincipalProvider;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -14,15 +15,17 @@ import org.springframework.security.acls.model.AclCache;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 
-@RequiredArgsConstructor
 @Configuration
+@RequiredArgsConstructor
 public class AclConfig {
 
     private final EntityManager entityManager;
 
+    private final PrincipalProvider principalProvider;
+
     @Bean
     public MutableAclService mutableAclService() {
-        return new DefaultMutableAclService(entityManager, lookupStrategy(), aclCache());
+        return new DefaultMutableAclService(entityManager, lookupStrategy(), aclCache(), principalProvider);
     }
 
     @Bean
