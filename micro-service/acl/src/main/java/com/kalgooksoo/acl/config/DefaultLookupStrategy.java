@@ -1,6 +1,8 @@
 package com.kalgooksoo.acl.config;
 
+import com.kalgooksoo.acl.service.DefaultAclService;
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.ConsoleAuditLogger;
 import org.springframework.security.acls.jdbc.LookupStrategy;
@@ -15,16 +17,16 @@ import java.util.Map;
 /**
  * @see org.springframework.security.acls.jdbc.BasicLookupStrategy
  */
+@RequiredArgsConstructor
 public class DefaultLookupStrategy implements LookupStrategy {
 
-    private final EntityManager entityManager;
+    private final DefaultAclService defaultAclService;
 
     private final AclCache aclCache;
 
-    public DefaultLookupStrategy(EntityManager entityManager, AclCache aclCache, AclAuthorizationStrategy aclAuthorizationStrategy, ConsoleAuditLogger consoleAuditLogger) {
-        this.entityManager = entityManager;
-        this.aclCache = aclCache;
-    }
+    private final AclAuthorizationStrategy aclAuthorizationStrategy;
+
+    private final ConsoleAuditLogger consoleAuditLogger;
 
     @Override
     public Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids) {
