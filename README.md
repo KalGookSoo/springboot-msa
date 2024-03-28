@@ -34,10 +34,8 @@ graph LR
     B -->|Routes to| E[Micro Service#2]
     D -->|Registers with| C[Service Registry]
     E -->|Registers with| C
-    B -->|Registers with| C
     D -->|Imports config from| F[Config Server]
     E -->|Imports config from| F
-    B -->|Imports config from| F
 ```
 
 ### 서비스 목록
