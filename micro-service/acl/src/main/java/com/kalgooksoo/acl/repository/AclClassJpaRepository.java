@@ -33,4 +33,13 @@ public class AclClassJpaRepository implements AclClassRepository {
         return Optional.ofNullable(em.find(AclClass.class, id));
     }
 
+    @Override
+    public Optional<AclClass> findByClassIdType(@Nonnull String classIdType) {
+        return em.createQuery("select aclClass from AclClass aclClass where aclClass.classIdType = :classIdType", AclClass.class)
+                .setParameter("classIdType", classIdType)
+                .getResultList()
+                .stream()
+                .findFirst();
+    }
+
 }

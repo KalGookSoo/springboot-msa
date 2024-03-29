@@ -43,4 +43,9 @@ public class DefaultAclService {
     public AclSid saveAclSid(AclSid aclSid) {
         return aclSidRepository.save(aclSid);
     }
+
+    public AclClass findAclClassByClassIdType(String classIdType) {
+        return aclClassRepository.findByClassIdType(classIdType)
+                .orElseThrow(() -> new IllegalArgumentException("Not found acl class: " + classIdType));
+    }
 }

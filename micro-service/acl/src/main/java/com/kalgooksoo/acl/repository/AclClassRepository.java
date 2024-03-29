@@ -14,4 +14,6 @@ public interface AclClassRepository {
 
     Optional<AclClass> findById(@Nonnull Long id);
 
+    Optional<AclClass> findByClassIdType(@Nonnull String classIdType);
+
 }
