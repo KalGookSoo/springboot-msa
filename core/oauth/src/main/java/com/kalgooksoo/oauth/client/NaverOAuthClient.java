@@ -1,6 +1,6 @@
 package com.kalgooksoo.oauth.client;
 
-import com.kalgooksoo.oauth.provider.KakaoUserDetail;
+import com.kalgooksoo.oauth.provider.NaverUserDetail;
 import com.kalgooksoo.oauth.provider.OAuth2UserDetail;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -96,7 +96,7 @@ public class NaverOAuthClient implements OAuthClient {
         httpHeaders.setBearerAuth(accessToken);
         HttpEntity<Object> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<KakaoUserDetail> responseEntity = restTemplate.exchange(USER_ME_PATH, HttpMethod.GET, httpEntity, KakaoUserDetail.class);
+        ResponseEntity<NaverUserDetail> responseEntity = restTemplate.exchange(USER_ME_PATH, HttpMethod.GET, httpEntity, NaverUserDetail.class);
 
         verify(responseEntity);
 
