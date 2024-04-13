@@ -4,6 +4,7 @@ import com.kalgooksoo.menu.command.CreateMenuCommand;
 import com.kalgooksoo.menu.command.MoveMenuCommand;
 import com.kalgooksoo.menu.command.UpdateMenuCommand;
 import com.kalgooksoo.menu.domain.Menu;
+import com.kalgooksoo.menu.model.MenuModel;
 import com.kalgooksoo.menu.service.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -108,11 +109,13 @@ public class MenuRestController {
 
     @Operation(summary = "메뉴 수정", description = "메뉴를 수정합니다")
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Menu>> updateById(
+    public ResponseEntity<EntityModel<MenuModel>> updateById(
             @Parameter(description = "메뉴 식별자", schema = @Schema(type = "string", format = "uuid")) @PathVariable String id,
             @Parameter(description = "메뉴 수정 커맨드", schema = @Schema(implementation = UpdateMenuCommand.class)) @Valid @RequestBody UpdateMenuCommand command
     ) {
         Menu menu = menuService.update(id, command);
+
+
 
         ResponseEntity<EntityModel<Menu>> invocationValue = methodOn(this.getClass())
                 .findById(menu.getId());
@@ -120,7 +123,8 @@ public class MenuRestController {
         Link link = WebMvcLinkBuilder.linkTo(invocationValue)
                 .withRel("self");
 
-        EntityModel<Menu> entityModel = EntityModel.of(menu, link);
+        EntityModel<MenuModel> entityModel = MenuModel.of(menu).add(link);
+
         return ResponseEntity.ok(entityModel);
     }
 

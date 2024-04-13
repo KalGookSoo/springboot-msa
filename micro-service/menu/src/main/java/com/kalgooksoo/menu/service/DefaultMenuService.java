@@ -17,6 +17,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.kalgooksoo.menu.repository.MenuRepository.NOT_FOUND_MESSAGE;
+
 /**
  * 메뉴 서비스
  */
@@ -54,7 +56,7 @@ public class DefaultMenuService implements MenuService {
     @Override
     public Menu findById(@Nonnull String id) {
         return menuRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_MESSAGE));
     }
 
     @Override
@@ -73,7 +75,7 @@ public class DefaultMenuService implements MenuService {
     @Override
     public Menu move(@Nonnull String id, @Nonnull MoveMenuCommand command) {
         Menu menu = menuRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("메뉴가 존재하지 않습니다"));
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_MESSAGE));
         menu.moveTo(command.parentId());
         return menuRepository.save(menu);
     }

@@ -42,12 +42,20 @@ public class MenuMemoryRepository implements MenuRepository {
     }
 
     @Override
+    public Menu getReferenceById(@Nonnull String id) {
+        return menus.stream()
+                .filter(menu -> menu.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_MESSAGE));
+    }
+
+    @Override
     public void deleteById(@Nonnull String id) {
         menus.stream()
                 .filter(menu -> menu.getId().equals(id))
                 .findFirst()
                 .map(menus::remove)
-                .orElseThrow(() -> new NoSuchElementException("메뉴를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_MESSAGE));
     }
 
 }

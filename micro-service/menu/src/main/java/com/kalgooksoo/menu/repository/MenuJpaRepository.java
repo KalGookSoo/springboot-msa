@@ -3,7 +3,6 @@ package com.kalgooksoo.menu.repository;
 import com.kalgooksoo.menu.domain.Menu;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +20,9 @@ public class MenuJpaRepository implements MenuRepository {
 
     @Override
     public Menu save(@Nonnull Menu menu) {
-        try {
+        if (menu.getId() == null) {
             em.persist(menu);
-        } catch (PersistenceException e) {
-            System.err.println(e.getMessage());
+        } else {
             return em.merge(menu);
         }
         return menu;
@@ -41,12 +39,18 @@ public class MenuJpaRepository implements MenuRepository {
     }
 
     @Override
+    public Menu getReferenceById(@Nonnull String id) {
+        return Optional.ofNullable(em.getReference(Menu.class, id))
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    @Override
     public void deleteById(@Nonnull String id) {
         Menu menu = em.find(Menu.class, id);
         if (menu != null) {
             em.remove(menu);
         } else {
-            throw new NoSuchElementException("메뉴를 찾을 수 없습니다.");
+            throw new NoSuchElementException(NOT_FOUND_MESSAGE);
         }
     }
 }
