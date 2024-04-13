@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
@@ -21,12 +22,13 @@ import static lombok.AccessLevel.PROTECTED;
  */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = "id", callSuper = false)
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
 @Table(name = "tb_menu")
 @DynamicInsert
+@DynamicUpdate
 public class Menu extends Hierarchical<Menu, String> {
 
     /**
