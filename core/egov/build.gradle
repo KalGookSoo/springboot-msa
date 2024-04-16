@@ -6,29 +6,30 @@ java {
 }
 
 repositories {
-    maven {
-        url 'https://repo1.maven.org/maven2/'
-    }
-    maven {
-        url 'https://maven.egovframe.go.kr/maven/'
+//    maven {
+//        url 'https://repo1.maven.org/maven2/'
+//    }
+//    maven {
+//        url 'https://maven.egovframe.go.kr/maven/'
+//    }
+    flatDir {
+        dirs 'src/main/resources/lib'
     }
 }
 
 dependencies {
-
-//    implementation 'org.springframework:spring-core'
-
-    implementation 'org.egovframe.rte:org.egovframe.rte.bat.core:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.access:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.crypto:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.excel:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.filehandling:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.idgnr:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.logging:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.property:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.security:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.string:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.psl.dataaccess:4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.ptl.mvc:4.1.0'
+    // https://www.egovframe.go.kr/home/ntt/nttList.do
+    implementation 'org.egovframe.rte:org.egovframe.rte.bat.core-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.access-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.cmmn-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.crypto-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.excel-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.filehandling-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.idgnr-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.logging-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.property-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.security-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.string-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.psl.dataaccess-4.1.0'
+    implementation 'org.egovframe.rte:org.egovframe.rte.ptl.mvc-4.1.0'
 }
