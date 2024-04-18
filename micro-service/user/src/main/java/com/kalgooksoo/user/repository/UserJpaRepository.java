@@ -102,16 +102,16 @@ public class UserJpaRepository implements UserRepository {
 
     private String generateJpql(@Nonnull UserSearch search) {
         StringBuilder jpql = new StringBuilder();
-        if (search.isEmptyUsername()) {
+        if (!search.isEmptyUsername()) {
             jpql.append(" and user.username like :username");
         }
-        if (search.isEmptyName()) {
+        if (!search.isEmptyName()) {
             jpql.append(" and user.name like :name");
         }
-        if (search.isEmptyEmailId()) {
+        if (!search.isEmptyEmailId()) {
             jpql.append(" and user.emailId like :emailId");
         }
-        if (search.isEmptyContactNumber()) {
+        if (!search.isEmptyContactNumber()) {
             jpql.append(" and user.contactNumber like :contactNumber");
         }
         return jpql.toString();
