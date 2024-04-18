@@ -118,16 +118,16 @@ public class UserJpaRepository implements UserRepository {
     }
 
     private void setParameters(@Nonnull TypedQuery<?> query, @Nonnull UserSearch search) {
-        if (search.isEmptyUsername()) {
+        if (!search.isEmptyUsername()) {
             query.setParameter("username", "%" + search.getUsername() + "%");
         }
-        if (search.isEmptyName()) {
+        if (!search.isEmptyName()) {
             query.setParameter("name", "%" + search.getName() + "%");
         }
-        if (search.isEmptyEmailId()) {
+        if (!search.isEmptyEmailId()) {
             query.setParameter("emailId", "%" + search.getEmailId() + "%");
         }
-        if (search.isEmptyContactNumber()) {
+        if (!search.isEmptyContactNumber()) {
             query.setParameter("contactNumber", "%" + search.getContactNumber() + "%");
         }
     }
